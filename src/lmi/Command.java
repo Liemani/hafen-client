@@ -1,13 +1,14 @@
 package lmi;
 
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
 
-public class Command {
+class Command {
     // type define
     private static class CommandMap extends TreeMap<String, Callable<Void>> {};
 
-    // class fields
+    // fields
     private static CommandMap map_ = Command.newClassFieldMap_();
     private static CommandMap newClassFieldMap_() {
         CommandMap map = new CommandMap();
@@ -23,10 +24,12 @@ public class Command {
         return null;
     }
 
-    // public methods
-    public static void execute(String command) {
-        try {
-            map_.get(command).call();
-        } catch (Exception e) {}
+    // package method
+    static Callable<Void> getCommandByString(String commandString) {
+        return map_.get(commandString);
+    }
+
+    static Set<String> getCommandStringSet() {
+        return map_.keySet();
     }
 }
