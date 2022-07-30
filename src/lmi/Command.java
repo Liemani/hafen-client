@@ -9,13 +9,8 @@ class Command {
     private static class CommandMap extends TreeMap<String, Callable<Void>> {};
 
     // fields
-    private static CommandMap map_ = Command.newClassFieldMap_();
-    private static CommandMap newClassFieldMap_() {
-        CommandMap map = new CommandMap();
-        map.put("hello", Command::hello);
-
-        return map;
-    }
+    private static lmi.MainThread mainThread_;
+    private static lmi.Command.CommandMap map_;
 
     // commands
     private static Void hello() {
@@ -24,7 +19,27 @@ class Command {
         return null;
     }
 
+    private static Void printUIPanelClassName() {
+        System.out.println("class name of uiPanel: " + mainThread_.uiPanel_.getClass().getName());
+
+        return null;
+    }
+
+    private static Void printListOfMainFrame() {
+        mainThread_.mainFrame_.list(System.out, 4);
+
+        return null;
+    }
+
     // package method
+    static void init(lmi.MainThread mainThread) {
+        mainThread_ = mainThread;
+
+        map_ = new CommandMap();
+        map_.put("hello", Command::hello);
+        map_.put("printUIPanelClassName", Command::printUIPanelClassName);
+    }
+
     static Callable<Void> getCommandByString(String commandString) {
         return map_.get(commandString);
     }
