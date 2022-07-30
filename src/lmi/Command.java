@@ -2,49 +2,57 @@ package lmi;
 
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.concurrent.Callable;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 class Command {
     // type define
-    private static class CommandMap extends TreeMap<String, Callable<Void>> {};
+    private static class CommandMap extends TreeMap<String, Method> {};
 
     // fields
     private static lmi.MainThread mainThread_;
     private static lmi.Command.CommandMap map_;
 
     // commands
-    private static Void hello() {
+    static Void hello() {
         System.out.println("Hello, world!");
 
         return null;
     }
 
-    private static Void printUIPanelClassName() {
+    static Void printUIPanelClassName() {
         System.out.println("class name of uiPanel: " + mainThread_.uiPanel_.getClass().getName());
 
         return null;
     }
 
-    private static Void printListOfMainFrame() {
+    static Void printListOfMainFrame() {
         mainThread_.mainFrame_.list(System.out, 4);
 
         return null;
     }
 
     // package method
-    static void init(lmi.MainThread mainThread) {
+    /// assume: each of all non-public methods are method for command
+    /// add all private methods to map_
+    public static void init(lmi.MainThread mainThread) {
         mainThread_ = mainThread;
 
         map_ = new CommandMap();
-        map_.put("hello", Command::hello);
-        map_.put("printUIPanelClassName", Command::printUIPanelClassName);
+        Method methodArray[] = Command.class.getDeclaredMethods();
+        for (Method method : methodArray) {
+            if ((method.getModifiers() & Modifier.PUBLIC) == 0) {
+                map_.put(method.getName(), method);
+            }
+        }
     }
 
-    static Callable<Void> getCommandByString(String commandString) {
+    public static Method getCommandByString(String commandString) {
         return map_.get(commandString);
     }
 
-    static Set<String> getCommandStringSet() {
+    public static Set<String> getCommandStringSet() {
         return map_.keySet();
     }
 }

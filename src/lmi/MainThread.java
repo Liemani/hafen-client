@@ -3,7 +3,8 @@ package lmi;
 import java.io.PrintStream;
 
 import java.util.Set;
-import java.util.concurrent.Callable;
+
+import java.lang.reflect.Method;
 
 public class MainThread implements Runnable {
     // fields
@@ -23,20 +24,21 @@ public class MainThread implements Runnable {
 
         while (true) {
             MainThread.printCommandStringList(System.out);
+            System.out.println("-----------------------------------");
             System.out.print("Enter command(\"exit\" to terminate): ");
             String commandString = lmi.Scanner.nextLine();
 
             if (commandString.contentEquals("exit"))
                 break;
 
-            Callable<Void> command = lmi.Command.getCommandByString(commandString);
+            Method command = lmi.Command.getCommandByString(commandString);
             if (command != null) {
-                try { command.call(); } catch (Exception e) {}
+                try { command.invoke(null); } catch (Exception e) { System.out.println("command invoke failed"); }
             }
             else {
-                System.out.println("Unknown command: [" + commandString + "]");
+                System.out.println("[" + commandString + ": unknown command]");
             }
-
+            System.out.println("===================================");
             System.out.println();
         }
     }
