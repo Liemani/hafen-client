@@ -1,7 +1,7 @@
 .PHONY: run
 run:
-	javac -d . Run.java Command.java
-	java lmi.Run
+	javac -d . Scanner.java MainThread.java Command.java
+	java lmi.MainThread
 
 .PHONY: clean
 	rm -rf lmi
