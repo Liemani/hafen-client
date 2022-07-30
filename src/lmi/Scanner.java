@@ -12,7 +12,7 @@ public class Scanner {
     }
 
     // package methods
-    static void initScanner(InputStream inputStream) {
+    static void init(InputStream inputStream) {
         scanner_ = new java.util.Scanner(inputStream);
     }
 }
