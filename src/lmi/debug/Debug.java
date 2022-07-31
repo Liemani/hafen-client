@@ -104,42 +104,12 @@ public class Debug {
         printStream.println(description.toString());
     }
 
-    public static void debugDescribeVariable(String identifier, Object object) {
-        StringBuilder description = new StringBuilder();
-
-        description.append("{");
-        description.append("\"" + identifier + "\"" + ":");
-
-        String primitiveDescription = primitiveTypeDescription(object);
-        if (primitiveDescription != null)
-            description.append(primitiveDescription);
-        else
-            description.append(object);
-
-        description.append("}");
-
-        System.out.println(description.toString());
-    }
-
     // private methods
-    private static String primitiveTypeDescription(Object object) {
-        if (object == null) {
-            return "\"null\"";
-        }
-        else if (object instanceof Number) {
-            return object.toString();
-        }
-        else if (object instanceof String) {
-            return "\"" + (String)object + "\"";
-        }
-        return null;
-    }
-
     private static String debugDescription(Object object) {
         if (!Util.isClass(object)) {
-            String primitiveDescription = primitiveTypeDescription(object);
-            if (primitiveDescription != null)
-                return primitiveDescription;
+            String descriptionOfSpecialType = debugDescriptionSpecialType(object);
+            if (descriptionOfSpecialType != null)
+                return descriptionOfSpecialType;
         }
 
         final Class classObject = Util.isClass(object) ? (Class)object : object.getClass();
@@ -182,14 +152,17 @@ public class Debug {
             description.append("\"" + field.getName() + "\"" + ":");
             try {
                 final Object fieldObject = field.get(object);
-                String primitiveDescription = primitiveTypeDescription(fieldObject);
-                if (primitiveDescription != null)
-                    description.append(primitiveDescription);
+                String descriptionOfSpecialType = debugDescriptionSpecialType(fieldObject);
+                if (descriptionOfSpecialType != null)
+                    description.append(descriptionOfSpecialType);
                 else
                     description.append(fieldObject);
             } catch (Exception e) {
                 description.append("\"<access denied>\"");
-                System.out.println(e.getMessage());
+                if (e.getClass() == java.lang.IllegalAccessException.class)
+                    System.out.println(e.getMessage());
+                else
+                    e.printStackTrace();
             }
             description.append(",");
         }
@@ -203,6 +176,88 @@ public class Debug {
                 description.append(' ');
     }
 
+    private static String debugDescriptionSpecialType(Object object) {
+        if (object == null)
+            return "\"null\"";
+
+        Class classOfObject = object.getClass();
+
+        if (classOfObject == String.class) {
+            return "\"" + (String)object + "\"";
+        }
+        else if (classOfObject == Number.class) {
+            return object.toString();
+        }
+        else if (classOfObject.isArray()) {
+            return debugDescriptionSpecialTypeArray(object);
+        }
+
+        return null;
+    }
+
+    private static String debugDescriptionSpecialTypeArray(Object array) {
+        if (array.getClass() == int[].class)
+            return debugDescriptionSpecialTypeIntArray((int[])array);
+        else if (array.getClass() == byte[].class)
+            return debugDescriptionSpecialTypeByteArray((byte[])array);
+        else if (array.getClass() == double[].class)
+            return debugDescriptionSpecialTypeDoubleArray((double[])array);
+        else
+            return debugDescriptionSpecialTypeObjectArray((Object[])array);
+    }
+
+    private static String debugDescriptionSpecialTypeIntArray(int intArray[]) {
+        StringBuilder description = new StringBuilder();
+
+        description.append("[");
+        for (int element : intArray) {
+            description.append(element);
+            description.append(",");
+        }
+        description.append("]");
+
+        return description.toString();
+    }
+
+    private static String debugDescriptionSpecialTypeByteArray(byte byteArray[]) {
+        StringBuilder description = new StringBuilder();
+
+        description.append("[");
+        for (byte element : byteArray) {
+            description.append(element);
+            description.append(",");
+        }
+        description.append("]");
+
+        return description.toString();
+    }
+
+    private static String debugDescriptionSpecialTypeDoubleArray(double doubleArray[]) {
+        StringBuilder description = new StringBuilder();
+
+        description.append("[");
+        for (double element : doubleArray) {
+            description.append(element);
+            description.append(",");
+        }
+        description.append("]");
+
+        return description.toString();
+    }
+
+    private static String debugDescriptionSpecialTypeObjectArray(Object objectArray[]) {
+        StringBuilder description = new StringBuilder();
+
+        description.append("[");
+        for (Object element : objectArray) {
+            description.append(element.toString());
+            description.append(",");
+        }
+        description.append("]");
+
+        return description.toString();
+    }
+
     // main function
     public static void main(String args[]) {
         Debug debug = new Debug();
@@ -210,7 +265,13 @@ public class Debug {
         System.out.println(debugDescription(debug));
         debugDescribe(System.out, debug);
         debugDescribe(System.out, null);
-        debugDescribe(System.out, lmi.debug.Debug.class);
+        debugDescribe(System.out, Debug.class);
         debugDescribe(System.out, new Object());
+
+//          Debug[] debugArray = { new Debug(), new Debug() };
+//          debugDescribe(System.out, debugArray);
+
+        int[] intArray = { 1, 2, 3 };
+        debugDescribe(System.out, intArray);
     }
 }

@@ -11,7 +11,7 @@ class Command {
     private static class CommandMap extends TreeMap<String, Method> {};
 
     // fields
-    private static lmi.Command.CommandMap map_;
+    private static CommandMap map_;
 
     // commands
     static Void commandTemplate() {
@@ -33,7 +33,7 @@ class Command {
     }
 
     static Void exit() {
-        lmi.Command.interruptHavenMainThread();
+        interruptHavenMainThread();
 
         return null;
     }
