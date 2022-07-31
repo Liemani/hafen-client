@@ -26,37 +26,33 @@ class Command {
         return null;
     }
 
-    static Void printUIPanelClassName() {
-        System.out.println("class name of uiPanel: " + lmi.ObjectShadow.uiPanel_.getClass().getName());
-
-        return null;
-    }
-
     static Void printListOfMainFrame() {
         lmi.ObjectShadow.mainFrame_.list(System.out, 4);
 
         return null;
     }
 
-    static Void interruptMainHavenThread() {
-        try {
-            lmi.ObjectShadow.mainThread_.interrupt();
-        }
-        catch (Exception e) {
-            System.out.println("<access denied>");
-        }
+    static Void exit() {
+        lmi.Command.interruptHavenMainThread();
+
+        return null;
+    }
+
+    // private commands
+    private static Void interruptHavenMainThread() {
+        lmi.ObjectShadow.mainThread_.interrupt();
 
         return null;
     }
 
     // package method
-    /// assume: each of all non-public methods are method for command
-    /// add all private methods to map_
+    /// all methods with default access modifier will count on as executable command
     public static void init() {
         map_ = new CommandMap();
         Method methodArray[] = Command.class.getDeclaredMethods();
         for (Method method : methodArray) {
-            if (!lmi.Util.methodHasModifier(method, Modifier.PUBLIC)) {
+            if (!lmi.Util.methodHasModifier(method, Modifier.PUBLIC)
+                    && !lmi.Util.methodHasModifier(method, Modifier.PRIVATE)) {
                 map_.put(method.getName(), method);
             }
         }
