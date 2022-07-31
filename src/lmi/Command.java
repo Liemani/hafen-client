@@ -14,7 +14,7 @@ class Command {
     private static lmi.Command.CommandMap map_;
 
     // commands
-    static Void emptyCommandTemplate() {
+    static Void commandTemplate() {
         // code here...
 
         return null;
