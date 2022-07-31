@@ -56,6 +56,7 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
 	    while(true) {
 		PMessage msg;
 		while((msg = sess.getuimsg()) != null) {
+            lmi.debug.Debug.debugDescribe(System.out, msg);
 		    if(msg.type == RMessage.RMSG_NEWWDG) {
 			int id = msg.int32();
 			String type = msg.string();

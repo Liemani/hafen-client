@@ -314,10 +314,8 @@ public class MainFrame extends java.awt.Frame implements Console.Directory {
 	    try {
 		try {
 		    if(task == null) {
-                System.out.println("task == null");
 			uiloop();
 		    } else {
-                System.out.println("task != null");
 			while(task != null)
 			    task = task.run(p.newui(task));
 		    }

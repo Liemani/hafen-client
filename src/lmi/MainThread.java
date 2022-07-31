@@ -14,7 +14,7 @@ public class MainThread implements Runnable {
 
     // Runnable requirment
     public void run() {
-        System.out.println("[top of run()]");
+        System.out.println("[lmi.MainThread::run()]");
 
         this.init();
 
@@ -26,7 +26,7 @@ public class MainThread implements Runnable {
 
             Method command = lmi.Command.getCommandByString(commandString);
             if (command != null) {
-                try { command.invoke(null); } catch (Exception e) { System.out.println("command invoke failed"); }
+                try { command.invoke(null); } catch (Exception e) { System.out.println(e.getMessage()); }
             }
             else {
                 System.out.println("[" + commandString + ": unknown command]");
