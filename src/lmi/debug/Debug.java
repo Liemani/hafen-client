@@ -20,7 +20,7 @@ public class Debug {
 
     // public methods
     public static void debugDescribe(PrintStream printStream, Object object) {
-        debugDescribe(printStream, object, 4);
+        debugDescribe(printStream, object, 2);
     }
 
     public static void debugDescribe(PrintStream printStream, Object object, final int indentSpace) {

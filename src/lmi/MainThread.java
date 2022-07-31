@@ -21,11 +21,8 @@ public class MainThread implements Runnable {
         while (true) {
             MainThread.printCommandStringList(System.out);
             System.out.println("-----------------------------------");
-            System.out.print("Enter command(\"exit\" to terminate): ");
+            System.out.print("Enter command: ");
             String commandString = lmi.Scanner.nextLine();
-
-            if (commandString.contentEquals("exit"))
-                break;
 
             Method command = lmi.Command.getCommandByString(commandString);
             if (command != null) {
