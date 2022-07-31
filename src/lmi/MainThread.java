@@ -19,14 +19,15 @@ public class MainThread implements Runnable {
         this.init();
 
         while (true) {
-            MainThread.printCommandStringList(System.out);
+            printCommandStringList(System.out);
             System.out.println("-----------------------------------");
             System.out.print("Enter command: ");
             String commandString = lmi.Scanner.nextLine();
 
             Method command = lmi.Command.getCommandByString(commandString);
             if (command != null) {
-                try { command.invoke(null); } catch (Exception e) { System.out.println(e.getMessage()); }
+                System.out.println("[" + command.getName() + ": invoking]");
+                try { command.invoke(null); } catch (Exception e) { e.printStackTrace(); }
             }
             else {
                 System.out.println("[" + commandString + ": unknown command]");
@@ -53,8 +54,8 @@ public class MainThread implements Runnable {
 
     // main()
     public static void main(String[] args) {
-        lmi.MainThread mainThread = new lmi.MainThread(new haven.MainFrame(null), new haven.JOGLPanel(null));
+        MainThread mainThread = new MainThread(new haven.MainFrame(null), new haven.JOGLPanel(null));
         new Thread(mainThread).start();
-//      new Thread(new lmi.MainThread(this, this.p)).start();
+//      new Thread(new MainThread(this, this.p)).start();
     }
 }
