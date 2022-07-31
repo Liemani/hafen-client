@@ -7,13 +7,9 @@ import java.util.Set;
 import java.lang.reflect.Method;
 
 public class MainThread implements Runnable {
-    // fields
-    haven.MainFrame mainFrame_;
-    haven.UIPanel uiPanel_;
-
-    public MainThread(haven.MainFrame mainFrame, haven.UIPanel uiPanel) {
-        mainFrame_ = mainFrame;
-        uiPanel_ = uiPanel;
+    // constructor
+    public MainThread(Object ... args) {
+        ObjectShadow.init(args);
     }
 
     // Runnable requirment
@@ -55,11 +51,11 @@ public class MainThread implements Runnable {
     // private instance methods
     private void init() {
         lmi.Scanner.init(System.in);
-        lmi.Command.init(this);
+        lmi.Command.init();
     }
 
     // main()
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         lmi.MainThread mainThread = new lmi.MainThread(new haven.MainFrame(null), new haven.JOGLPanel(null));
         new Thread(mainThread).start();
 //      new Thread(new lmi.MainThread(this, this.p)).start();
