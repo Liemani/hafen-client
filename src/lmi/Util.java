@@ -11,4 +11,8 @@ public class Util {
     public static boolean methodHasModifier(Method method, int modifier) {
         return (method.getModifiers() & modifier) != 0;
     }
+
+    public static boolean isClass(Object object) {
+        return object instanceof Class;
+    }
 }
