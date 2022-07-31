@@ -692,6 +692,8 @@ public class Session implements Resource.Resolver {
     }
 
     public void sendmsg(PMessage msg) {
+        lmi.debug.Debug.debugDescribe(System.out, msg);
+        new Exception().printStackTrace();
 	byte[] buf = new byte[msg.size() + 1];
 	buf[0] = (byte)msg.type;
 	msg.fin(buf, 1);
