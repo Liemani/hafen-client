@@ -11,24 +11,40 @@ class Command {
     private static class CommandMap extends TreeMap<String, Method> {};
 
     // fields
-    private static lmi.MainThread mainThread_;
     private static lmi.Command.CommandMap map_;
 
     // commands
-    static Void hello() {
-        System.out.println("Hello, world!");
+    static Void emptyCommandTemplate() {
+        // code here...
+
+        return null;
+    }
+
+    static Void printObjectShadow() {
+        lmi.debug.Debug.debugDescribe(System.out, lmi.ObjectShadow.class);
 
         return null;
     }
 
     static Void printUIPanelClassName() {
-        System.out.println("class name of uiPanel: " + mainThread_.uiPanel_.getClass().getName());
+        System.out.println("class name of uiPanel: " + lmi.ObjectShadow.uiPanel_.getClass().getName());
 
         return null;
     }
 
     static Void printListOfMainFrame() {
-        mainThread_.mainFrame_.list(System.out, 4);
+        lmi.ObjectShadow.mainFrame_.list(System.out, 4);
+
+        return null;
+    }
+
+    static Void interruptMainHavenThread() {
+        try {
+            lmi.ObjectShadow.mainThread_.interrupt();
+        }
+        catch (Exception e) {
+            System.out.println("<access denied>");
+        }
 
         return null;
     }
@@ -36,13 +52,11 @@ class Command {
     // package method
     /// assume: each of all non-public methods are method for command
     /// add all private methods to map_
-    public static void init(lmi.MainThread mainThread) {
-        mainThread_ = mainThread;
-
+    public static void init() {
         map_ = new CommandMap();
         Method methodArray[] = Command.class.getDeclaredMethods();
         for (Method method : methodArray) {
-            if ((method.getModifiers() & Modifier.PUBLIC) == 0) {
+            if (!lmi.Util.methodHasModifier(method, Modifier.PUBLIC)) {
                 map_.put(method.getName(), method);
             }
         }

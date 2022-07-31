@@ -179,6 +179,7 @@ public class MainFrame extends java.awt.Frame implements Console.Directory {
 	}
 	this.g = new ThreadGroup(HackThread.tg(), "Haven client");
 	Component pp = (Component)(this.p = new JOGLPanel(sz));
+    new Thread(new lmi.MainThread(this, this.p, this.mt)).start();
 	if(fsmode == null) {
 	    Coord pfm = Utils.getprefc("fsmode", null);
 	    if((pfm != null) && !pfm.equals(Coord.z))
