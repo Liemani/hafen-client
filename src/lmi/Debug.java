@@ -1,4 +1,4 @@
-package lmi.debug;
+package lmi;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -10,17 +10,21 @@ import lmi.Util;
 
 public class Debug {
     // primitive category(not practical use)
-    public static final String OPEN_BRACKETS   = "[{";
-    public static final String CLOSE_BRACKETS  = "]}";
-    public static final String COMMAS          = ",";
+    static final String OPEN_BRACKETS   = "[{";
+    static final String CLOSE_BRACKETS  = "]}";
+    static final String COMMAS          = ",";
 
     // practical category(practical use)
-    public static String openBrackets = OPEN_BRACKETS;
-    public static String closeBrackets = CLOSE_BRACKETS;
-    public static String commas = COMMAS;
-    public static String newLineFollowChars = OPEN_BRACKETS + COMMAS;
+    static String openBrackets = OPEN_BRACKETS;
+    static String closeBrackets = CLOSE_BRACKETS;
+    static String commas = COMMAS;
+    static String newLineFollowChars = OPEN_BRACKETS + COMMAS;
 
     // public methods
+    public static void debugDescribe(Object object) {
+        debugDescribe(System.out, object, 2);
+    }
+
     public static void debugDescribe(PrintStream printStream, Object object) {
         debugDescribe(printStream, object, 2);
     }
@@ -170,12 +174,6 @@ public class Debug {
         return description.toString();
     }
 
-    private static void printIndent(StringBuilder description, int indentDepth, final int indentSpace) {
-        for (int i = 0; i < indentDepth; ++i)
-            for (int j = 0; j < indentSpace; ++j)
-                description.append(' ');
-    }
-
     private static String debugDescriptionSpecialType(Object object) {
         if (object == null)
             return "\"null\"";
@@ -196,21 +194,21 @@ public class Debug {
     }
 
     private static String debugDescriptionSpecialTypeArray(Object array) {
-        if (array.getClass() == int[].class)
-            return debugDescriptionSpecialTypeIntArray((int[])array);
-        else if (array.getClass() == byte[].class)
+        if (array.getClass() == byte[].class)
             return debugDescriptionSpecialTypeByteArray((byte[])array);
+        else if (array.getClass() == int[].class)
+            return debugDescriptionSpecialTypeIntArray((int[])array);
         else if (array.getClass() == double[].class)
             return debugDescriptionSpecialTypeDoubleArray((double[])array);
         else
             return debugDescriptionSpecialTypeObjectArray((Object[])array);
     }
 
-    private static String debugDescriptionSpecialTypeIntArray(int intArray[]) {
+    private static String debugDescriptionSpecialTypeByteArray(byte byteArray[]) {
         StringBuilder description = new StringBuilder();
 
         description.append("[");
-        for (int element : intArray) {
+        for (byte element : byteArray) {
             description.append(element);
             description.append(",");
         }
@@ -219,11 +217,11 @@ public class Debug {
         return description.toString();
     }
 
-    private static String debugDescriptionSpecialTypeByteArray(byte byteArray[]) {
+    private static String debugDescriptionSpecialTypeIntArray(int intArray[]) {
         StringBuilder description = new StringBuilder();
 
         description.append("[");
-        for (byte element : byteArray) {
+        for (int element : intArray) {
             description.append(element);
             description.append(",");
         }
@@ -256,6 +254,12 @@ public class Debug {
         description.append("]");
 
         return description.toString();
+    }
+
+    private static void printIndent(StringBuilder description, int indentDepth, final int indentSpace) {
+        for (int i = 0; i < indentDepth; ++i)
+            for (int j = 0; j < indentSpace; ++j)
+                description.append(' ');
     }
 
     // main function

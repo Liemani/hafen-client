@@ -1,10 +1,10 @@
 package lmi;
 
-public class ObjectShadow {
+class ObjectShadow {
     // MainFrame
-    public static haven.MainFrame mainFrame_;
-    public static haven.UIPanel uiPanel_;
-    public static Thread mainThread_;
+    static haven.MainFrame mainFrame_;
+    static haven.UIPanel uiPanel_;
+    static Thread mainThread_;
 
     // init()
     static void init(Object ... args) {
