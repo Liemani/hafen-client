@@ -22,19 +22,27 @@ public class Debug {
 
     // public methods
     public static void debugDescribe(Object object) {
-        debugDescribe(System.out, object, 2);
+        debugDescribe(System.out, object);
     }
 
     public static void debugDescribe(PrintStream printStream, Object object) {
-        debugDescribe(printStream, object, 2);
+        if (object.getClass() == String.class)
+            debugDescribe(printStream, (String)object, 2);
+        else
+            debugDescribe(printStream, object, 2);
     }
 
     public static void debugDescribe(PrintStream printStream, Object object, final int indentSpace) {
         String rawDescription;
+
         if (object instanceof Class)
             rawDescription = debugDescription((Class)object);
         else
             rawDescription = debugDescription(object);
+        debugDescribe(printStream, rawDescription, indentSpace);
+    }
+
+    public static void debugDescribe(PrintStream printStream, String rawDescription, final int indentSpace) {
         char charArray[] = rawDescription.toCharArray();
 
         StringBuilder description = new StringBuilder();
