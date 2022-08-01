@@ -21,7 +21,7 @@ class Command {
     }
 
     static Void printObjectShadow() {
-        lmi.debug.Debug.debugDescribe(System.out, lmi.ObjectShadow.class);
+        Debug.debugDescribe(System.out, lmi.ObjectShadow.class);
 
         return null;
     }
