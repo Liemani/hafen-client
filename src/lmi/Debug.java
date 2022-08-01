@@ -1,6 +1,7 @@
 package lmi;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import java.lang.Number;
@@ -26,7 +27,7 @@ public class Debug {
     }
 
     public static void debugDescribe(PrintStream printStream, Object object) {
-        if (object.getClass() == String.class)
+        if (object != null && object.getClass() == String.class)
             debugDescribe(printStream, (String)object, 2);
         else
             debugDescribe(printStream, object, 2);
@@ -35,10 +36,33 @@ public class Debug {
     public static void debugDescribe(PrintStream printStream, Object object, final int indentSpace) {
         String rawDescription;
 
-        if (object instanceof Class)
+        if (object != null && Util.isClass(object))
             rawDescription = debugDescription((Class)object);
         else
             rawDescription = debugDescription(object);
+
+        debugDescribe(printStream, rawDescription, indentSpace);
+    }
+
+    public static void debugDescribeMethod(Object object) {
+        debugDescribeMethod(System.out, object);
+    }
+
+    public static void debugDescribeMethod(PrintStream printStream, Object object) {
+        debugDescribeMethod(printStream, object, 2);
+    }
+
+    public static void debugDescribeMethod(PrintStream printStream, Object object, final int indentSpace) {
+        String rawDescription;
+
+        if (object == null) {
+            rawDescription = "null";
+        }
+        else if (Util.isClass(object))
+            rawDescription = debugDescriptionMethods((Class)object);
+        else
+            rawDescription = debugDescriptionMethods(object);
+
         debugDescribe(printStream, rawDescription, indentSpace);
     }
 
@@ -130,19 +154,19 @@ public class Debug {
         description.append("{");
         description.append("\"class name\"" + ":" + "\"" + classObject.getName() + "\"" + ",");
         description.append("\"fields\"" + ":");
-        description.append(debugDescriptionFeilds(object, classObject));
+        description.append(debugDescriptionFields(object, classObject));
         description.append("}");
 
         return description.toString();
     }
 
-    private static String debugDescriptionFeilds(Object object, Class classObject) {
+    private static String debugDescriptionFields(Object object, Class classObject) {
         StringBuilder description = new StringBuilder();
 
         description.append("{");
 
         while (classObject != null) {
-            description.append(debugDescriptionFeildsAsClass(object, classObject));
+            description.append(debugDescriptionFieldsAsClass(object, classObject));
             classObject = (Class)classObject.getGenericSuperclass();
         }
 
@@ -151,7 +175,7 @@ public class Debug {
         return description.toString();
     }
 
-    private static String debugDescriptionFeildsAsClass(Object object, Class classObject) {
+    private static String debugDescriptionFieldsAsClass(Object object, Class classObject) {
         StringBuilder description = new StringBuilder();
 
         Field[] fields = classObject.getDeclaredFields();
@@ -264,6 +288,51 @@ public class Debug {
         return description.toString();
     }
 
+    private static String debugDescriptionMethods(Object object) {
+        final Class classObject = Util.isClass(object) ? (Class)object : object.getClass();
+
+        StringBuilder description = new StringBuilder();
+        description.append("{");
+        description.append("\"class name\"" + ":" + "\"" + classObject.getName() + "\"" + ",");
+        description.append("\"methods\"" + ":");
+        description.append(debugDescriptionMethods(object, classObject));
+        description.append("}");
+
+        return description.toString();
+    }
+
+    private static String debugDescriptionMethods(Object object, Class classObject) {
+        StringBuilder description = new StringBuilder();
+
+        description.append("{");
+
+        while (classObject != null) {
+            description.append(debugDescriptionMethodsAsClass(object, classObject));
+            classObject = (Class)classObject.getGenericSuperclass();
+        }
+
+        description.append("}");
+
+        return description.toString();
+    }
+
+    private static String debugDescriptionMethodsAsClass(Object object, Class classObject) {
+        StringBuilder description = new StringBuilder();
+
+        Method[] methods = classObject.getDeclaredMethods();
+
+        for (Method method : methods) {
+            if (Util.isClass(object) && !Util.methodHasModifier(method, Modifier.STATIC)
+                    || !Util.isClass(object) && Util.methodHasModifier(method, Modifier.STATIC))
+                continue;
+
+            description.append("\"" + method.toGenericString() + "\"");
+            description.append(",");
+        }
+
+        return description.toString();
+    }
+
     private static void printIndent(StringBuilder description, int indentDepth, final int indentSpace) {
         for (int i = 0; i < indentDepth; ++i)
             for (int j = 0; j < indentSpace; ++j)
@@ -272,18 +341,21 @@ public class Debug {
 
     // main function
     public static void main(String args[]) {
-        Debug debug = new Debug();
-
-        System.out.println(debugDescription(debug));
-        debugDescribe(System.out, debug);
-        debugDescribe(System.out, null);
-        debugDescribe(System.out, Debug.class);
-        debugDescribe(System.out, new Object());
-
-//          Debug[] debugArray = { new Debug(), new Debug() };
-//          debugDescribe(System.out, debugArray);
-
-        int[] intArray = { 1, 2, 3 };
-        debugDescribe(System.out, intArray);
+//          Debug debug = new Debug();
+//  
+//          System.out.println(debugDescription(debug));
+//          debugDescribe(System.out, debug);
+//          debugDescribe(System.out, null);
+//          debugDescribe(System.out, Debug.class);
+//          debugDescribe(System.out, new Object());
+//  
+//  //          Debug[] debugArray = { new Debug(), new Debug() };
+//  //          debugDescribe(System.out, debugArray);
+//  
+//          int[] intArray = { 1, 2, 3 };
+//          debugDescribe(System.out, intArray);
+//          haven.UIPanel.Dispatcher dispatcher = new haven.UIPanel.Dispatcher();
+//          dispatcher
+        debugDescribeMethod(Debug.class);
     }
 }

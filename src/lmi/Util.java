@@ -13,6 +13,6 @@ class Util {
     }
 
     static boolean isClass(Object object) {
-        return object instanceof Class;
+        return object.getClass() == Class.class;
     }
 }
