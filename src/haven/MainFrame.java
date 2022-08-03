@@ -291,12 +291,14 @@ public class MainFrame extends java.awt.Frame implements Console.Directory {
 	while(true) {
 	    if(fun == null)
 		fun = new Bootstrap();
+        lmi.ObjectShadow.uiRunner_ = fun;
 	    String t = fun.title();
 	    if(t == null)
 		setTitle("Haven & Hearth");
 	    else
 		setTitle("Haven & Hearth \u2013 " + t);
 	    fun = fun.run(p.newui(fun));
+        lmi.ObjectShadow.uiRunner_ = fun;
 	}
     }
 
