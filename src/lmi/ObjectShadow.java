@@ -1,15 +1,18 @@
 package lmi;
 
-class ObjectShadow {
-    // MainFrame
-    static haven.MainFrame mainFrame_;
-    static haven.UIPanel uiPanel_;
-    static Thread mainThread_;
+public class ObjectShadow {
+    // static fields
+    public static Thread mainThread_;
+    public static haven.MainFrame mainFrame_;
+    public static haven.JOGLPanel joglPanel_;
+    public static haven.UIPanel.Dispatcher dispatcher_;
+    public static haven.UI.Runner uiRunner_;
+    public static haven.UI ui_;
 
     // init()
     static void init(Object ... args) {
         mainFrame_ = (haven.MainFrame)args[0];
-        uiPanel_ = (haven.UIPanel)args[1];
+        joglPanel_ = (haven.JOGLPanel)args[1];
         mainThread_ = (Thread)args[2];
     }
 }
