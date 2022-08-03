@@ -15,4 +15,12 @@ class Util {
     static boolean isClass(Object object) {
         return object.getClass() == Class.class;
     }
+
+    // return if array has same address of element
+    static <T> boolean contains(T array[], T element) {
+        for (T entry : array)
+            if (entry == element)
+                return true;
+        return false;
+    }
 }

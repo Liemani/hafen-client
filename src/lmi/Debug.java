@@ -5,21 +5,204 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import java.lang.Number;
+
 import java.io.PrintStream;
+
+import java.util.ArrayList;
 
 import lmi.Util;
 
 public class Debug {
-    // primitive category(not practical use)
-    static final String OPEN_BRACKETS   = "[{";
-    static final String CLOSE_BRACKETS  = "]}";
-    static final String COMMAS          = ",";
+    static class Context {
+        // closer type definition
+        static interface Symbol { }
 
-    // practical category(practical use)
-    static String openBrackets = OPEN_BRACKETS;
-    static String closeBrackets = CLOSE_BRACKETS;
-    static String commas = COMMAS;
-    static String newLineFollowChars = OPEN_BRACKETS + COMMAS;
+        static class Comma implements Symbol { }
+
+        static class Colon implements Symbol { }
+
+        static interface Encloser extends Symbol {
+            static boolean isOpenChar(char ch) {
+                return Bracket.isOpenChar(ch)
+                    || Quote.isOpenChar(ch);
+            }
+
+            static boolean isCloseChar(char ch) {
+                return Bracket.isCloseChar(ch)
+                    || Quote.isCloseChar(ch);
+            }
+        }
+
+        static interface Bracket extends Encloser {
+            static boolean isOpenChar(char ch) {
+                return Parenthesis.isOpenChar(ch)
+                    || CurlyBrace.isOpenChar(ch)
+                    || SquareBracket.isOpenChar(ch);
+            }
+
+            static boolean isCloseChar(char ch) {
+                return Parenthesis.isCloseChar(ch)
+                    || CurlyBrace.isCloseChar(ch)
+                    || SquareBracket.isCloseChar(ch);
+            }
+        }
+
+        static class Parenthesis implements Bracket {
+            static boolean isOpenChar(char ch) { return ch == '('; }
+            static boolean isCloseChar(char ch) { return ch == ')'; }
+        }
+
+        static class CurlyBrace implements Bracket {
+            static boolean isOpenChar(char ch) { return ch == '{'; }
+            static boolean isCloseChar(char ch) { return ch == '}'; }
+        }
+
+        static class SquareBracket implements Bracket {
+            static boolean isOpenChar(char ch) { return ch == '['; }
+            static boolean isCloseChar(char ch) { return ch == ']'; }
+        }
+
+        interface Quote extends Encloser {
+            static boolean isOpenChar(char ch) {
+                return SingleQuote.isOpenChar(ch)
+                    || DoubleQuote.isOpenChar(ch);
+            }
+
+            static boolean isCloseChar(char ch) {
+                return SingleQuote.isCloseChar(ch)
+                    || DoubleQuote.isCloseChar(ch);
+            }
+        }
+
+        static class SingleQuote implements Quote {
+            static boolean isOpenChar(char ch) { return ch == '\''; }
+            static boolean isCloseChar(char ch) { return isOpenChar(ch); }
+        }
+
+        static class DoubleQuote implements Quote {
+            static boolean isOpenChar(char ch) { return ch == '\"'; }
+            static boolean isCloseChar(char ch) { return isOpenChar(ch); }
+        }
+
+        // fields
+        int indentCount_ = 0;
+        char previousNotSpaceChar_ = '\0';
+        ArrayList<Class> encloserStack_ = new ArrayList<Class>();
+
+        void adjustIndentBeforeUse(char ch) {
+            if (CurlyBrace.isCloseChar(ch))
+                --indentCount_;
+        }
+
+        void adjustIndentAfterUse(char ch) {
+            if (CurlyBrace.isOpenChar(ch))
+                ++indentCount_;
+        }
+
+        // package methods
+        void setPreviousNotSpaceChar(char ch) {
+            Class encloserType;
+
+            if ((encloserType = getEncloserClassCloseChar(ch)) != null
+                    && encloserType == lastEncloser())
+                popEncloserStack();
+            else if ((encloserType = getEncloserClassOpenChar(ch)) != null)
+                pushEncloserStack(encloserType);
+
+            previousNotSpaceChar_ = ch;
+        }
+
+        boolean isInDoubleQuotes() {
+            return lastEncloser() == DoubleQuote.class;
+        }
+
+        boolean isInCurlyBraces() {
+            return lastEncloser() == CurlyBrace.class;
+        }
+
+        // {_[^}]
+        // [^{]_}
+        // ,_[^{] (in {})
+        boolean shouldPutNewLine(char ch) {
+            if (CurlyBrace.isOpenChar(previousNotSpaceChar_) && !CurlyBrace.isCloseChar(ch)
+                    || !CurlyBrace.isOpenChar(previousNotSpaceChar_) && CurlyBrace.isCloseChar(ch)
+                    || previousNotSpaceChar_ == ',' && !CurlyBrace.isOpenChar(ch) && isInCurlyBraces())
+                return true;
+            else
+                return false;
+        }
+
+        // ,_. (in ())
+        // ,_{ (in {})
+        // ,_. (in [])
+        // :_.
+        // ._:
+        boolean shouldPutSpace(char ch) {
+            Class currentEncloser = lastEncloser();
+            if (previousNotSpaceChar_ == ','
+                        && (currentEncloser == Parenthesis.class
+                            || ch == '{' && currentEncloser == CurlyBrace.class
+                            || currentEncloser == SquareBracket.class)
+                    || previousNotSpaceChar_ == ':'
+                    || ch == ':')
+                return true;
+            else
+                return false;
+        }
+
+        // private methods
+        private Class getEncloserClassOpenChar(char ch) {
+            if (Parenthesis.isOpenChar(ch))
+                return Parenthesis.class;
+            else if (CurlyBrace.isOpenChar(ch))
+                return CurlyBrace.class;
+            else if (SquareBracket.isOpenChar(ch))
+                return SquareBracket.class;
+            else if (SingleQuote.isOpenChar(ch))
+                return SingleQuote.class;
+            else if (DoubleQuote.isOpenChar(ch))
+                return DoubleQuote.class;
+            else
+                return null;
+        }
+
+        private Class getEncloserClassCloseChar(char ch) {
+            if (Parenthesis.isCloseChar(ch))
+                return Parenthesis.class;
+            else if (CurlyBrace.isCloseChar(ch))
+                return CurlyBrace.class;
+            else if (SquareBracket.isCloseChar(ch))
+                return SquareBracket.class;
+            else if (SingleQuote.isCloseChar(ch))
+                return SingleQuote.class;
+            else if (DoubleQuote.isCloseChar(ch))
+                return DoubleQuote.class;
+            else
+                return null;
+        }
+
+        private void pushEncloserStack(Class encloserClass) {
+            encloserStack_.add(encloserClass);
+        }
+
+        private Class popEncloserStack() {
+            int size = encloserStack_.size();
+
+            if (size == 0)
+                return null;
+            else
+            return encloserStack_.remove(encloserStack_.size() - 1);
+        }
+
+        private Class lastEncloser() {
+            int size = encloserStack_.size();
+
+            if (size == 0)
+                return null;
+            else
+                return encloserStack_.get(size - 1);
+        }
+    }
 
     // public methods
     public static void debugDescribe(Object object) {
@@ -33,7 +216,7 @@ public class Debug {
             debugDescribe(printStream, object, 2);
     }
 
-    public static void debugDescribe(PrintStream printStream, Object object, final int indentSpace) {
+    public static void debugDescribe(PrintStream printStream, Object object, final int indentSize) {
         String rawDescription;
 
         if (object != null && Util.isClass(object))
@@ -41,7 +224,7 @@ public class Debug {
         else
             rawDescription = debugDescription(object);
 
-        debugDescribe(printStream, rawDescription, indentSpace);
+        debugDescribe(printStream, rawDescription, indentSize);
     }
 
     public static void debugDescribeMethod(Object object) {
@@ -52,7 +235,7 @@ public class Debug {
         debugDescribeMethod(printStream, object, 2);
     }
 
-    public static void debugDescribeMethod(PrintStream printStream, Object object, final int indentSpace) {
+    public static void debugDescribeMethod(PrintStream printStream, Object object, final int indentSize) {
         String rawDescription;
 
         if (object == null) {
@@ -63,76 +246,42 @@ public class Debug {
         else
             rawDescription = debugDescriptionMethods(object);
 
-        debugDescribe(printStream, rawDescription, indentSpace);
+        debugDescribe(printStream, rawDescription, indentSize);
     }
 
-    public static void debugDescribe(PrintStream printStream, String rawDescription, final int indentSpace) {
-        char charArray[] = rawDescription.toCharArray();
+    public static void debugDescribe(PrintStream printStream, String rawDescription, final int indentSize) {
+        Context context = new Context();
 
+        char descriptionAsCharArray[] = rawDescription.toCharArray();
         StringBuilder description = new StringBuilder();
-
-        int indentDepth = 0;
-        boolean isInString = false;
-        char previousChar = '\0';
-
-        for (char currentChar : charArray) {
-            if (isInString) {
-                description.append(currentChar);
-                if (currentChar == '\"') {
-                    isInString = false;
-                    previousChar = currentChar;
-                }
+        for (char ch : descriptionAsCharArray) {
+            if (context.isInDoubleQuotes()) {
+                description.append(ch);
+                if (Context.DoubleQuote.isCloseChar(ch))
+                    context.setPreviousNotSpaceChar(ch);
                 continue;
             }
 
-            switch (currentChar) {
-                case '{':
-                case '[':
-                    if (newLineFollowChars.indexOf(previousChar) != -1) {
-                        description.append('\n');
-                        printIndent(description, indentDepth, indentSpace);
-                    }
-                    description.append(currentChar);
-                    ++indentDepth;
-                    previousChar = currentChar;
-                    break;
-                case '}':
-                case ']':
-                    --indentDepth;
-                    if (openBrackets.indexOf(previousChar) == -1) {
-                        description.append('\n');
-                        printIndent(description, indentDepth, indentSpace);
-                    }
-                    description.append(currentChar);
-                    previousChar = currentChar;
-                    break;
-                case ':':
-                    description.append(" : ");
-                    previousChar = currentChar;
-                    break;
-                case ',':
-                    description.append(',');
-                    previousChar = currentChar;
-                    break;
+            context.adjustIndentBeforeUse(ch);
+
+            if (context.shouldPutNewLine(ch)) {
+                description.append('\n');
+                appendIndent(description, context.indentCount_, indentSize);
+            }
+
+            context.adjustIndentAfterUse(ch);
+
+            if (context.shouldPutSpace(ch))
+                description.append(' ');
+
+            switch (ch) {
                 case '\t':
                 case '\n':
                 case ' ':
                     break;
-                case '\"':
-                    if (newLineFollowChars.indexOf(previousChar) != -1) {
-                        description.append('\n');
-                        printIndent(description, indentDepth, indentSpace);
-                    }
-                    description.append(currentChar);
-                    isInString = true;
-                    break;
                 default:
-                    if (newLineFollowChars.indexOf(previousChar) != -1) {
-                        description.append('\n');
-                        printIndent(description, indentDepth, indentSpace);
-                    }
-                    description.append(currentChar);
-                    previousChar = currentChar;
+                    description.append(ch);
+                    context.setPreviousNotSpaceChar(ch);
                     break;
             }
         }
@@ -185,14 +334,21 @@ public class Debug {
                     || !Util.isClass(object) && Util.fieldHasModifier(field, Modifier.STATIC))
                 continue;
 
-            description.append("\"" + field.getName() + "\"" + ":");
+            description.append("{");
+            description.append("\"name\"" + ":");
+            description.append("\"" + field.getName() + "\"");
+            description.append(",");
+            description.append("\"type\"" + ":");
+            description.append("\"" + field.getGenericType().getTypeName() + "\"");
+            description.append(",");
+            description.append("\"value\"" + ":");
             try {
                 final Object fieldObject = field.get(object);
                 String descriptionOfSpecialType = debugDescriptionSpecialType(fieldObject);
                 if (descriptionOfSpecialType != null)
                     description.append(descriptionOfSpecialType);
                 else
-                    description.append(fieldObject);
+                    description.append("\"" + fieldObject + "\"");
             } catch (Exception e) {
                 description.append("\"<access denied>\"");
                 if (e.getClass() == java.lang.IllegalAccessException.class)
@@ -200,6 +356,7 @@ public class Debug {
                 else
                     e.printStackTrace();
             }
+            description.append("}");
             description.append(",");
         }
 
@@ -212,11 +369,14 @@ public class Debug {
 
         Class classOfObject = object.getClass();
 
-        if (classOfObject == String.class) {
-            return "\"" + (String)object + "\"";
+        if (classOfObject == Boolean.class) {
+            return (Boolean)object ? "true" : "false";
         }
-        else if (classOfObject == Number.class) {
+        else if (object instanceof Number) {
             return object.toString();
+        }
+        else if (classOfObject == String.class) {
+            return "\"" + (String)object + "\"";
         }
         else if (classOfObject.isArray()) {
             return debugDescriptionSpecialTypeArray(object);
@@ -333,18 +493,18 @@ public class Debug {
         return description.toString();
     }
 
-    private static void printIndent(StringBuilder description, int indentDepth, final int indentSpace) {
+    private static void appendIndent(StringBuilder description, int indentDepth, final int indentSize) {
         for (int i = 0; i < indentDepth; ++i)
-            for (int j = 0; j < indentSpace; ++j)
+            for (int j = 0; j < indentSize; ++j)
                 description.append(' ');
     }
 
     // main function
     public static void main(String args[]) {
-//          Debug debug = new Debug();
-//  
+        Debug debug = new Debug();
+
 //          System.out.println(debugDescription(debug));
-//          debugDescribe(System.out, debug);
+        debugDescribe(debug);
 //          debugDescribe(System.out, null);
 //          debugDescribe(System.out, Debug.class);
 //          debugDescribe(System.out, new Object());
@@ -356,6 +516,6 @@ public class Debug {
 //          debugDescribe(System.out, intArray);
 //          haven.UIPanel.Dispatcher dispatcher = new haven.UIPanel.Dispatcher();
 //          dispatcher
-        debugDescribeMethod(Debug.class);
+//          debugDescribeMethod(Debug.class);
     }
 }
