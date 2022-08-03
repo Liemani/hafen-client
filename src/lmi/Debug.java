@@ -301,7 +301,8 @@ public class Debug {
 
         StringBuilder description = new StringBuilder();
         description.append("{");
-        description.append("\"class name\"" + ":" + "\"" + classObject.getName() + "\"" + ",");
+        description.append("\"type\"" + ":" + "\"" + classObject.getName() + "\"" + ",");
+        description.append("\"value\"" + ":" + "\"" + object + "\"" + ",");
         description.append("\"fields\"" + ":");
         description.append(debugDescriptionFields(object, classObject));
         description.append("}");
@@ -335,11 +336,11 @@ public class Debug {
                 continue;
 
             description.append("{");
-            description.append("\"name\"" + ":");
-            description.append("\"" + field.getName() + "\"");
-            description.append(",");
             description.append("\"type\"" + ":");
             description.append("\"" + field.getGenericType().getTypeName() + "\"");
+            description.append(",");
+            description.append("\"name\"" + ":");
+            description.append("\"" + field.getName() + "\"");
             description.append(",");
             description.append("\"value\"" + ":");
             try {
@@ -451,9 +452,11 @@ public class Debug {
     private static String debugDescriptionMethods(Object object) {
         final Class classObject = Util.isClass(object) ? (Class)object : object.getClass();
 
+        // TODO copy debugDescription(Object object)
         StringBuilder description = new StringBuilder();
         description.append("{");
-        description.append("\"class name\"" + ":" + "\"" + classObject.getName() + "\"" + ",");
+        description.append("\"type\"" + ":" + "\"" + classObject.getName() + "\"" + ",");
+        description.append("\"value\"" + ":" + "\"" + object + "\"" + ",");
         description.append("\"methods\"" + ":");
         description.append(debugDescriptionMethods(object, classObject));
         description.append("}");
@@ -505,6 +508,7 @@ public class Debug {
 
 //          System.out.println(debugDescription(debug));
         debugDescribe(debug);
+        debugDescribe((Object)debug);
 //          debugDescribe(System.out, null);
 //          debugDescribe(System.out, Debug.class);
 //          debugDescribe(System.out, new Object());
