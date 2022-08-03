@@ -1,7 +1,7 @@
 .PHONY: run
 run:
-	javac -d . *.java
-	java lmi.MainThread
+	javac -d . Debug.java Util.java
+	java lmi.Debug
 
 .PHONY: debug
 debug:
