@@ -32,6 +32,59 @@ class Command {
         return null;
     }
 
+    static Void printMainFrame() {
+        Debug.debugDescribe(ObjectShadow.mainFrame_);
+
+        return null;
+    }
+
+    static Void printJOGLPanel() {
+        Debug.debugDescribe(ObjectShadow.joglPanel_);
+
+        return null;
+    }
+
+    static Void printDispatcher() {
+        Debug.debugDescribe(ObjectShadow.dispatcher_);
+
+        return null;
+    }
+
+    static Void printUIRunner() {
+        Debug.debugDescribe(ObjectShadow.uiRunner_);
+
+        return null;
+    }
+
+    static Void printUI() {
+        Debug.debugDescribe(ObjectShadow.ui_);
+
+        return null;
+    }
+
+    static Void recordMouseLocation() {
+        AWTEventGenerator.setMouseLocation(ObjectShadow.ui_.mc.x, ObjectShadow.ui_.mc.y);
+
+        return null;
+    }
+
+    static Void printRecordedMouseLocation() {
+        Debug.debugDescribe(AWTEventGenerator.class);
+
+        return null;
+    }
+
+    static Void generateMouseClick() {
+        AWTEventGenerator.generateMouseClick();
+
+        return null;
+    }
+
+    static Void printWhen() {
+
+        return null;
+    }
+
     static Void exit() {
         interruptHavenMainThread();
 

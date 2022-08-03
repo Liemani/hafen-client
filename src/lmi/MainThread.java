@@ -15,7 +15,6 @@ public class MainThread implements Runnable {
     // Runnable requirment
     public void run() {
         System.out.println("[lmi.MainThread::run()]");
-        Debug.debugDescribeMethod(new haven.UIPanel.Dispatcher());
 
         this.init();
 

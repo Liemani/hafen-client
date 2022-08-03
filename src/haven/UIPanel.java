@@ -65,7 +65,6 @@ public interface UIPanel extends Runnable {
 	    }
 	    for(InputEvent e : copy) {
 		if(e instanceof MouseEvent) {
-            lmi.Debug.debugDescribe(ui);
 		    MouseEvent me = (MouseEvent)e;
 		    if(me.getID() == MouseEvent.MOUSE_PRESSED) {
 			ui.mousedown(me, new Coord(me.getX(), me.getY()), me.getButton());
@@ -147,6 +146,7 @@ public interface UIPanel extends Runnable {
 	public void mouseExited(MouseEvent e) {}
 	public void mouseClicked(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {
+        lmi.Debug.debugDescribe(e);
 	    synchronized(this) {
 		events.add(e);
 		notifyAll();
