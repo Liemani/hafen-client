@@ -149,7 +149,6 @@ public interface UIPanel extends Runnable {
 	public void mouseExited(MouseEvent e) {}
 	public void mouseClicked(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {
-        lmi.Debug.debugDescribe(e);
 	    synchronized(this) {
 		events.add(e);
 		notifyAll();

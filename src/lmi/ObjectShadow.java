@@ -8,6 +8,8 @@ public class ObjectShadow {
     public static haven.UIPanel.Dispatcher dispatcher_;
     public static haven.UI.Runner uiRunner_;
     public static haven.UI ui_;
+    // useful
+    // ui_.mc: current mouse location as haven.Coord
 
     // init()
     static void init(Object ... args) {
