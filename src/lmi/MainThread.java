@@ -33,6 +33,10 @@ public class MainThread implements Runnable {
                 System.out.println("[" + commandString + ": unknown command]");
             }
             System.out.println("===================================");
+
+            if (commandString.contentEquals("exit"))
+                return;
+
             System.out.println();
         }
     }

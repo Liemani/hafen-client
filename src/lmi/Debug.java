@@ -86,7 +86,7 @@ public class Debug {
 
         // fields
         int indentCount_ = 0;
-        char previousNotSpaceChar_ = '\0';
+        char previousNotSpaceChar_ = '\000';
         ArrayList<Class> encloserStack_ = new ArrayList<Class>();
 
         void adjustIndentBeforeUse(char ch) {
@@ -123,26 +123,30 @@ public class Debug {
         // {_[^}]
         // [^{]_}
         // ,_[^{] (in {})
+        //
+        // second version
+        // ,_["{] (when indent <= 2)
         boolean shouldPutNewLine(char ch) {
-            if (CurlyBrace.isOpenChar(previousNotSpaceChar_) && !CurlyBrace.isCloseChar(ch)
-                    || !CurlyBrace.isOpenChar(previousNotSpaceChar_) && CurlyBrace.isCloseChar(ch)
-                    || previousNotSpaceChar_ == ',' && !CurlyBrace.isOpenChar(ch) && isInCurlyBraces())
+//              if (CurlyBrace.isOpenChar(previousNotSpaceChar_) && !CurlyBrace.isCloseChar(ch)
+//                      || !CurlyBrace.isOpenChar(previousNotSpaceChar_) && CurlyBrace.isCloseChar(ch)
+//                      || previousNotSpaceChar_ == ',' && !CurlyBrace.isOpenChar(ch) && isInCurlyBraces())
+            if (previousNotSpaceChar_ == ',' && (ch == '\"' || ch == '{') && indentCount_ <= 2)
                 return true;
             else
                 return false;
         }
 
-        // ,_. (in ())
+        // ,_[^)] (in ())
         // ,_{ (in {})
-        // ,_. (in [])
+        // ,_[^]] (in [])
         // :_.
         // ._:
         boolean shouldPutSpace(char ch) {
             Class currentEncloser = lastEncloser();
             if (previousNotSpaceChar_ == ','
-                        && (currentEncloser == Parenthesis.class
+                        && (ch != ')' && currentEncloser == Parenthesis.class
                             || ch == '{' && currentEncloser == CurlyBrace.class
-                            || currentEncloser == SquareBracket.class)
+                            || ch != ']' && currentEncloser == SquareBracket.class)
                     || previousNotSpaceChar_ == ':'
                     || ch == ':')
                 return true;
@@ -293,8 +297,9 @@ public class Debug {
     private static String debugDescription(Object object) {
         if (!Util.isClass(object)) {
             String descriptionOfSpecialType = debugDescriptionSpecialType(object);
-            if (descriptionOfSpecialType != null)
+            if (descriptionOfSpecialType != null) {
                 return descriptionOfSpecialType;
+            }
         }
 
         final Class classObject = Util.isClass(object) ? (Class)object : object.getClass();
@@ -317,7 +322,7 @@ public class Debug {
 
         while (classObject != null) {
             description.append(debugDescriptionFieldsAsClass(object, classObject));
-            classObject = (Class)classObject.getGenericSuperclass();
+            classObject = (Class)classObject.getSuperclass();
         }
 
         description.append("}");
@@ -441,7 +446,7 @@ public class Debug {
 
         description.append("[");
         for (Object element : objectArray) {
-            description.append(element.toString());
+            description.append((element != null) ? element.toString() : "null");
             description.append(",");
         }
         description.append("]");
@@ -516,10 +521,12 @@ public class Debug {
 //  //          Debug[] debugArray = { new Debug(), new Debug() };
 //  //          debugDescribe(System.out, debugArray);
 //  
-//          int[] intArray = { 1, 2, 3 };
-//          debugDescribe(System.out, intArray);
+        int[] intArray = { 1, 2, 3 };
+        debugDescribe(System.out, intArray);
 //          haven.UIPanel.Dispatcher dispatcher = new haven.UIPanel.Dispatcher();
 //          dispatcher
 //          debugDescribeMethod(Debug.class);
+        debugDescribe(null);
+        debugDescribe(new java.lang.Integer(1));
     }
 }
