@@ -62,6 +62,12 @@ class Command {
         return null;
     }
 
+    static Void printRootWidget() {
+        Debug.debugDescribe(ObjectShadow.rootWidget_);
+
+        return null;
+    }
+
     static Void recordMouseLocation() {
         AWTEventGenerator.setMouseLocation(ObjectShadow.ui_.mc.x, ObjectShadow.ui_.mc.y);
 
@@ -115,10 +121,90 @@ class Command {
     }
 
     static Void exit() {
+        System.out.println("[terminating]");
         interruptHavenMainThread();
 
         return null;
     }
+
+    static haven.Widget currentWidget_ = null;
+    static Void resetCurrentWidgetAsRoot() {
+        currentWidget_ = ObjectShadow.rootWidget_;
+
+        return null;
+    }
+
+    static Void printCurrentWidgetClassName() {
+        System.out.println(currentWidget_);
+
+        return null;
+    }
+
+    static Void moveNextWidget() {
+        if (currentWidget_.next != null) {
+            currentWidget_ = currentWidget_.next;
+            printCurrentWidgetClassName();
+        }
+        else
+            System.out.println("next widget is null");
+
+        return null;
+    }
+
+    static Void movePreviousWidget() {
+        if (currentWidget_.prev != null) {
+            currentWidget_ = currentWidget_.prev;
+            printCurrentWidgetClassName();
+        }
+        else
+            System.out.println("previous widget is null");
+
+        return null;
+    }
+
+    static Void moveChildWidget() {
+        if (currentWidget_.child != null) {
+            currentWidget_ = currentWidget_.child;
+            printCurrentWidgetClassName();
+        }
+        else
+            System.out.println("child widget is null");
+
+        return null;
+    }
+
+    static Void moveParentWidget() {
+        if (currentWidget_.parent != null) {
+            currentWidget_ = currentWidget_.parent;
+            printCurrentWidgetClassName();
+        }
+        else
+            System.out.println("parent widget is null");
+
+        return null;
+    }
+
+    static Void iterateWidget() {
+        iterateWidget(currentWidget_, 0);
+
+        return null;
+    }
+
+    private static void iterateWidget(haven.Widget widget, int indentCount) {
+        haven.Widget child = widget.child;
+
+        for (; child != null; child = child.next) {
+            insertIndent(indentCount);
+            System.out.println(child.getClass().getName());
+            iterateWidget(child, indentCount + 1);
+        }
+    }
+
+    private static void insertIndent(int indentCount) {
+        while (--indentCount >= 0)
+            System.out.print("  ");
+    }
+
 
     // private commands
     private static Void interruptHavenMainThread() {
