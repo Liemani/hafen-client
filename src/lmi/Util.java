@@ -13,7 +13,10 @@ class Util {
     }
 
     static boolean isClass(Object object) {
-        return object.getClass() == Class.class;
+        if (object == null)
+            return false;
+        else
+            return object.getClass() == Class.class;
     }
 
     // return if array has same address of element
