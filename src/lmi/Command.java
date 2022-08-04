@@ -75,12 +75,41 @@ class Command {
     }
 
     static Void generateMouseClick() {
-        AWTEventGenerator.generateMouseClick();
+        AWTEventGenerator.generateMouseClickGeneral(java.awt.event.MouseEvent.BUTTON3);
 
         return null;
     }
 
-    static Void printWhen() {
+    static Void generateMouseRightClick() {
+        AWTEventGenerator.generateMouseClickModified(0, java.awt.event.MouseEvent.BUTTON3);
+
+        return null;
+    }
+
+    static Void toggleEquipment() {
+        AWTEventGenerator.generateCtrlE();
+
+        return null;
+    }
+
+    static Void openAxeCraftWindow() {
+        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
+        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
+        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
+        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_A);
+        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
+
+        return null;
+    }
+
+    static Void typeEnter() {
+        AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_ENTER);
+
+        return null;
+    }
+
+    static Void typeTab() {
+        AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_TAB);
 
         return null;
     }
