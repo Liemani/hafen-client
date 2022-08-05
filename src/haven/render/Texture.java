@@ -102,6 +102,8 @@ public abstract class Texture implements Disposable {
     }
 
     public void dispose() {
+        System.out.println("[Texture::dispose()]");
+        lmi.Debug.debugDescribe(ro);
 	synchronized(this) {
 	    if(ro != null) {
 		ro.dispose();

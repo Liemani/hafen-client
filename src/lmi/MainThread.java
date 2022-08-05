@@ -21,8 +21,7 @@ public class MainThread implements Runnable {
         while (true) {
             printCommandStringList(System.out);
             System.out.println("-----------------------------------");
-            System.out.print("Enter command: ");
-            String commandString = lmi.Scanner.nextLine();
+            String commandString = lmi.Scanner.nextLineWithPrompt("enter command");
 
             Method command = lmi.Command.getCommandByString(commandString);
             if (command != null) {
