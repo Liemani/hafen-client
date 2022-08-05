@@ -11,6 +11,11 @@ public class Scanner {
         return scanner_.nextLine();
     }
 
+    public static String nextLineWithPrompt(String prompt) {
+        System.out.print(prompt + " % ");
+        return scanner_.nextLine();
+    }
+
     // package methods
     static void init(InputStream inputStream) {
         scanner_ = new java.util.Scanner(inputStream);
