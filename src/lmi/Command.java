@@ -6,6 +6,8 @@ import java.util.TreeMap;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import java.lang.reflect.Field;
+
 class Command {
     // type define
     private static class CommandMap extends TreeMap<String, Method> {};
@@ -205,12 +207,78 @@ class Command {
             System.out.print("  ");
     }
 
+    static Object object_ = null;
+    static Void setObject() {
+        System.out.print("object_: ");
+        if (object_ != null)
+            System.out.println(object_);
+        else
+            System.out.println("null");
+
+        Class classObject = ObjectShadow.class;
+        Field[] fields = classObject.getDeclaredFields();
+
+        System.out.println("field list:");
+        for (Field field : fields) {
+            if (Util.fieldHasModifier(field, Modifier.PUBLIC)
+                    && Util.fieldHasModifier(field, Modifier.STATIC)) {
+                System.out.print("  ");
+                System.out.println(field.getName());
+            }
+        }
+
+        String fieldName = lmi.Scanner.nextLineWithPrompt("enter field name of lmi.ObjectShadow to set");
+        setObjectWithFieldName(classObject, fieldName);
+
+        return null;
+    }
+
+    static Void moveToField() {
+        System.out.print("object_: ");
+        if (object_ != null)
+            System.out.println(object_);
+        else {
+            System.out.println("null");
+            System.out.println("cannot progress more!");
+            return null;
+        }
+
+        Class classObject = object_.getClass();
+        Field[] fields = classObject.getDeclaredFields();
+
+        System.out.println("field list:");
+        for (Field field : fields) {
+            if (Util.fieldHasModifier(field, Modifier.PUBLIC)) {
+                System.out.print("  ");
+                System.out.println(field.getName());
+            }
+        }
+
+        String fieldName = lmi.Scanner.nextLineWithPrompt("enter field name to move");
+        setObjectWithFieldName(classObject, fieldName);
+
+        return null;
+    }
+
+//      static Void getField() {
+//      }
 
     // private commands
     private static Void interruptHavenMainThread() {
         lmi.ObjectShadow.mainThread_.interrupt();
 
         return null;
+    }
+
+    private static void setObjectWithFieldName(Class classObject, String fieldName) {
+        try {
+            Field field = classObject.getDeclaredField(fieldName);
+            object_ = field.get(object_);
+            lmi.Debug.debugDescribe(object_);
+        } catch (Exception e) {
+            System.out.println(fieldName + ": unknown field name");
+            System.out.println(e.getMessage());
+        }
     }
 
     // package method
