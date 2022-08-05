@@ -124,7 +124,6 @@ public class JOGLPanel extends GLCanvas implements Runnable, UIPanel, Console.Di
 	    });
 	setFocusTraversalKeysEnabled(false);
 	ed = new Dispatcher();
-    lmi.ObjectShadow.dispatcher_ = ed;
 	ed.register(this);
 	newui(null);
 	if(Toolkit.getDefaultToolkit().getMaximumCursorColors() >= 256)
@@ -644,7 +643,6 @@ public class JOGLPanel extends GLCanvas implements Runnable, UIPanel, Console.Di
 	if(getParent() instanceof Console.Directory)
 	    newui.cons.add((Console.Directory)getParent());
 	newui.cons.add(this);
-    lmi.ObjectShadow.setUI(newui);
 	synchronized(uilock) {
 	    prevui = this.ui;
 	    ui = newui;
