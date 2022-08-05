@@ -16,28 +16,32 @@ public class MainThread implements Runnable {
     public void run() {
         System.out.println("[lmi.MainThread::run()]");
 
-        this.init();
+        init();
 
         while (true) {
-            printCommandStringList(System.out);
-            System.out.println("-----------------------------------");
-            String commandString = lmi.Scanner.nextLineWithPrompt("enter command");
+            System.out.println("===================================");
+            String commandString = lmi.Scanner.nextLineWithPrompt("enter command(exit to terminate)");
+
+            if (commandString.contentEquals("exit")) {
+                break;
+            } else if (commandString.contentEquals("")
+                    || commandString.contentEquals("h")
+                    || commandString.contentEquals("help")) {
+                printCommandStringList(System.out);
+                continue;
+            }
 
             Method command = lmi.Command.getCommandByString(commandString);
             if (command != null) {
                 System.out.println("[" + command.getName() + ": invoking]");
                 try { command.invoke(null); } catch (Exception e) { e.printStackTrace(); }
-            }
-            else {
+            } else {
                 System.out.println("[" + commandString + ": unknown command]");
             }
-            System.out.println("===================================");
-
-            if (commandString.contentEquals("exit"))
-                return;
-
-            System.out.println();
         }
+
+        System.out.println("[terminating]");
+        ObjectShadow.interruptMainThread();
     }
 
     // private class methods

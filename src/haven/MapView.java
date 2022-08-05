@@ -1910,8 +1910,6 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	
 	public void run() {
 	    Environment env = ui.env;
-        System.out.println("[Hittest::run()]");
-        lmi.Debug.debugDescribe(env);
 	    Render out = env.render();
 	    Pipe.Op basic = clickbasic(MapView.this.sz);
 	    Pipe bstate = new BufPipe().prep(basic);

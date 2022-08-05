@@ -20,22 +20,22 @@ class AWTEventGenerator {
     static void generateMouseClickGeneral(int button) {
         generateMouseEvent(
                 MouseEvent.MOUSE_PRESSED,
-                MouseEvent.BUTTON1_DOWN_MASK,
+                0x1 << (button + 9),
                 mouseLocation_.x,
                 mouseLocation_.y,
-                MouseEvent.BUTTON1);
+                button);
         generateMouseEvent(
                 MouseEvent.MOUSE_RELEASED,
                 0,
                 mouseLocation_.x,
                 mouseLocation_.y,
-                MouseEvent.BUTTON1);
+                button);
         generateMouseEvent(
                 MouseEvent.MOUSE_CLICKED,
                 0,
                 mouseLocation_.x,
                 mouseLocation_.y,
-                MouseEvent.BUTTON1);
+                button);
     }
 
     // modifiers
@@ -49,7 +49,7 @@ class AWTEventGenerator {
         generateKeyEvent(KeyEvent.KEY_PRESSED, modifiers, KeyEvent.VK_CONTROL, KeyEvent.CHAR_UNDEFINED, KeyEvent.KEY_LOCATION_LEFT);
         generateMouseEvent(
                 MouseEvent.MOUSE_PRESSED,
-                modifiers | 0x1 <<(button + 9),
+                modifiers | 0x1 << (button + 9),
                 mouseLocation_.x,
                 mouseLocation_.y,
                 button);

@@ -1,3 +1,4 @@
+// Integer type of object's field would be described as like primitive type
 package lmi;
 
 import java.lang.reflect.Field;
@@ -136,14 +137,16 @@ public class Debug {
                 return false;
         }
 
-        // ,_[^)] (in ())
-        // ,_{ (in {})
-        // ,_[^]] (in [])
-        // :_.
-        // ._:
+        // not in ""
+        //   ,_[^)] (in ())
+        //   ,_{ (in {})
+        //   ,_[^]] (in [])
+        //   :_.
+        //   ._:
         boolean shouldPutSpace(char ch) {
             Class currentEncloser = lastEncloser();
-            if (previousNotSpaceChar_ == ','
+            if (currentEncloser != DoubleQuote.class
+                    &&previousNotSpaceChar_ == ','
                         && (ch != ')' && currentEncloser == Parenthesis.class
                             || ch == '{' && currentEncloser == CurlyBrace.class
                             || ch != ']' && currentEncloser == SquareBracket.class)
@@ -208,29 +211,36 @@ public class Debug {
         }
     }
 
-    // public methods
-    public static void debugDescribe(Object object) {
-        debugDescribe(System.out, object);
+    // debugDescribeField
+    static void debugDescribeClassNameHashCodeWithTag(String tag, Object object) {
+        System.out.print(tag);
+        debugDescribeClassNameHashCode(object);
     }
 
-    public static void debugDescribe(PrintStream printStream, Object object) {
-        if (object != null && object.getClass() == String.class)
-            debugDescribe(printStream, (String)object, 2);
-        else
-            debugDescribe(printStream, object, 2);
+    static void debugDescribeClassNameHashCode(Object object) {
+        System.out.println(convertToDebugDescriptionClassNameHashCode(object));
     }
 
-    public static void debugDescribe(PrintStream printStream, Object object, final int indentSize) {
+    public static void debugDescribeField(Object object) {
+        debugDescribeField(System.out, object);
+    }
+
+    public static void debugDescribeField(PrintStream printStream, Object object) {
+        debugDescribeField(printStream, object, 2);
+    }
+
+    public static void debugDescribeField(PrintStream printStream, Object object, int indentSize) {
         String rawDescription;
 
-        if (object != null && Util.isClass(object))
-            rawDescription = debugDescription((Class)object);
+        if (object != null && Util.isClassType(object))
+            rawDescription = debugDescriptionField((Class)object);
         else
-            rawDescription = debugDescription(object);
+            rawDescription = debugDescriptionField(object);
 
-        debugDescribe(printStream, rawDescription, indentSize);
+        debugDescribeField(printStream, rawDescription, indentSize);
     }
 
+    // debugDescribeMethod()
     public static void debugDescribeMethod(Object object) {
         debugDescribeMethod(System.out, object);
     }
@@ -245,15 +255,16 @@ public class Debug {
         if (object == null) {
             rawDescription = "null";
         }
-        else if (Util.isClass(object))
+        else if (Util.isClassType(object))
             rawDescription = debugDescriptionMethods((Class)object);
         else
             rawDescription = debugDescriptionMethods(object);
 
-        debugDescribe(printStream, rawDescription, indentSize);
+        debugDescribeField(printStream, rawDescription, indentSize);
     }
 
-    public static void debugDescribe(PrintStream printStream, String rawDescription, final int indentSize) {
+    // debugDescribeField()
+    public static void debugDescribeField(PrintStream printStream, String rawDescription, int indentSize) {
         Context context = new Context();
 
         char descriptionAsCharArray[] = rawDescription.toCharArray();
@@ -293,68 +304,64 @@ public class Debug {
         printStream.println(description.toString());
     }
 
-    // private methods
-    private static String debugDescription(Object object) {
-        if (!Util.isClass(object)) {
-            String descriptionOfSpecialType = debugDescriptionSpecialType(object);
-            if (descriptionOfSpecialType != null) {
-                return descriptionOfSpecialType;
-            }
+    // debugDescriptionField()
+    private static String debugDescriptionField(Object object) {
+        if (object == null)
+            return "null";
+
+        boolean isClassTypeType = Util.isClassType(object);
+
+        if (!isClassTypeType) {
+            String debugDescriptionAsSpecialType = convertToDebugDescriptionAsSpecialType(object);
+            if (debugDescriptionAsSpecialType != null)
+                return debugDescriptionAsSpecialType;
         }
 
-        final Class classObject = Util.isClass(object) ? (Class)object : object.getClass();
+        Class classObject = isClassTypeType ? (Class)object : object.getClass();
 
         StringBuilder description = new StringBuilder();
         description.append("{");
-        description.append("\"type\"" + ":" + "\"" + classObject.getName() + "\"" + ",");
-        description.append("\"value\"" + ":" + "\"" + object + "\"" + ",");
+        description.append("\"value\"" + ":" + "\"" + convertToDebugDescriptionClassNameHashCode(object) + "\"" + ",");
         description.append("\"fields\"" + ":");
-        description.append(debugDescriptionFields(object, classObject));
+        description.append(debugDescriptionFields(object));
         description.append("}");
 
         return description.toString();
     }
 
-    private static String debugDescriptionFields(Object object, Class classObject) {
+    private static String debugDescriptionFields(Object object) {
+        Class classObject = Util.isClassType(object) ? (Class)object : object.getClass();
+
         StringBuilder description = new StringBuilder();
-
         description.append("{");
-
         while (classObject != null) {
-            description.append(debugDescriptionFieldsAsClass(object, classObject));
+            description.append(debugDescriptionFieldsAsClassType(object, classObject));
             classObject = (Class)classObject.getSuperclass();
         }
-
         description.append("}");
 
         return description.toString();
     }
 
-    private static String debugDescriptionFieldsAsClass(Object object, Class classObject) {
+    private static String debugDescriptionFieldsAsClassType(Object object, Class classObject) {
+        Field[] fieldArray = classObject.getDeclaredFields();
+
         StringBuilder description = new StringBuilder();
-
-        Field[] fields = classObject.getDeclaredFields();
-
-        for (Field field : fields) {
-            if (Util.isClass(object) && !Util.fieldHasModifier(field, Modifier.STATIC)
-                    || !Util.isClass(object) && Util.fieldHasModifier(field, Modifier.STATIC))
+        for (Field field : fieldArray) {
+            if (!willUse(object, field))
                 continue;
 
             description.append("{");
-            description.append("\"type\"" + ":");
-            description.append("\"" + field.getGenericType().getTypeName() + "\"");
-            description.append(",");
-            description.append("\"name\"" + ":");
-            description.append("\"" + field.getName() + "\"");
-            description.append(",");
+            description.append("\"type\"" + ":" + "\"" + field.getGenericType().getTypeName() + "\",");
+            description.append("\"name\"" + ":" + "\"" + field.getName() + "\",");
             description.append("\"value\"" + ":");
             try {
-                final Object fieldObject = field.get(object);
-                String descriptionOfSpecialType = debugDescriptionSpecialType(fieldObject);
-                if (descriptionOfSpecialType != null)
-                    description.append(descriptionOfSpecialType);
+                Object fieldObject = field.get(object);
+                String debugDescriptionAsSpecialType = convertToDebugDescriptionAsSpecialType(fieldObject);
+                if (debugDescriptionAsSpecialType != null)
+                    description.append(debugDescriptionAsSpecialType);
                 else
-                    description.append("\"" + fieldObject + "\"");
+                    description.append("\"" + convertToDebugDescriptionClassNameHashCode(fieldObject) + "\"");
             } catch (Exception e) {
                 description.append("\"<access denied>\"");
                 if (e.getClass() == java.lang.IllegalAccessException.class)
@@ -369,44 +376,72 @@ public class Debug {
         return description.toString();
     }
 
-    private static String debugDescriptionSpecialType(Object object) {
+    private static boolean willUse(Object object, Field field) {
+        return Util.isClassType(object) && Util.fieldHasModifier(field, Modifier.STATIC)
+                || !Util.isClassType(object) && !Util.fieldHasModifier(field, Modifier.STATIC);
+    }
+
+    // convertToDebugDescriptionAsSpecialType()
+    // special type: String, array, primitive type
+    public static String convertToDebugDescriptionAsSpecialType(Object object) {
         if (object == null)
-            return "\"null\"";
+            return null;
 
-        Class classOfObject = object.getClass();
+        Class classObject = object.getClass();
 
-        if (classOfObject == Boolean.class) {
-            return (Boolean)object ? "true" : "false";
-        }
-        else if (object instanceof Number) {
-            return object.toString();
-        }
-        else if (classOfObject == String.class) {
-            return "\"" + (String)object + "\"";
-        }
-        else if (classOfObject.isArray()) {
-            return debugDescriptionSpecialTypeArray(object);
-        }
-
-        return null;
+        if (classObject == String.class) {
+            return convertToDebugDescriptionAsString((String)object);
+        } else if (classObject.isArray()) {
+            return convertToDebugDescriptionAsArray(object);
+        } else
+            return convertToDebugDescriptionAsPrimitiveType(object);
     }
 
-    private static String debugDescriptionSpecialTypeArray(Object array) {
-        if (array.getClass() == byte[].class)
-            return debugDescriptionSpecialTypeByteArray((byte[])array);
-        else if (array.getClass() == int[].class)
-            return debugDescriptionSpecialTypeIntArray((int[])array);
-        else if (array.getClass() == double[].class)
-            return debugDescriptionSpecialTypeDoubleArray((double[])array);
+    static String convertToDebugDescriptionAsString(String string) {
+        if (string != null)
+            return "(String)\"" + string + "\"";
         else
-            return debugDescriptionSpecialTypeObjectArray((Object[])array);
+            return null;
     }
 
-    private static String debugDescriptionSpecialTypeByteArray(byte byteArray[]) {
+    // debugDescriptionAsArray()
+    public static String convertToDebugDescriptionAsArray(Object array) {
+        if (array == null)
+            return null;
+
+        Class classObject = array.getClass();
+
+        if (!classObject.isArray())
+            return null;
+
+        if (classObject == boolean[].class)
+            return convertToDebugDescriptionAsArrayOfBoolean((boolean[])array);
+        else if (classObject == char[].class)
+            return convertToDebugDescriptionAsArrayOfChar((char[])array);
+        else if (classObject == byte[].class)
+            return convertToDebugDescriptionAsArrayOfByte((byte[])array);
+        else if (classObject == short[].class)
+            return convertToDebugDescriptionAsArrayOfShort((short[])array);
+        else if (classObject == int[].class)
+            return convertToDebugDescriptionAsArrayOfInt((int[])array);
+        else if (classObject == long[].class)
+            return convertToDebugDescriptionAsArrayOfLong((long[])array);
+        else if (classObject == float[].class)
+            return convertToDebugDescriptionAsArrayOfFloat((float[])array);
+        else if (classObject == double[].class)
+            return convertToDebugDescriptionAsArrayOfDouble((double[])array);
+        else
+            return convertToDebugDescriptionAsArrayOfObject((Object[])array);
+    }
+
+    public static String convertToDebugDescriptionAsArrayOfBoolean(boolean[] array) {
+        if (array == null)
+            return null;
+
         StringBuilder description = new StringBuilder();
 
         description.append("[");
-        for (byte element : byteArray) {
+        for (boolean element : array) {
             description.append(element);
             description.append(",");
         }
@@ -415,11 +450,14 @@ public class Debug {
         return description.toString();
     }
 
-    private static String debugDescriptionSpecialTypeIntArray(int intArray[]) {
+    public static String convertToDebugDescriptionAsArrayOfChar(char[] array) {
+        if (array == null)
+            return null;
+
         StringBuilder description = new StringBuilder();
 
         description.append("[");
-        for (int element : intArray) {
+        for (char element : array) {
             description.append(element);
             description.append(",");
         }
@@ -428,11 +466,14 @@ public class Debug {
         return description.toString();
     }
 
-    private static String debugDescriptionSpecialTypeDoubleArray(double doubleArray[]) {
+    public static String convertToDebugDescriptionAsArrayOfByte(byte[] array) {
+        if (array == null)
+            return null;
+
         StringBuilder description = new StringBuilder();
 
         description.append("[");
-        for (double element : doubleArray) {
+        for (byte element : array) {
             description.append(element);
             description.append(",");
         }
@@ -441,12 +482,15 @@ public class Debug {
         return description.toString();
     }
 
-    private static String debugDescriptionSpecialTypeObjectArray(Object objectArray[]) {
+    public static String convertToDebugDescriptionAsArrayOfShort(short[] array) {
+        if (array == null)
+            return null;
+
         StringBuilder description = new StringBuilder();
 
         description.append("[");
-        for (Object element : objectArray) {
-            description.append((element != null) ? element.toString() : "null");
+        for (short element : array) {
+            description.append(element);
             description.append(",");
         }
         description.append("]");
@@ -454,10 +498,165 @@ public class Debug {
         return description.toString();
     }
 
+    public static String convertToDebugDescriptionAsArrayOfInt(int[] array) {
+        if (array == null)
+            return null;
+
+        StringBuilder description = new StringBuilder();
+
+        description.append("[");
+        for (int element : array) {
+            description.append(element);
+            description.append(",");
+        }
+        description.append("]");
+
+        return description.toString();
+    }
+
+    public static String convertToDebugDescriptionAsArrayOfLong(long[] array) {
+        if (array == null)
+            return null;
+
+        StringBuilder description = new StringBuilder();
+
+        description.append("[");
+        for (long element : array) {
+            description.append(element);
+            description.append(",");
+        }
+        description.append("]");
+
+        return description.toString();
+    }
+
+    public static String convertToDebugDescriptionAsArrayOfFloat(float[] array) {
+        if (array == null)
+            return null;
+
+        StringBuilder description = new StringBuilder();
+
+        description.append("[");
+        for (float element : array) {
+            description.append(element);
+            description.append(",");
+        }
+        description.append("]");
+
+        return description.toString();
+    }
+
+    public static String convertToDebugDescriptionAsArrayOfDouble(double[] array) {
+        if (array == null)
+            return null;
+
+        StringBuilder description = new StringBuilder();
+
+        description.append("[");
+        for (double element : array) {
+            description.append(element);
+            description.append(",");
+        }
+        description.append("]");
+
+        return description.toString();
+    }
+
+    public static String convertToDebugDescriptionAsArrayOfObject(Object[] array) {
+        if (array == null)
+            return null;
+
+        StringBuilder description = new StringBuilder();
+
+        description.append("[");
+        for (Object element : array) {
+            description.append((element != null) ? convertToDebugDescriptionClassNameHashCode(element) : "null");
+            description.append(",");
+        }
+        description.append("]");
+
+        return description.toString();
+    }
+
+    // convertToDebugDescriptionAsPrimitiveType()
+    // assume input was primitive type and converted to java.lang.* type
+    public static String convertToDebugDescriptionAsPrimitiveType(Object object) {
+        Class classObject = object.getClass();
+
+        if (classObject == Boolean.class)
+            return debugDescriptionAsBoolean((boolean)object);
+        else if (classObject == Character.class)
+            return debugDescriptionAsChar((char)object);
+        else if (object instanceof Number)
+            return convertToDebugDescriptionAsNumber((Number)object);
+        else
+            return null;
+    }
+
+    public static String debugDescriptionAsBoolean(boolean value) {
+        return "(boolean)" + value;
+    }
+
+    public static String debugDescriptionAsChar(char value) {
+        return "(char)" + value;
+    }
+
+    public static String convertToDebugDescriptionAsNumber(Number number) {
+        Class classObject = number.getClass();
+
+        if (classObject == Byte.class)
+            return debugDescriptionAsByte((byte)number);
+        else if (classObject == Short.class)
+            return debugDescriptionAsShort((short)number);
+        else if (classObject == Integer.class)
+            return debugDescriptionAsInt((int)number);
+        else if (classObject == Long.class)
+            return debugDescriptionAsLong((long)number);
+        else if (classObject == Float.class)
+            return debugDescriptionAsFloat((float)number);
+        else if (classObject == Double.class)
+            return debugDescriptionAsDouble((double)number);
+        else
+            return null;
+    }
+
+    public static String debugDescriptionAsByte(byte value) {
+        return "(byte)" + value;
+    }
+
+    public static String debugDescriptionAsShort(short value) {
+        return "(short)" + value;
+    }
+
+    public static String debugDescriptionAsInt(int value) {
+        return "(int)" + value;
+    }
+
+    public static String debugDescriptionAsLong(long value) {
+        return "(long)" + value;
+    }
+
+    public static String debugDescriptionAsFloat(float value) {
+        return "(float)" + value;
+    }
+
+    public static String debugDescriptionAsDouble(double value) {
+        return "(double)" + value;
+    }
+
+    // convertToDebugDescriptionClassNameHashCode()
+    public static String convertToDebugDescriptionClassNameHashCode(Object object) {
+        if (object != null)
+            return String.format("%s@%08x", object.getClass().getName(), object.hashCode());
+        else
+            return null;
+    }
+
+    // debugDescriptionMethods()
     private static String debugDescriptionMethods(Object object) {
-        final Class classObject = Util.isClass(object) ? (Class)object : object.getClass();
+        final Class classObject = Util.isClassType(object) ? (Class)object : object.getClass();
 
-        // TODO copy debugDescription(Object object)
+        // TODO copy debugDescriptionFields(Object object)
         StringBuilder description = new StringBuilder();
         description.append("{");
         description.append("\"type\"" + ":" + "\"" + classObject.getName() + "\"" + ",");
@@ -488,10 +687,9 @@ public class Debug {
         StringBuilder description = new StringBuilder();
 
         Method[] methods = classObject.getDeclaredMethods();
-
         for (Method method : methods) {
-            if (Util.isClass(object) && !Util.methodHasModifier(method, Modifier.STATIC)
-                    || !Util.isClass(object) && Util.methodHasModifier(method, Modifier.STATIC))
+            if (Util.isClassType(object) && !Util.methodHasModifier(method, Modifier.STATIC)
+                    || !Util.isClassType(object) && Util.methodHasModifier(method, Modifier.STATIC))
                 continue;
 
             description.append("\"" + method.toGenericString() + "\"");
@@ -509,24 +707,73 @@ public class Debug {
 
     // main function
     public static void main(String args[]) {
+        playground001();
+    }
+
+    private static void playground000() {
         Debug debug = new Debug();
 
-//          System.out.println(debugDescription(debug));
-        debugDescribe(debug);
-        debugDescribe((Object)debug);
-//          debugDescribe(System.out, null);
-//          debugDescribe(System.out, Debug.class);
-//          debugDescribe(System.out, new Object());
+//          System.out.println(debugDescriptionFields(debug));
+        debugDescribeField(debug);
+        debugDescribeField((Object)debug);
+//          debugDescribeField(System.out, null);
+//          debugDescribeField(System.out, Debug.class);
+//          debugDescribeField(System.out, new Object());
 //  
 //  //          Debug[] debugArray = { new Debug(), new Debug() };
-//  //          debugDescribe(System.out, debugArray);
+//  //          debugDescribeField(System.out, debugArray);
 //  
         int[] intArray = { 1, 2, 3 };
-        debugDescribe(System.out, intArray);
+        debugDescribeField(System.out, intArray);
 //          haven.UIPanel.Dispatcher dispatcher = new haven.UIPanel.Dispatcher();
 //          dispatcher
 //          debugDescribeMethod(Debug.class);
-        debugDescribe(null);
-        debugDescribe(new java.lang.Integer(1));
+        debugDescribeField(null);
+        debugDescribeField(new java.lang.Integer(1));
+    }
+
+    // debugDescriptionPrimitiveType() test
+    private static void playground001() {
+        boolean bo = true;
+        byte by = 2;
+        char ch = 3;
+        short sh = 4;
+        int in = 5;
+        long lo = 6;
+        float fl = 7.8f;
+        double dou = 9.0d;
+
+        System.out.println(convertToDebugDescriptionAsPrimitiveType(bo));
+        System.out.println(convertToDebugDescriptionAsPrimitiveType(by));
+        System.out.println(convertToDebugDescriptionAsPrimitiveType(ch));
+        System.out.println(convertToDebugDescriptionAsPrimitiveType(sh));
+        System.out.println(convertToDebugDescriptionAsPrimitiveType(in));
+        System.out.println(convertToDebugDescriptionAsPrimitiveType(fl));
+        System.out.println(convertToDebugDescriptionAsPrimitiveType(dou));
+
+        System.out.println();
+
+        boolean[] boA = { true, false };
+        byte[] byA = { 2, 4 };
+        char[] chA = { 3, 6 };
+        short[] shA = { 4, 8 };
+        int[] inA = { 5, 10 };
+        long[] loA = { 6, 12 };
+        float[] flA = { 7.8f, 15.6f };
+        double[] douA = { 9.0d, 18.0d };
+
+        System.out.println(convertToDebugDescriptionAsArray(boA));
+        System.out.println(convertToDebugDescriptionAsArray(byA));
+        System.out.println(convertToDebugDescriptionAsArray(chA));
+        System.out.println(convertToDebugDescriptionAsArray(shA));
+        System.out.println(convertToDebugDescriptionAsArray(inA));
+        System.out.println(convertToDebugDescriptionAsArray(flA));
+        System.out.println(convertToDebugDescriptionAsArray(douA));
+
+        System.out.println();
+
+        System.out.println(convertToDebugDescriptionAsArray(null));
+        System.out.println(convertToDebugDescriptionAsArray(bo));
+        System.out.println(convertToDebugDescriptionAsArrayOfBoolean(null));
     }
 }
