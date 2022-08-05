@@ -12,7 +12,7 @@ class Util {
         return (method.getModifiers() & modifier) != 0;
     }
 
-    static boolean isClass(Object object) {
+    static boolean isClassType(Object object) {
         if (object == null)
             return false;
         else
@@ -25,5 +25,22 @@ class Util {
             if (entry == element)
                 return true;
         return false;
+    }
+
+    static Object getFieldValueFromObjectByNameAsClass(Object object, String name, Class classObject) throws Exception {
+        while (classObject != Object.class) {
+            try {
+                return classObject
+                    .getDeclaredField(name)
+                    .get(object);
+            } catch (Exception e) {}
+            classObject = classObject.getSuperclass();
+        }
+        return null;
+    }
+
+    static void insertIndent(int indentCount) {
+        while (--indentCount >= 0)
+            System.out.print("  ");
     }
 }

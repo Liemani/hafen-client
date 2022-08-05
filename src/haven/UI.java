@@ -233,7 +233,6 @@ public class UI {
 	    throw(new UIException("Bad widget name", type, cargs));
 	synchronized(this) {
 	    Widget wdg = f.create(this, cargs);
-//          lmi.Debug.debugDescribe(wdg);
 	    wdg.attach(this);
 	    if(parent != -1) {
 		Widget pwdg = getwidget(parent);
@@ -324,10 +323,6 @@ public class UI {
     }
 	
     public void wdgmsg(Widget sender, String msg, Object... args) {
-        System.out.println("[wdgmsg()] " + sender.getClass().getName() + ", " + msg);
-        for (Object object : args) {
-            lmi.Debug.debugDescribe(object);
-        }
 	int id = widgetid(sender);
 	if(id < 0) {
 	    new Warning("wdgmsg sender (%s) is not in rwidgets, message is %s", sender.getClass().getName(), msg).issue();

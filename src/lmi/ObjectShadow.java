@@ -10,8 +10,6 @@ public class ObjectShadow {
     public static haven.UI ui_;
     public static haven.RootWidget rootWidget_;
     public static haven.GameUI gameUI_;
-    // useful
-    // ui_.mc: current mouse location as haven.Coord
 
     // init()
     static void init(Object ... args) {
@@ -20,12 +18,27 @@ public class ObjectShadow {
         mainThread_ = (Thread)args[2];
     }
 
+    // public methods
     public static void setUI(haven.UI ui) {
         ui_ = ui;
         setRootWidget(ui.root);
     }
 
-    static void setRootWidget(haven.RootWidget rootWidget) {
+    // package methods
+    static haven.Coord getMouseLocation() {
+        return ui_.mc;
+    }
+
+    static void interruptMainThread() {
+        lmi.ObjectShadow.mainThread_.interrupt();
+    }
+
+    static void closeSession() {
+        ui_.sess.close();
+    }
+
+    // private methods
+    private static void setRootWidget(haven.RootWidget rootWidget) {
         rootWidget_ = rootWidget;
     }
 }
