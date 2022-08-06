@@ -28,6 +28,15 @@ class Command {
         return null;
     }
 
+//      public void mapClick(double x, double y, int btn, int mod) {
+//          ObjectShadow.rootWidget_.child.map.wdgmsg("click", getCenterScreenCoord(), new Coord2d(x, y).floor(OCache.posres), btn, mo    d);
+//      }
+//  
+//      public haven.Coord getCenterScreenCoord() {
+//  		return ObjectShadow.gameUI.map.sz.div(2);
+//  	}
+
+
     static Void printListOfMainFrame() {
         lmi.ObjectShadow.mainFrame_.list(System.out, 4);
 

@@ -10,6 +10,7 @@ public class ObjectShadow {
     public static haven.UI ui_;
     public static haven.RootWidget rootWidget_;
     public static haven.GameUI gameUI_;
+    public static haven.Session session_;
 
     // init()
     static void init(Object ... args) {
@@ -22,6 +23,8 @@ public class ObjectShadow {
     public static void setUI(haven.UI ui) {
         ui_ = ui;
         setRootWidget(ui.root);
+        setGameUI((haven.GameUI)rootWidget_.child);
+        setSession(ui_.sess);
     }
 
     // package methods
@@ -40,5 +43,13 @@ public class ObjectShadow {
     // private methods
     private static void setRootWidget(haven.RootWidget rootWidget) {
         rootWidget_ = rootWidget;
+    }
+
+    private static void setGameUI(haven.GameUI gameUI) {
+        gameUI_ = gameUI;
+    }
+
+    private static void setSession(haven.Session session) {
+        session_ = session;
     }
 }
