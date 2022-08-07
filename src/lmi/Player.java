@@ -29,5 +29,4 @@ class Player {
     static void doAct(String action) {
         ObjectShadow.gameUI_.menu.wdgmsg("act", action);
     }
-
 }
