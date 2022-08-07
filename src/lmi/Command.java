@@ -3,10 +3,10 @@ package lmi;
 import java.util.Set;
 import java.util.TreeMap;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import java.lang.reflect.Field;
 
 class Command {
     // type define
@@ -22,20 +22,24 @@ class Command {
         return null;
     }
 
+    static Void printGob() {
+        Debug.debugDescribeField(Util.gob);
+        return null;
+    }
+
+    static Void mapClickMove() {
+        if (gob == null)
+            return null;
+
+        mapClick(Util.gob.rc.x, Util.gob.rc.y, 1, 0);
+        return null;
+    }
+
     static Void printObjectShadow() {
         Debug.debugDescribeField(System.out, lmi.ObjectShadow.class);
 
         return null;
     }
-
-//      public void mapClick(double x, double y, int btn, int mod) {
-//          ObjectShadow.rootWidget_.child.map.wdgmsg("click", getCenterScreenCoord(), new Coord2d(x, y).floor(OCache.posres), btn, mo    d);
-//      }
-//  
-//      public haven.Coord getCenterScreenCoord() {
-//  		return ObjectShadow.gameUI.map.sz.div(2);
-//  	}
-
 
     static Void printListOfMainFrame() {
         lmi.ObjectShadow.mainFrame_.list(System.out, 4);
@@ -154,17 +158,27 @@ class Command {
 
     static Object object_ = null;
     static Void objectInit() {
-        controlObject(true, true);
+        objectControl(Util.MemberType.FIELD, true, true);
         return null;
     }
 
     static Void objectPeek() {
-        controlObject(false, false);
+        objectControl(Util.MemberType.FIELD, false, false);
         return null;
     }
 
     static Void objectChange() {
-        controlObject(false, true);
+        objectControl(Util.MemberType.FIELD, false, true);
+        return null;
+    }
+
+    static Void objectPrintResultOfInvokedMethod() {
+        objectControl(Util.MemberType.METHOD, false, false);
+        return null;
+    }
+
+    static Void objectSetResultOfInvokedMethod() {
+        objectControl(Util.MemberType.METHOD, false, true);
         return null;
     }
 
@@ -173,18 +187,27 @@ class Command {
         return null;
     }
 
-    // private commands
-    private static void controlObject(boolean willReset, boolean willSet) {
+    // objectControl
+    private static void objectControl(Util.MemberType type, boolean willReset, boolean willSet) {
         Debug.debugDescribeClassNameHashCodeWithTag("object_: ", object_);
-        if (!willReset && object_ == null) {
+        if (type.isField() && !willReset && object_ == null
+                || type.isMethod() && object_ == null) {
             System.out.println("cannot progress more!");
             return;
         }
 
-        Class classObject = willReset ? ObjectShadow.class : object_.getClass();
+        Class classObject = null;
+        if (type.isField() && willReset)
+            classObject = ObjectShadow.class;
+        else
+            classObject = object_.getClass();
+
         Object object = null;
         try {
-            object = getObjectByInput(classObject);
+            if (type.isField())
+                object = Util.getObjectByInputFromField(object_, classObject);
+            else
+                object = Util.getObjectByInputFromMethod(object_, classObject);
             Debug.debugDescribeField(object);
         } catch (Exception e) {
             System.out.println(e.getMessage() + ": unknown field name");
@@ -192,29 +215,6 @@ class Command {
         }
         if (willSet && object != null)
             object_ = object;
-    }
-
-    private static Object getObjectByInput(Class classObject) throws Exception {
-        Object object = null;
-
-        printFieldList(classObject);
-        String fieldName = lmi.Scanner.nextLineWithPrompt("enter field name");
-        object = Util.getFieldValueFromObjectByNameAsClass(object_, fieldName, classObject);
-
-        return object;
-    }
-
-    private static void printFieldList(Class classObject) {
-        System.out.println("field list:");
-        for (; classObject != Object.class; classObject = classObject.getSuperclass()) {
-            Field[] fields = classObject.getDeclaredFields();
-            for (Field field : fields) {
-                if (Util.fieldHasModifier(field, Modifier.PUBLIC)) {
-                    System.out.print("  ");
-                    System.out.println(field.getName());
-                }
-            }
-        }
     }
 
     private static void iterateWidget(haven.Widget widget, int indentCount) {
@@ -247,4 +247,12 @@ class Command {
     public static Set<String> getCommandStringSet() {
         return map_.keySet();
     }
+
+    private static void mapClick(double x, double y, int btn, int mod) {
+        ObjectShadow.mapView_.wdgmsg("click", getCenterScreenCoord(), new haven.Coord2d(x, y).floor(haven.OCache.posres), btn, mod);
+    }
+
+    private static haven.Coord getCenterScreenCoord() {
+		return ObjectShadow.mapView_.sz.div(2);
+	}
 }
