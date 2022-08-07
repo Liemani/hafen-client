@@ -9,6 +9,8 @@ import java.lang.Number;
 
 import java.io.PrintStream;
 
+import java.util.Iterator;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 
 import lmi.Util;
@@ -382,7 +384,7 @@ public class Debug {
     }
 
     // convertToDebugDescriptionAsSpecialType()
-    // special type: String, array, primitive type
+    // special type: String, array, AbstractCollection, primitive type
     public static String convertToDebugDescriptionAsSpecialType(Object object) {
         if (object == null)
             return null;
@@ -393,6 +395,8 @@ public class Debug {
             return convertToDebugDescriptionAsString((String)object);
         } else if (classObject.isArray()) {
             return convertToDebugDescriptionAsArray(object);
+        } else if (object instanceof java.util.AbstractCollection) {
+            return convertToDebugDescriptionAsCollection((AbstractCollection<?>)object);
         } else
             return convertToDebugDescriptionAsPrimitiveType(object);
     }
@@ -571,6 +575,23 @@ public class Debug {
         description.append("[");
         for (Object element : array) {
             description.append((element != null) ? convertToDebugDescriptionClassNameHashCode(element) : "null");
+            description.append(",");
+        }
+        description.append("]");
+
+        return description.toString();
+    }
+
+    // convertToDebugDescriptionAsCollection
+    static <E> String convertToDebugDescriptionAsCollection(AbstractCollection<E> collection) {
+        if (collection == null)
+            return null;
+
+        StringBuilder description = new StringBuilder();
+
+        description.append("[");
+        for (E element : collection) {
+            description.append(element);
             description.append(",");
         }
         description.append("]");

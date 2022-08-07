@@ -22,18 +22,23 @@ class Command {
         return null;
     }
 
+    static Void dig() {
+        Player.dig();
+        return null;
+    }
+
     static Void printGob() {
         Debug.debugDescribeField(Util.gob);
         return null;
     }
 
-    static Void mapClickMove() {
-        if (gob == null)
-            return null;
-
-        mapClick(Util.gob.rc.x, Util.gob.rc.y, 1, 0);
-        return null;
-    }
+//      static Void mapClickMove() {
+//          if (gob == null)
+//              return null;
+//  
+//          mapClick(Util.gob.rc.x, Util.gob.rc.y, 1, 0);
+//          return null;
+//      }
 
     static Void printObjectShadow() {
         Debug.debugDescribeField(System.out, lmi.ObjectShadow.class);
@@ -228,7 +233,7 @@ class Command {
     }
 
     // package method
-    /// all methods with default access modifier will count on as executable command
+    // all methods with default access modifier will count on as executable command
     public static void init() {
         map_ = new CommandMap();
         Method methodArray[] = Command.class.getDeclaredMethods();
