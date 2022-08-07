@@ -27,8 +27,8 @@ class Command {
         return null;
     }
 
-    static Void printGob() {
-        Debug.debugDescribeField(Util.gob);
+    static Void playerDescribe() {
+        Player.debugDescribe();
         return null;
     }
 
@@ -104,63 +104,6 @@ class Command {
         return null;
     }
 
-    static haven.Widget currentWidget_ = null;
-    static Void resetCurrentWidgetToRoot() {
-        currentWidget_ = ObjectShadow.rootWidget_;
-
-        return null;
-    }
-
-//      static Void moveNextWidget() {
-//          if (currentWidget_.next != null) {
-//              currentWidget_ = currentWidget_.next;
-//              printCurrentWidgetClassName();
-//          }
-//          else
-//              System.out.println("next widget is null");
-//  
-//          return null;
-//      }
-
-//      static Void movePreviousWidget() {
-//          if (currentWidget_.prev != null) {
-//              currentWidget_ = currentWidget_.prev;
-//              printCurrentWidgetClassName();
-//          }
-//          else
-//              System.out.println("previous widget is null");
-//  
-//          return null;
-//      }
-
-//      static Void moveChildWidget() {
-//          if (currentWidget_.child != null) {
-//              currentWidget_ = currentWidget_.child;
-//              printCurrentWidgetClassName();
-//          }
-//          else
-//              System.out.println("child widget is null");
-//  
-//          return null;
-//      }
-
-//      static Void moveParentWidget() {
-//          if (currentWidget_.parent != null) {
-//              currentWidget_ = currentWidget_.parent;
-//              printCurrentWidgetClassName();
-//          }
-//          else
-//              System.out.println("parent widget is null");
-//  
-//          return null;
-//      }
-
-    static Void iterateWidget() {
-        iterateWidget(currentWidget_, 0);
-
-        return null;
-    }
-
     // Wrapping ObjectFinder
     static Void objectInit() {
         wrapObjectFinderFind(Util.MemberType.FIELD, ObjectShadow.class, true);
@@ -177,7 +120,7 @@ class Command {
         return null;
     }
 
-    static Void objectChangePrevious() {
+    static Void objectChangeUndo() {
         if (ObjectFinder.isEmpty()) {
             System.out.println("there is no previous object");
             return null;
@@ -203,6 +146,21 @@ class Command {
         return null;
     }
 
+    static Void objectPrintAsIterable() {
+        Object object = ObjectFinder.last();
+        if (!(object instanceof Iterable)) {
+            System.out.println(Debug.convertToDebugDescriptionClassNameHashCode(object) + " is not instance of Iterable");
+            return null;
+        }
+
+        System.out.println("[" + Debug.convertToDebugDescriptionClassNameHashCode(object) + "]");
+        for (Object element : (Iterable)object) {
+            Debug.debugDescribeField(element);
+        }
+
+        return null;
+    }
+
     private static void wrapObjectFinderFind(Util.MemberType type, Class classObjectToReset, boolean willAppend) {
         Debug.debugDescribeClassNameHashCodeWithTag("current: ", ObjectFinder.last());
 
@@ -215,16 +173,16 @@ class Command {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // iterateWidget;
-    private static void iterateWidget(haven.Widget widget, int indentCount) {
-        haven.Widget child = widget.child;
-
-        for (; child != null; child = child.next) {
-            Util.insertIndent(indentCount);
-            System.out.println(child.getClass().getName());
-            iterateWidget(child, indentCount + 1);
-        }
-    }
+//      // iterateWidget()
+//      private static void iterateWidget(haven.Widget widget, int indentCount) {
+//          haven.Widget child = widget.child;
+//  
+//          for (; child != null; child = child.next) {
+//              Util.insertIndent(indentCount);
+//              System.out.println(child.getClass().getName());
+//              iterateWidget(child, indentCount + 1);
+//          }
+//      }
 
     // package method
     // all methods with default access modifier will count on as executable command
