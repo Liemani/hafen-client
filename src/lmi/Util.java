@@ -117,17 +117,4 @@ class Util {
         while (--indentCount >= 0)
             System.out.print("  ");
     }
-
-    // util or not util? or test code
-    static haven.Gob gob = null;
-    static void saveGob(haven.ClickData inf) {
-        if (inf == null)
-            return;
-
-        if(inf.ci instanceof haven.Composited.CompositeClick) {
-            gob = ((haven.Composited.CompositeClick) inf.ci).gi.gob;
-        } else if(inf.ci instanceof haven.Gob.GobClick) {
-            gob = ((haven.Gob.GobClick) inf.ci).gob;
-        }
-    }
 }

@@ -316,7 +316,8 @@ public class Debug {
         if (!isClassTypeType) {
             String debugDescriptionAsSpecialType = convertToDebugDescriptionAsSpecialType(object);
             if (debugDescriptionAsSpecialType != null)
-                return debugDescriptionAsSpecialType;
+                // TODO clean this dirty but fast implementation
+                return "{\"type\":" + convertToDebugDescriptionClassNameHashCode(object) + ",\"value\":" +  debugDescriptionAsSpecialType + "}";
         }
 
         Class classObject = isClassTypeType ? (Class)object : object.getClass();
