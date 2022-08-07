@@ -37,7 +37,6 @@ public class ObjectShadow {
 
     public static void setMapView(haven.MapView mapView) {
         mapView_ = mapView;
-        Player.init(mapView_.player());
     }
 
     public static void setSession(haven.Session session) {
