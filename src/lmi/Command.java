@@ -183,7 +183,7 @@ class Command {
             return null;
         }
 
-        ObjectFinder.removeLast();
+        ObjectFinder.moveBackward();
         Debug.debugDescribeField(ObjectFinder.last());
         return null;
     }
@@ -211,7 +211,7 @@ class Command {
             object = ObjectFinder.find(type, classObjectToReset);
             Debug.debugDescribeField(object);
             if (willAppend)
-                ObjectFinder.append(object);
+                ObjectFinder.moveForward(object);
         } catch (Exception e) { e.printStackTrace(); }
     }
 
