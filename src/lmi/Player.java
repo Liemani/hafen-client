@@ -1,33 +1,33 @@
 package lmi;
 
 class Player {
-    static haven.Gob gob_ = null;
-
-    static void init(haven.Gob gob) {
-        setGob(gob);
+    // never reuse return value(it could be changed)
+    static haven.Gob gob() {
+        if (ObjectShadow.mapView_ == null)
+            return null;
+        else
+            return ObjectShadow.mapView_.player();
     }
 
-    static void setGob(haven.Gob gob) {
-        gob_ = gob;
-    }
-
-    // get methods
-    static haven.Coord2d getCoord2d() {
-        return gob_.rc;
+    // TODO test new methods
+    // methods
+    static haven.Coord2d location() {
+        return gob().rc;
     }
 
     static haven.Skeleton.Pose getPose() {
-         return gob_.getpose();
+         return gob().getpose();
     }
 
-//      public static void saveGob(haven.ClickData inf) {
-//          if (inf == null)
-//              return;
-//  
-//          if(inf.ci instanceof haven.Composited.CompositeClick) {
-//              gob = ((haven.Composited.CompositeClick) inf.ci).gi.gob;
-//          } else if(inf.ci instanceof haven.Gob.GobClick) {
-//              gob = ((haven.Gob.GobClick) inf.ci).gob;
-//          }
-//      }
+    // do action
+    static void dig() {
+        doAct("dig");
+    }
+
+    // TODO add more action after test dig()
+    // dig, mine, carry, destroy, fish, inspect, repair, crime, swim, tracking, aggro, shoot
+    static void doAct(String action) {
+        ObjectShadow.gameUI_.menu.wdgmsg("act", action);
+    }
+
 }
