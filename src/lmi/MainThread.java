@@ -55,8 +55,9 @@ public class MainThread implements Runnable {
 
     // private instance methods
     private void init() {
-        lmi.Scanner.init(System.in);
-        lmi.Command.init();
+        Scanner.init(System.in);
+        Command.init();
+        ObjectFinder.init();
     }
 
     // main()
