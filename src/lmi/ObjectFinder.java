@@ -25,12 +25,18 @@ class ObjectFinder {
     }
 
     // Adding Elements
-    static void append(Object object) {
+    static void moveForward(Object object) {
+        if (object == null)
+            return;
+
         path_.append(object);
     }
 
     // Removing Elements
-    static Object removeLast() {
+    static Object moveBackward() {
+        if (isEmpty())
+            return null;
+
         return path_.removeLast();
     }
 
