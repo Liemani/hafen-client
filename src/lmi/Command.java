@@ -161,67 +161,61 @@ class Command {
         return null;
     }
 
-    static Object object_ = null;
+    // Wrapping ObjectFinder
     static Void objectInit() {
-        objectControl(Util.MemberType.FIELD, true, true);
+        wrapObjectFinderFind(Util.MemberType.FIELD, ObjectShadow.class, true);
         return null;
     }
 
     static Void objectPeek() {
-        objectControl(Util.MemberType.FIELD, false, false);
+        wrapObjectFinderFind(Util.MemberType.FIELD, null, false);
         return null;
     }
 
     static Void objectChange() {
-        objectControl(Util.MemberType.FIELD, false, true);
+        wrapObjectFinderFind(Util.MemberType.FIELD, null, true);
+        return null;
+    }
+
+    static Void objectChangePrevious() {
+        if (ObjectFinder.isEmpty()) {
+            System.out.println("there is no previous object");
+            return null;
+        }
+
+        ObjectFinder.removeLast();
+        Debug.debugDescribeField(ObjectFinder.last());
         return null;
     }
 
     static Void objectPrintResultOfInvokedMethod() {
-        objectControl(Util.MemberType.METHOD, false, false);
+        wrapObjectFinderFind(Util.MemberType.METHOD, null, false);
         return null;
     }
 
     static Void objectSetResultOfInvokedMethod() {
-        objectControl(Util.MemberType.METHOD, false, true);
+        wrapObjectFinderFind(Util.MemberType.METHOD, null, true);
         return null;
     }
 
     static Void objectPrint() {
-        Debug.debugDescribeField(object_);
+        Debug.debugDescribeField(ObjectFinder.last());
         return null;
     }
 
-    // objectControl
-    private static void objectControl(Util.MemberType type, boolean willReset, boolean willSet) {
-        Debug.debugDescribeClassNameHashCodeWithTag("object_: ", object_);
-        if (type.isField() && !willReset && object_ == null
-                || type.isMethod() && object_ == null) {
-            System.out.println("cannot progress more!");
-            return;
-        }
-
-        Class classObject = null;
-        if (type.isField() && willReset)
-            classObject = ObjectShadow.class;
-        else
-            classObject = object_.getClass();
+    private static void wrapObjectFinderFind(Util.MemberType type, Class classObjectToReset, boolean willAppend) {
+        Debug.debugDescribeClassNameHashCodeWithTag("current: ", ObjectFinder.last());
 
         Object object = null;
         try {
-            if (type.isField())
-                object = Util.getObjectByInputFromField(object_, classObject);
-            else
-                object = Util.getObjectByInputFromMethod(object_, classObject);
+            object = ObjectFinder.find(type, classObjectToReset);
             Debug.debugDescribeField(object);
-        } catch (Exception e) {
-            System.out.println(e.getMessage() + ": unknown field name");
-            e.printStackTrace();
-        }
-        if (willSet && object != null)
-            object_ = object;
+            if (willAppend)
+                ObjectFinder.append(object);
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
+    // iterateWidget;
     private static void iterateWidget(haven.Widget widget, int indentCount) {
         haven.Widget child = widget.child;
 
