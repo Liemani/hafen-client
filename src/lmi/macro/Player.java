@@ -1,7 +1,7 @@
 package lmi.macro;
 
-class Player {
-    static void debugDescribe() {
+public class Player {
+    public static void debugDescribe() {
         System.out.println("[gob()]");
         lmi.Debug.debugDescribeField(gob());
         System.out.println("[location()]");
@@ -19,7 +19,7 @@ class Player {
     }
 
     // never reuse return value(it could be changed)
-    static haven.Gob gob() {
+    public static haven.Gob gob() {
         if (lmi.ObjectShadow.mapView_ == null)
             return null;
         else
@@ -27,36 +27,36 @@ class Player {
     }
 
     // methods
-    static haven.Coord2d location() {
+    public static haven.Coord2d location() {
         return gob().rc;
     }
 
-    static haven.Skeleton.Pose getPose() {
+    public static haven.Skeleton.Pose getPose() {
          return gob().getpose();
     }
 
     // meter widget data
-    static double hardHitPoint() {
-        haven.IMeter meterWidget = getMeterWidgetByName("gfx/hud/meter/hp");
+    public static double hardHitPoint() {
+        haven.IMeter meterWidget = getMeterWidgetByResourceName(lmi.Constant.Meter.ResourceName.HIT_POINT);
+        return meterWidget.meters.get(lmi.Constant.Meter.HitPointIndex.HARD).a;
+    }
+
+    public static double softHitPoint() {
+        haven.IMeter meterWidget = getMeterWidgetByResourceName(lmi.Constant.Meter.ResourceName.HIT_POINT);
+        return meterWidget.meters.get(lmi.Constant.Meter.HitPointIndex.SOFT).a;
+    }
+
+    public static double stamina() {
+        haven.IMeter meterWidget = getMeterWidgetByResourceName(lmi.Constant.Meter.ResourceName.STAMINA);
         return meterWidget.meters.get(0).a;
     }
 
-    static double softHitPoint() {
-        haven.IMeter meterWidget = getMeterWidgetByName("gfx/hud/meter/hp");
-        return meterWidget.meters.get(1).a;
-    }
-
-    static double stamina() {
-        haven.IMeter meterWidget = getMeterWidgetByName("gfx/hud/meter/stam");
+    public static double energy() {
+        haven.IMeter meterWidget = getMeterWidgetByResourceName(lmi.Constant.Meter.ResourceName.ENERGY);
         return meterWidget.meters.get(0).a;
     }
 
-    static double energy() {
-        haven.IMeter meterWidget = getMeterWidgetByName("gfx/hud/meter/nrj");
-        return meterWidget.meters.get(0).a;
-    }
-
-    static haven.IMeter getMeterWidgetByName(String name) {
+    public static haven.IMeter getMeterWidgetByResourceName(String name) {
         java.util.List<haven.Widget> meterList = lmi.ObjectShadow.gameUI_.meters;
         for (haven.Widget widget : meterList) {
             if (widget instanceof haven.IMeter) {
@@ -69,61 +69,79 @@ class Player {
     }
 
     // do action
-    static void dig() {
-        doAct("dig");
+    public static void dig() {
+        doAct(lmi.Constant.Command.Action.DIG);
     }
 
-    static void mine() {
-        doAct("mine");
+    public static void mine() {
+        doAct(lmi.Constant.Command.Action.MINE);
     }
 
-    static void carry() {
-        doAct("carry");
+    public static void carry() {
+        doAct(lmi.Constant.Command.Action.CARRY);
     }
 
-    static void destroy() {
-        doAct("destroy");
+    public static void destroy() {
+        doAct(lmi.Constant.Command.Action.DESTROY);
     }
 
-    static void fish() {
-        doAct("fish");
+    public static void fish() {
+        doAct(lmi.Constant.Command.Action.FISH);
     }
 
-    static void inspect() {
-        doAct("inspect");
+    public static void inspect() {
+        doAct(lmi.Constant.Command.Action.INSPECT);
     }
 
-    static void repair() {
-        doAct("repair");
+    public static void repair() {
+        doAct(lmi.Constant.Command.Action.REPAIR);
     }
 
-    static void crime() {
-        doAct("crime");
+    public static void crime() {
+        doAct(lmi.Constant.Command.Action.CRIME);
     }
 
-    static void swim() {
-        doAct("swim");
+    public static void swim() {
+        doAct(lmi.Constant.Command.Action.SWIM);
     }
 
-    static void tracking() {
-        doAct("tracking");
+    public static void tracking() {
+        doAct(lmi.Constant.Command.Action.TRACKING);
     }
 
-    static void aggro() {
-        doAct("aggro");
+    public static void aggro() {
+        doAct(lmi.Constant.Command.Action.AGGRO);
     }
 
-    static void shoot() {
-        doAct("shoot");
+    public static void shoot() {
+        doAct(lmi.Constant.Command.Action.SHOOT);
     }
 
-    static void doAct(String action) {
-        lmi.ObjectShadow.gameUI_.menu.wdgmsg("act", action);
+    public static void doAct(String action) {
+        lmi.ObjectShadow.gameUI_.menu.wdgmsg(lmi.Constant.Command.ACTION, action);
     }
 
-    // TODO move another file! I want make this to package access!
-    static void mapViewClick(double x, double y, int btn, int mod) {
-        lmi.ObjectShadow.mapView_.wdgmsg("click", getCenterScreenCoord(), new haven.Coord2d(x, y).floor(haven.OCache.posres), btn, mod);
+//      Coord? center() {
+//      }
+//  
+//      public static void mapViewClickLeft(double x, double y, int mod) {
+//          mapViewClick
+//      }
+//  
+//      public static void mapViewClickRight(double x, double y) {
+//      }
+
+    public static void mapViewClick(haven.Coord2d location, int button, int modifiers) {
+        mapViewClick(location.x, location.y, button, modifiers);
+    }
+
+    public static void mapViewClick(double x, double y, int button, int modifiers) {
+        lmi.ObjectShadow.mapView_.wdgmsg(
+                lmi.Constant.Command.CLICK,
+                getCenterScreenCoord(),
+                new haven.Coord2d(x, y).floor(haven.OCache.posres),
+                button,
+                modifiers);
     }
 
     private static haven.Coord getCenterScreenCoord() {
