@@ -64,6 +64,5 @@ public class MainThread implements Runnable {
     public static void main(String[] args) {
         MainThread mainThread = new MainThread(new haven.MainFrame(null), new haven.JOGLPanel(null));
         new Thread(mainThread).start();
-//      new Thread(new MainThread(this, this.p)).start();
     }
 }
