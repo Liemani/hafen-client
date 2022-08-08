@@ -20,6 +20,7 @@ public class Constant {
         }
 
         public static final String CLICK = "click";
+        public static final String AFK = "afk";
     }
 
     public static class Mouse {
