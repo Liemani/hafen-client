@@ -23,7 +23,7 @@ class Command {
     }
 
     static Void dig() {
-        Player.dig();
+        lmi.macro.Player.dig();
         return null;
     }
 
@@ -32,16 +32,26 @@ class Command {
         return null;
     }
 
-    // run macro
+    // control macro
     static Thread macroThread_ = null;
-    static Void macroRun() {
+    static Void runPatrol000() {
         macroThread_ = new Thread(new lmi.macro.Patrol000());
         macroThread_.start();
         return null;
     }
 
-    // interrupt macro
-    static Void macroInterrupt() {
+    static Void interruptPatrol000() {
+        macroThread_.interrupt();
+        return null;
+    }
+
+    static Void runPatrol001() {
+        macroThread_ = new Thread(new lmi.macro.Patrol000());
+        macroThread_.start();
+        return null;
+    }
+
+    static Void interruptPatrol001() {
         macroThread_.interrupt();
         return null;
     }
