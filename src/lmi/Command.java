@@ -32,13 +32,19 @@ class Command {
         return null;
     }
 
-//      static Void mapClickMove() {
-//          if (gob == null)
-//              return null;
-//  
-//          mapClick(Util.gob.rc.x, Util.gob.rc.y, 1, 0);
-//          return null;
-//      }
+    // run macro
+    static Thread macroThread_ = null;
+    static Void macroRun() {
+        macroThread_ = new Thread(new lmi.macro.Patrol000());
+        macroThread_.start();
+        return null;
+    }
+
+    // interrupt macro
+    static Void macroInterrupt() {
+        macroThread_.interrupt();
+        return null;
+    }
 
     static Void printObjectShadow() {
         Debug.debugDescribeField(System.out, lmi.ObjectShadow.class);
@@ -64,13 +70,14 @@ class Command {
         return null;
     }
 
-    static Void generateMouseClick() {
+    // awt commands
+    static Void awtGenerateMouseClick() {
         AWTEventGenerator.generateMouseClickGeneral(java.awt.event.MouseEvent.BUTTON3);
 
         return null;
     }
 
-    static Void generateMouseRightClick() {
+    static Void awtGenerateMouseRightClick() {
         AWTEventGenerator.generateMouseClickModified(0, java.awt.event.MouseEvent.BUTTON3);
 
         return null;
@@ -184,7 +191,7 @@ class Command {
 //          }
 //      }
 
-    // package method
+    // non-command methods
     // all methods with default access modifier will count on as executable command
     public static void init() {
         map_ = new CommandMap();
@@ -204,12 +211,4 @@ class Command {
     public static Set<String> getCommandStringSet() {
         return map_.keySet();
     }
-
-    private static void mapClick(double x, double y, int btn, int mod) {
-        ObjectShadow.mapView_.wdgmsg("click", getCenterScreenCoord(), new haven.Coord2d(x, y).floor(haven.OCache.posres), btn, mod);
-    }
-
-    private static haven.Coord getCenterScreenCoord() {
-		return ObjectShadow.mapView_.sz.div(2);
-	}
 }

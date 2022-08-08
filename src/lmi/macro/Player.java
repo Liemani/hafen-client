@@ -1,29 +1,29 @@
-package lmi;
+package lmi.macro;
 
 class Player {
     static void debugDescribe() {
         System.out.println("[gob()]");
-        Debug.debugDescribeField(gob());
+        lmi.Debug.debugDescribeField(gob());
         System.out.println("[location()]");
-        Debug.debugDescribeField(location());
+        lmi.Debug.debugDescribeField(location());
         System.out.println("[getPose()]");
-        Debug.debugDescribeField(getPose());
+        lmi.Debug.debugDescribeField(getPose());
         System.out.println("[hardHitPoint()]");
-        Debug.debugDescribeField(hardHitPoint());
+        lmi.Debug.debugDescribeField(hardHitPoint());
         System.out.println("[softHitPoint()]");
-        Debug.debugDescribeField(softHitPoint());
+        lmi.Debug.debugDescribeField(softHitPoint());
         System.out.println("[stamina()]");
-        Debug.debugDescribeField(stamina());
+        lmi.Debug.debugDescribeField(stamina());
         System.out.println("[energy()]");
-        Debug.debugDescribeField(energy());
+        lmi.Debug.debugDescribeField(energy());
     }
 
     // never reuse return value(it could be changed)
     static haven.Gob gob() {
-        if (ObjectShadow.mapView_ == null)
+        if (lmi.ObjectShadow.mapView_ == null)
             return null;
         else
-            return ObjectShadow.mapView_.player();
+            return lmi.ObjectShadow.mapView_.player();
     }
 
     // methods
@@ -57,7 +57,7 @@ class Player {
     }
 
     static haven.IMeter getMeterWidgetByName(String name) {
-        java.util.List<haven.Widget> meterList = ObjectShadow.gameUI_.meters;
+        java.util.List<haven.Widget> meterList = lmi.ObjectShadow.gameUI_.meters;
         for (haven.Widget widget : meterList) {
             if (widget instanceof haven.IMeter) {
                 haven.IMeter meterWidget = (haven.IMeter)widget;
@@ -118,6 +118,20 @@ class Player {
     }
 
     static void doAct(String action) {
-        ObjectShadow.gameUI_.menu.wdgmsg("act", action);
+        lmi.ObjectShadow.gameUI_.menu.wdgmsg("act", action);
     }
+
+    // TODO move another file! I want make this to package access!
+    static void mapViewClick(double x, double y, int btn, int mod) {
+        lmi.ObjectShadow.mapView_.wdgmsg("click", getCenterScreenCoord(), new haven.Coord2d(x, y).floor(haven.OCache.posres), btn, mod);
+    }
+
+    private static haven.Coord getCenterScreenCoord() {
+		return lmi.ObjectShadow.mapView_.sz.div(2);
+	}
+
+//  	    reference: Object[] args = {pc, mc.floor(posres), clickb, ui.modflags()};
+//      private static void mapViewClick2(double x, double y, int btn, int mod) {
+//          lmi.ObjectShadow.mapView_.wdgmsg("click", getCenterScreenCoord(), new haven.Coord2d(x, y).floor(haven.OCache.posres), btn, mod);
+//      }
 }
