@@ -1,6 +1,6 @@
 package lmi.macro;
 
-class MacroTemplate {
+public class MacroTemplate implements Runnable {
     public void run() {
         try {
             main();
@@ -12,7 +12,9 @@ class MacroTemplate {
     }
 
     private void main() throws InterruptedException {
-        // compose your macro code here...
+        while (!Thread.interrupted()) {
+            // compose your macro code here...
+        }
     }
 
     private void didRun() {

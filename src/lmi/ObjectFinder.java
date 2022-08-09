@@ -68,8 +68,8 @@ class ObjectFinder {
         return object;
     }
 
-    // iterateWidget()
-    static void listLast() {
+    // listLastAsWidget()
+    static void listLastAsWidget() {
         Object currentObject = last();
         if (currentObject instanceof haven.Widget)
             iterateWidget((haven.Widget)currentObject, 0);
