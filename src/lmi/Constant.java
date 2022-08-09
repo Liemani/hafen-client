@@ -18,7 +18,10 @@ public class Constant {
             public static final String SHOOT = "shoot";
         }
 
+        public static final String LOGIN = "login";
         public static final String FOCUS = "focus";
+        // haven.Widget sender = haven.Charlist, String = character name
+        public static final String SELECT_CHARACTER = "play";
         public static final String CLICK = "click";
         public static final String AFK = "afk";
     }

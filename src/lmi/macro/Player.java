@@ -131,10 +131,25 @@ public class Player {
     }
 
     public static void mapClick(haven.Coord2d mapPoint, int button, int modifiers) {
+//          lmi.Debug.debugDescribeField(mapPoint);
+//          lmi.Debug.debugDescribeField(haven.OCache.posres);
+//          lmi.Debug.debugDescribeField(mapPoint.floor(haven.OCache.posres));
+//          0x1.0p-10 / 11, 1024 / 11
+//          epsilon(mapPoint) = epsilon(double) / (11 / 1024)
+//          50 -> *1024/11 -> 5000 -> ?= 5
         lmi.ObjectShadow.mapView_.wdgmsg(
                 lmi.Constant.Command.CLICK,
                 mapViewCenter(),
                 mapPoint.floor(haven.OCache.posres),
+                button,
+                modifiers);
+    }
+
+    public static void mapClickInCoord(haven.Coord mapPoint, int button, int modifiers) {
+        lmi.ObjectShadow.mapView_.wdgmsg(
+                lmi.Constant.Command.CLICK,
+                mapViewCenter(),
+                mapPoint,
                 button,
                 modifiers);
     }
