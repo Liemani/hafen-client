@@ -12,6 +12,22 @@ public class Util {
         lmi.Debug.debugDescribeField(gob_);
     }
 
+    //  public static void waitArriving() {
+        //  while () {
+            //  Thread.sleep(100);
+        //  }
+        //  while () {
+            //  Thread.sleep(100);
+        //  }
+        //  Self.
+    //  }
+
+    public static void waitHourGlassFailable() throws InterruptedException {
+        while (lmi.ObjectShadow.gameUI_.prog != null) {
+            Thread.sleep(100);
+        }
+    }
+
     public static void selectCharacter(String name) {
         lmi.ObjectShadow.characterList_.wdgmsg(lmi.Constant.Command.SELECT_CHARACTER, name);
     }

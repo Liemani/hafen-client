@@ -19,9 +19,10 @@ class Command {
 
     // test command
     static Void test() {
-        lmi.Debug.debugDescribeField(lmi.macro.Player.gob());
-        lmi.Debug.debugDescribeField(lmi.macro.Player.gob().getc());
-        lmi.Debug.debugDescribeField(lmi.macro.Player.gob().getv());
+        //  lmi.Debug.debugDescribeField(lmi.macro.Player.gob());
+        //  lmi.Debug.debugDescribeField(lmi.macro.Player.gob().getc());
+        //  lmi.Debug.debugDescribeField(lmi.macro.Player.gob().getv());
+        Debug.debugDescribeField(lmi.macro.Self.gob().getres().name);
         return null;
     }
 
