@@ -7,11 +7,12 @@ public class ObjectShadow {
     public static haven.JOGLPanel joglPanel_;
     public static haven.UIPanel.Dispatcher dispatcher_;
     public static haven.UI.Runner uiRunner_;
-    public static haven.UI ui_;
+    public static haven.UI ui_; // haven.UI::UI()
     public static haven.RootWidget rootWidget_;
-    public static haven.GameUI gameUI_;
-    public static haven.MapView mapView_;
+    public static haven.GameUI gameUI_; // haven.GameUI::GameUI()
+    public static haven.MapView mapView_;   // haven.MapView::MapView()
     public static haven.Session session_;
+    public static haven.Charlist charList_;
 
     // init()
     static void init(Object ... args) {
@@ -21,27 +22,17 @@ public class ObjectShadow {
     }
 
     // public methods
-    public static void setUI(haven.UI ui) {
+    public static void initUI(haven.UI ui) {
         ui_ = ui;
-        setRootWidget(ui.root);
-        setSession(ui_.sess);
+        initRootWidget(ui.root);
+        initSession(ui_.sess);
     }
 
-    public static void setRootWidget(haven.RootWidget rootWidget) {
-        rootWidget_ = rootWidget;
-    }
-
-    public static void setGameUI(haven.GameUI gameUI) {
-        gameUI_ = gameUI;
-    }
-
-    public static void setMapView(haven.MapView mapView) {
-        mapView_ = mapView;
-    }
-
-    public static void setSession(haven.Session session) {
-        session_ = session;
-    }
+    public static void initRootWidget(haven.RootWidget rootWidget) { rootWidget_ = rootWidget; }
+    public static void initGameUI(haven.GameUI gameUI) { gameUI_ = gameUI; }
+    public static void initMapView(haven.MapView mapView) { mapView_ = mapView; }
+    public static void initSession(haven.Session session) { session_ = session; }
+    public static void initCharList(haven.Charlist charList) { charList_ = charList; }
 
     // package methods
     static haven.Coord getMouseLocation() {

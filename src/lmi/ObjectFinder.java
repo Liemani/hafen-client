@@ -67,4 +67,21 @@ class ObjectFinder {
 
         return object;
     }
+
+    // iterateWidget()
+    static void listLast() {
+        Object currentObject = last();
+        if (currentObject instanceof haven.Widget)
+            iterateWidget((haven.Widget)currentObject, 0);
+        else
+            System.out.println("currnet object is not instance of haven.Widget");
+    }
+
+    private static void iterateWidget(haven.Widget widget, int indentCount) {
+        for (; widget != null; widget = widget.next) {
+            Util.insertIndent(indentCount);
+            System.out.println(widget.getClass().getName());
+            iterateWidget(widget.child, indentCount + 1);
+        }
+    }
 }
