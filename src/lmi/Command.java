@@ -9,6 +9,8 @@ import java.lang.reflect.Modifier;
 
 
 class Command {
+    static Thread macroThread_ = null;
+
     // type define
     private static class CommandMap extends TreeMap<String, Method> {};
 
@@ -18,7 +20,12 @@ class Command {
     // commands
     static Void commandTemplate() {
         // code here...
+        return null;
+    }
 
+    static Void autoConnect() {
+        macroThread_ = new Thread(new lmi.macro.AutoConnect());
+        macroThread_.start();
         return null;
     }
 
@@ -56,7 +63,6 @@ class Command {
     }
 
     // control macro
-    static Thread macroThread_ = null;
     static Void runPatrol000() {
         macroThread_ = new Thread(new lmi.macro.Patrol000());
         macroThread_.start();
@@ -91,55 +97,53 @@ class Command {
         return null;
     }
 
-//      static Void recordMouseLocation() {
-//          AWTEventGenerator.setMouseLocation(ObjectShadow.ui_.mc.x, ObjectShadow.ui_.mc.y);
-//  
-//          return null;
-//      }
-//  
-//      static Void printRecordedMouseLocation() {
-//          Debug.debugDescribeField(AWTEventGenerator.class);
-//  
-//          return null;
-//      }
-//  
+    static Void recordMouseLocation() {
+        lmi.macro.AWTEventGenerator.setMouseLocation(ObjectShadow.ui_.mc.x, ObjectShadow.ui_.mc.y);
+        return null;
+    }
+
+    static Void printRecordedMouseLocation() {
+        lmi.macro.AWTEventGenerator.printRecordedMouseLocation();
+        return null;
+    }
+
 //      // awt commands
 //      static Void awtGenerateMouseClick() {
-//          AWTEventGenerator.generateMouseClickGeneral(java.awt.event.MouseEvent.BUTTON3);
+//          lmi.macro.AWTEventGenerator.generateMouseClickGeneral(java.awt.event.MouseEvent.BUTTON3);
 //  
 //          return null;
 //      }
 //  
 //      static Void awtGenerateMouseRightClick() {
-//          AWTEventGenerator.generateMouseClickModified(0, java.awt.event.MouseEvent.BUTTON3);
+//          lmi.macro.AWTEventGenerator.generateMouseClickModified(0, java.awt.event.MouseEvent.BUTTON3);
 //  
 //          return null;
 //      }
 //  
 //      static Void toggleEquipment() {
-//          AWTEventGenerator.generateCtrlE();
+//          lmi.macro.AWTEventGenerator.generateCtrlE();
 //  
 //          return null;
 //      }
 //  
 //      static Void openAxeCraftWindow() {
-//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
-//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
-//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
-//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_A);
-//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
+//          lmi.macro.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
+//          lmi.macro.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
+//          lmi.macro.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
+//          lmi.macro.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_A);
+//          lmi.macro.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
 //  
 //          return null;
 //      }
 //  
 //      static Void typeEnter() {
-//          AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_ENTER);
+//          lmi.macro.AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_ENTER);
 //  
 //          return null;
 //      }
 //  
 //      static Void typeTab() {
-//          AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_TAB);
+//          lmi.macro.AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_TAB);
 //  
 //          return null;
 //      }
