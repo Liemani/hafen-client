@@ -33,6 +33,7 @@ public class Patrol002 implements Runnable {
         Self.mapClickInCoord(firstPoint, 1, 0);
         Thread.sleep(2000);
         Self.mapClickInCoord(secondPoint, 1, 0);
+        Thread.sleep(2000);
     }
 
     private void didRun() {
