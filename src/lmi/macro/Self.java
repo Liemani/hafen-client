@@ -8,14 +8,14 @@ public class Self {
         lmi.Debug.debugDescribeField(location());
         System.out.println("[pose()]");
         lmi.Debug.debugDescribeField(pose());
-//          System.out.println("[hardHitPoint()]");
-//          lmi.Debug.debugDescribeField(hardHitPoint());
-//          System.out.println("[softHitPoint()]");
-//          lmi.Debug.debugDescribeField(softHitPoint());
-//          System.out.println("[stamina()]");
-//          lmi.Debug.debugDescribeField(stamina());
-//          System.out.println("[energy()]");
-//          lmi.Debug.debugDescribeField(energy());
+        System.out.println("[hardHitPoint()]");
+        lmi.Debug.debugDescribeField(hardHitPoint());
+        System.out.println("[softHitPoint()]");
+        lmi.Debug.debugDescribeField(softHitPoint());
+        System.out.println("[stamina()]");
+        lmi.Debug.debugDescribeField(stamina());
+        System.out.println("[energy()]");
+        lmi.Debug.debugDescribeField(energy());
     }
 
     // never reuse return value(it could be changed)
@@ -35,38 +35,30 @@ public class Self {
          return gob().getpose();
     }
 
-//      // meter widget data
-//      public static double hardHitPoint() {
-//          haven.IMeter meterWidget = getMeterWidgetByResourceName(lmi.Constant.Meter.ResourceName.HIT_POINT);
-//          return meterWidget.meters.get(lmi.Constant.Meter.HitPointIndex.HARD).a;
-//      }
-//  
-//      public static double softHitPoint() {
-//          haven.IMeter meterWidget = getMeterWidgetByResourceName(lmi.Constant.Meter.ResourceName.HIT_POINT);
-//          return meterWidget.meters.get(lmi.Constant.Meter.HitPointIndex.SOFT).a;
-//      }
-//  
-//      public static double stamina() {
-//          haven.IMeter meterWidget = getMeterWidgetByResourceName(lmi.Constant.Meter.ResourceName.STAMINA);
-//          return meterWidget.meters.get(0).a;
-//      }
-//  
-//      public static double energy() {
-//          haven.IMeter meterWidget = getMeterWidgetByResourceName(lmi.Constant.Meter.ResourceName.ENERGY);
-//          return meterWidget.meters.get(0).a;
-//      }
-//  
-//      public static haven.IMeter getMeterWidgetByResourceName(String name) {
-//          java.util.List<haven.Widget> meterList = lmi.ObjectShadow.gameUI_.meters;
-//          for (haven.Widget widget : meterList) {
-//              if (widget instanceof haven.IMeter) {
-//                  haven.IMeter meterWidget = (haven.IMeter)widget;
-//                  if (meterWidget.bg.get().name.contentEquals(name))
-//                      return meterWidget;
-//              }
-//          }
-//          return null;
-//      }
+    // gauge data
+    public static double hardHitPoint() {
+        haven.IMeter gaugeWidget = getMeterWidgetByResourceName(lmi.Constant.Gauge.Index.HIT_POINT);
+        return haven.LMI.gaugeMeters(gaugeWidget).get(lmi.Constant.Gauge.HitPointIndex.HARD).a;
+    }
+
+    public static double softHitPoint() {
+        haven.IMeter gaugeWidget = getMeterWidgetByResourceName(lmi.Constant.Gauge.Index.HIT_POINT);
+        return haven.LMI.gaugeMeters(gaugeWidget).get(lmi.Constant.Gauge.HitPointIndex.SOFT).a;
+    }
+
+    public static double stamina() {
+        haven.IMeter gaugeWidget = getMeterWidgetByResourceName(lmi.Constant.Gauge.Index.STAMINA);
+        return haven.LMI.gaugeMeters(gaugeWidget).get(0).a;
+    }
+
+    public static double energy() {
+        haven.IMeter gaugeWidget = getMeterWidgetByResourceName(lmi.Constant.Gauge.Index.ENERGY);
+        return haven.LMI.gaugeMeters(gaugeWidget).get(0).a;
+    }
+
+    public static haven.IMeter getMeterWidgetByResourceName(int gaugeIndex) {
+        return lmi.ObjectShadow.gaugeArray_[gaugeIndex];
+    }
 
     // do action
     public static void dig() {

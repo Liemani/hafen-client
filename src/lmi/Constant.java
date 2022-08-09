@@ -40,7 +40,7 @@ public class Constant {
         }
     }
 
-    public static class Meter {
+    public static class Gauge {
         public static class ResourceName {
             public static final String HIT_POINT = "gfx/hud/meter/hp";
             public static final String STAMINA = "gfx/hud/meter/stam";
@@ -50,6 +50,12 @@ public class Constant {
         public static class HitPointIndex {
             public static final int HARD = 0;
             public static final int SOFT = 1;
+        }
+
+        public static class Index {
+            public static final int HIT_POINT = 0;
+            public static final int STAMINA = 1;
+            public static final int ENERGY = 2;
         }
     }
 }
