@@ -12,7 +12,7 @@ public class ObjectShadow {
     public static haven.GameUI gameUI_; // haven.GameUI::GameUI()
     public static haven.MapView mapView_;   // haven.MapView::MapView()
     public static haven.Session session_;
-    public static haven.Charlist charList_;
+    public static haven.Charlist characterList_;
 
     // init()
     static void init(Object ... args) {
@@ -32,7 +32,7 @@ public class ObjectShadow {
     public static void initGameUI(haven.GameUI gameUI) { gameUI_ = gameUI; }
     public static void initMapView(haven.MapView mapView) { mapView_ = mapView; }
     public static void initSession(haven.Session session) { session_ = session; }
-    public static void initCharList(haven.Charlist charList) { charList_ = charList; }
+    public static void initCharList(haven.Charlist characterList) { characterList_ = characterList; }
 
     // package methods
     static haven.Coord getMouseLocation() {
