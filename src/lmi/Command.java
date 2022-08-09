@@ -17,43 +17,43 @@ class Command {
     // fields
     private static CommandMap map_;
 
-    // tmeplate
-    static Void commandTemplate() {
-        // code here...
-        return null;
-    }
-
     // macro command
-    static Void interruptMacro() {
+    static Void macroInterrupte() {
         macroThread_.interrupt();
         return null;
     }
 
-    static Void autoConnect() {
+    static Void macroAutoConnect() {
         macroThread_ = new Thread(new lmi.macro.AutoConnect());
         macroThread_.start();
         return null;
     }
 
-    static Void runPatrol000() {
+    static Void macroPatrol000() {
         macroThread_ = new Thread(new lmi.macro.Patrol000());
         macroThread_.start();
         return null;
     }
 
-    static Void runPatrol001() {
+    static Void macroPatrol001() {
         macroThread_ = new Thread(new lmi.macro.Patrol001());
         macroThread_.start();
         return null;
     }
 
-    static Void runPatrol002() {
+    static Void macroPatrol002() {
         macroThread_ = new Thread(new lmi.macro.Patrol002());
         macroThread_.start();
         return null;
     }
 
-    static Void printLastClickedGob() {
+    static Void macroTest() {
+        macroThread_ = new Thread(new lmi.macro.Test());
+        macroThread_.start();
+        return null;
+    }
+
+    static Void macroPrintLastClickedGob() {
         lmi.macro.Util.printLastClickedGob();
         return null;
     }
@@ -70,28 +70,8 @@ class Command {
         return null;
     }
 
-    static Void mapClickEast50() {
-        haven.Coord2d playerLocation = lmi.macro.Self.location();
-        lmi.macro.Self.mapClickLeftMouseButton(playerLocation.add(50.0, 0.0), 0);
-        return null;
-    }
-
-    static Void mapClickSouth1() {
-        haven.Coord playerLocationInCoord = lmi.macro.Self.location().floor(haven.OCache.posres);
-        haven.Coord playerLocationInCoordPlus1 = playerLocationInCoord.add(1, 0);
-        lmi.macro.Self.mapClickInCoord(playerLocationInCoordPlus1, 1, 0);
-        return null;
-    }
-
     static Void printObjectShadow() {
         Debug.debugDescribeField(System.out, lmi.ObjectShadow.class);
-
-        return null;
-    }
-
-    static Void printListOfMainFrame() {
-        lmi.ObjectShadow.mainFrame_.list(System.out, 4);
-
         return null;
     }
 
@@ -108,19 +88,16 @@ class Command {
 //      // awt commands
 //      static Void awtGenerateMouseClick() {
 //          lmi.macro.AWTEventGenerator.generateMouseClickGeneral(java.awt.event.MouseEvent.BUTTON3);
-//  
 //          return null;
 //      }
 //  
 //      static Void awtGenerateMouseRightClick() {
 //          lmi.macro.AWTEventGenerator.generateMouseClickModified(0, java.awt.event.MouseEvent.BUTTON3);
-//  
 //          return null;
 //      }
 //  
 //      static Void toggleEquipment() {
 //          lmi.macro.AWTEventGenerator.generateCtrlE();
-//  
 //          return null;
 //      }
 //  
@@ -130,19 +107,16 @@ class Command {
 //          lmi.macro.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
 //          lmi.macro.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_A);
 //          lmi.macro.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
-//  
 //          return null;
 //      }
 //  
 //      static Void typeEnter() {
 //          lmi.macro.AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_ENTER);
-//  
 //          return null;
 //      }
 //  
 //      static Void typeTab() {
 //          lmi.macro.AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_TAB);
-//  
 //          return null;
 //      }
 
@@ -152,17 +126,12 @@ class Command {
         return null;
     }
 
-    static Void objectPeek() {
-        wrapObjectFinderFind(Util.MemberType.FIELD, null, false);
-        return null;
-    }
-
     static Void objectChange() {
         wrapObjectFinderFind(Util.MemberType.FIELD, null, true);
         return null;
     }
 
-    static Void objectChangeUndo() {
+    static Void objectUndo() {
         if (ObjectFinder.isEmpty()) {
             System.out.println("there is no previous object");
             return null;
@@ -173,22 +142,17 @@ class Command {
         return null;
     }
 
-    static Void objectPrintResultOfInvokedMethod() {
-        wrapObjectFinderFind(Util.MemberType.METHOD, null, false);
-        return null;
-    }
-
-    static Void objectSetResultOfInvokedMethod() {
+    static Void objectChangeToReturnValueOfMethod() {
         wrapObjectFinderFind(Util.MemberType.METHOD, null, true);
         return null;
     }
 
-    static Void objectPrint() {
+    static Void objectDescribe() {
         Debug.debugDescribeField(ObjectFinder.last());
         return null;
     }
 
-    static Void objectPrintAsIterable() {
+    static Void objectDescribeAsIterable() {
         Object object = ObjectFinder.last();
         if (!(object instanceof Iterable)) {
             System.out.println(Debug.convertToDebugDescriptionClassNameHashCode(object) + " is not instance of Iterable");
@@ -199,7 +163,6 @@ class Command {
         for (Object element : (Iterable)object) {
             Debug.debugDescribeField(element);
         }
-
         return null;
     }
 
@@ -215,8 +178,8 @@ class Command {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    static Void listCurrentObject() {
-        ObjectFinder.listLast();
+    static Void objectListAsWidget() {
+        ObjectFinder.listLastAsWidget();
         return null;
     }
 
