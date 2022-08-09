@@ -48,6 +48,7 @@ public class IMeter extends LayerMeter {
 	super(fsz);
 	this.bg = bg;
 	set(meters);
+        lmi.Initializer.setGaugeArray(this);
     }
 
     public void draw(GOut g) {
