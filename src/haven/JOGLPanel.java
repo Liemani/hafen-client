@@ -124,10 +124,12 @@ public class JOGLPanel extends GLCanvas implements Runnable, UIPanel, Console.Di
 	    });
 	setFocusTraversalKeysEnabled(false);
 	ed = new Dispatcher();
+        lmi.Initializer.initDispatcher(ed);
 	ed.register(this);
 	newui(null);
 	if(Toolkit.getDefaultToolkit().getMaximumCursorColors() >= 256)
 	    cursmode = "awt";
+        lmi.Initializer.initJOGLPanel(this);
     }
 
     private boolean iswap() {
