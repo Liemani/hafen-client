@@ -2,15 +2,13 @@ package lmi.macro;
 
 import lmi.collection.Array;
 
-public class Patrol000 implements Runnable {
+public class MovePathTemplate implements Runnable {
     private Array<haven.Coord2d> path_;
 
     public void run() {
-        willRun();
-
         try {
-            while (!Thread.interrupted())
-                patrolPath();
+            willRun();
+            main();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) { e.printStackTrace(); }
@@ -21,8 +19,9 @@ public class Patrol000 implements Runnable {
     // private methods
     private void willRun() {
         clearPath();
-        path_.append(Self.location());
-        path_.append(Self.location().add(100, 100));
+        // set your path here...
+        // example:
+        //  path_.append(Player.location());
     }
 
     private void clearPath() {
@@ -31,11 +30,13 @@ public class Patrol000 implements Runnable {
         path_.removeAll();
     }
 
-    public void patrolPath() throws InterruptedException {
-        for (haven.Coord2d location : path_) {
-            Self.mapClickLeftMouseButton(location, 0);
-            Thread.sleep(1000);
-        }
+    private void main() throws InterruptedException {
+        // compose your move macro code here...
+        // example:
+        //  for (haven.Coord2d point : path_) {
+        //      Player.mapClickLeftMouseButton(point, 0);
+        //      Thread.sleep(1000);
+        //  }
     }
 
     private void didRun() {
