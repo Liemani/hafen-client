@@ -1,13 +1,15 @@
 package lmi.macro;
 
+//  좌표 체계는 double 값으로 11의 배수가 각 타일의 한 꼭지점이다
+//  int로는 한 타일은 1024의 간격을 갖는다
+
 public class Util {
     static haven.Gob gob_;
 
     public static void storeLastClickedGob(haven.Gob gob) { gob_ = gob; }
-    public static void printLastClickedGob() {
+    public static haven.Gob lastClickedGob() { return gob_; }
+    public static void describeLastClickedGob() {
         lmi.Debug.debugDescribeField(gob_);
-        lmi.Debug.debugDescribeField(gob_.rc);
-        lmi.Debug.debugDescribeField(convertCoord2dToCoord(gob_.rc));
     }
 
     public static void selectCharacter(String name) {
@@ -18,48 +20,3 @@ public class Util {
         return new haven.Coord(point.floor(haven.OCache.posres));
     }
 }
-
-//  좌표 체계는 double 값으로 11의 배수가 각 타일의 한 꼭지점이다
-//  int 로는 어떻게 될까? 변환해보도록 하자
-//  int로는 한 타일은 1024의 간격을 갖는다
-//  
-//  "fields" : {{"type" : "double","name" : "x","value" : (double)-10829.5},
-//  {"type" : "double","name" : "y","value" : (double)-10708.5},}}
-//  "fields" : {{"type" : "int","name" : "x","value" : (int)-1008128},
-//  {"type" : "int","name" : "y","value" : (int)-996864},}}
-//  
-//  +11, 0
-//  +1024, 0
-//  
-//  "fields" : {{"type" : "double","name" : "x","value" : (double)-10818.5},
-//  {"type" : "double","name" : "y","value" : (double)-10708.5},}}
-//  "fields" : {{"type" : "int","name" : "x","value" : (int)-1007104},
-//  {"type" : "int","name" : "y","value" : (int)-996864},}}
-//  
-//  -11, 0
-//  -1024, 0
-//  
-//  "fields" : {{"type" : "double","name" : "x","value" : (double)-10829.5},
-//  {"type" : "double","name" : "y","value" : (double)-10708.5},}}
-//  "fields" : {{"type" : "int","name" : "x","value" : (int)-1008128},
-//  {"type" : "int","name" : "y","value" : (int)-996864},}}
-//  
-//  0, +11
-//  
-//  "fields" : {{"type" : "double","name" : "x","value" : (double)-10829.5},
-//  {"type" : "double","name" : "y","value" : (double)-10697.5},}}
-//  "fields" : {{"type" : "int","name" : "x","value" : (int)-1008128},
-//  {"type" : "int","name" : "y","value" : (int)-995840},}}
-//  
-//  "fields" : {{"type" : "double","name" : "x","value" : (double)-10826.8037109375},
-//  {"type" : "double","name" : "y","value" : (double)-10752.2958984375},}}
-//  
-//  0.0107421875
-//  
-//  "fields" : {{"type" : "double","name" : "x","value" : (double)-10826.79296875},
-//  {"type" : "double","name" : "y","value" : (double)-10752.2958984375},}}
-//  
-//  0.0107421875
-//  
-//  "fields" : {{"type" : "double","name" : "x","value" : (double)-10826.7822265625},
-//  {"type" : "double","name" : "y","value" : (double)-10752.2958984375},}}

@@ -1,6 +1,6 @@
 package lmi.macro;
 
-public class AutoConnect implements Runnable {
+public class Connect implements Runnable {
     public void run() {
         try {
             main();

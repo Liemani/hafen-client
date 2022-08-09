@@ -17,14 +17,22 @@ class Command {
     // fields
     private static CommandMap map_;
 
+    // test command
+    static Void test() {
+        lmi.Debug.debugDescribeField(lmi.macro.Player.gob());
+        lmi.Debug.debugDescribeField(lmi.macro.Player.gob().getc());
+        lmi.Debug.debugDescribeField(lmi.macro.Player.gob().getv());
+        return null;
+    }
+
     // macro command
     static Void macroInterrupte() {
         macroThread_.interrupt();
         return null;
     }
 
-    static Void macroAutoConnect() {
-        macroThread_ = new Thread(new lmi.macro.AutoConnect());
+    static Void macroConnect() {
+        macroThread_ = new Thread(new lmi.macro.Connect());
         macroThread_.start();
         return null;
     }
@@ -53,8 +61,8 @@ class Command {
         return null;
     }
 
-    static Void macroPrintLastClickedGob() {
-        lmi.macro.Util.printLastClickedGob();
+    static Void macroDescribeLastClickedGob() {
+        lmi.macro.Util.describeLastClickedGob();
         return null;
     }
 
@@ -126,6 +134,12 @@ class Command {
         return null;
     }
 
+    static Void objectInitByLastClickedGob() {
+        ObjectFinder.init();
+        ObjectFinder.moveForward(lmi.macro.Util.lastClickedGob());
+        return null;
+    }
+
     static Void objectChange() {
         wrapObjectFinderFind(Util.MemberType.FIELD, null, true);
         return null;
@@ -173,8 +187,11 @@ class Command {
         try {
             object = ObjectFinder.find(type, classObjectToReset);
             Debug.debugDescribeField(object);
-            if (willAppend)
+            if (willAppend) {
+                if (!type.isField())
+                    ObjectFinder.init();
                 ObjectFinder.moveForward(object);
+            }
         } catch (Exception e) { e.printStackTrace(); }
     }
 
