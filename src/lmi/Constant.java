@@ -3,7 +3,6 @@ package lmi;
 public class Constant {
     public static class Command {
         public static final String ACTION = "act";
-
         public static class Action {
             public static final String DIG = "dig";
             public static final String MINE = "mine";
@@ -19,6 +18,7 @@ public class Constant {
             public static final String SHOOT = "shoot";
         }
 
+        public static final String FOCUS = "focus";
         public static final String CLICK = "click";
         public static final String AFK = "afk";
     }
