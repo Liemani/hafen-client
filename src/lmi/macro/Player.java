@@ -121,35 +121,25 @@ public class Player {
         lmi.ObjectShadow.gameUI_.menu.wdgmsg(lmi.Constant.Command.ACTION, action);
     }
 
-//      Coord? center() {
-//      }
-//  
-//      public static void mapViewClickLeft(double x, double y, int mod) {
-//          mapViewClick
-//      }
-//  
-//      public static void mapViewClickRight(double x, double y) {
-//      }
-
-    public static void mapViewClick(haven.Coord2d location, int button, int modifiers) {
-        mapViewClick(location.x, location.y, button, modifiers);
+    // mapClick()
+    public static void mapClickLeftMouseButton(haven.Coord2d mapPoint, int modifiers) {
+        mapClick(mapPoint, lmi.Constant.Mouse.Button.LEFT, modifiers);
     }
 
-    public static void mapViewClick(double x, double y, int button, int modifiers) {
+    public static void mapClickRightMouseButton(haven.Coord2d mapPoint, int modifiers) {
+        mapClick(mapPoint, lmi.Constant.Mouse.Button.RIGHT, modifiers);
+    }
+
+    public static void mapClick(haven.Coord2d mapPoint, int button, int modifiers) {
         lmi.ObjectShadow.mapView_.wdgmsg(
                 lmi.Constant.Command.CLICK,
-                getCenterScreenCoord(),
-                new haven.Coord2d(x, y).floor(haven.OCache.posres),
+                mapViewCenter(),
+                mapPoint.floor(haven.OCache.posres),
                 button,
                 modifiers);
     }
 
-    private static haven.Coord getCenterScreenCoord() {
+    private static haven.Coord mapViewCenter() {
 		return lmi.ObjectShadow.mapView_.sz.div(2);
 	}
-
-//  	    reference: Object[] args = {pc, mc.floor(posres), clickb, ui.modflags()};
-//      private static void mapViewClick2(double x, double y, int btn, int mod) {
-//          lmi.ObjectShadow.mapView_.wdgmsg("click", getCenterScreenCoord(), new haven.Coord2d(x, y).floor(haven.OCache.posres), btn, mod);
-//      }
 }
