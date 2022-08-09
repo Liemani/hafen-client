@@ -17,9 +17,15 @@ class Command {
     // fields
     private static CommandMap map_;
 
-    // commands
+    // tmeplate
     static Void commandTemplate() {
         // code here...
+        return null;
+    }
+
+    // macro command
+    static Void interruptMacro() {
+        macroThread_.interrupt();
         return null;
     }
 
@@ -29,18 +35,21 @@ class Command {
         return null;
     }
 
-    static Void selectCharacterTest() {
-        lmi.macro.Util.selectCharacter("test");
+    static Void runPatrol000() {
+        macroThread_ = new Thread(new lmi.macro.Patrol000());
+        macroThread_.start();
         return null;
     }
 
-    static Void dig() {
-        lmi.macro.Player.dig();
+    static Void runPatrol001() {
+        macroThread_ = new Thread(new lmi.macro.Patrol001());
+        macroThread_.start();
         return null;
     }
 
-    static Void playerDescribe() {
-        Player.debugDescribe();
+    static Void runPatrol002() {
+        macroThread_ = new Thread(new lmi.macro.Patrol002());
+        macroThread_.start();
         return null;
     }
 
@@ -49,39 +58,28 @@ class Command {
         return null;
     }
 
+    // action command
+    static Void dig() {
+        lmi.macro.Self.dig();
+        return null;
+    }
+
+    // etc command
+    static Void playerDescribe() {
+        lmi.macro.Self.debugDescribe();
+        return null;
+    }
+
     static Void mapClickEast50() {
-        haven.Coord2d playerLocation = lmi.macro.Player.location();
-        lmi.macro.Player.mapClickLeftMouseButton(playerLocation.add(50.0, 0.0), 0);
+        haven.Coord2d playerLocation = lmi.macro.Self.location();
+        lmi.macro.Self.mapClickLeftMouseButton(playerLocation.add(50.0, 0.0), 0);
         return null;
     }
 
     static Void mapClickSouth1() {
-        haven.Coord playerLocationInCoord = Player.location().floor(haven.OCache.posres);
+        haven.Coord playerLocationInCoord = lmi.macro.Self.location().floor(haven.OCache.posres);
         haven.Coord playerLocationInCoordPlus1 = playerLocationInCoord.add(1, 0);
-        lmi.macro.Player.mapClickInCoord(playerLocationInCoordPlus1, 1, 0);
-        return null;
-    }
-
-    // control macro
-    static Void runPatrol000() {
-        macroThread_ = new Thread(new lmi.macro.Patrol000());
-        macroThread_.start();
-        return null;
-    }
-
-    static Void interruptPatrol000() {
-        macroThread_.interrupt();
-        return null;
-    }
-
-    static Void runPatrol001() {
-        macroThread_ = new Thread(new lmi.macro.Patrol000());
-        macroThread_.start();
-        return null;
-    }
-
-    static Void interruptPatrol001() {
-        macroThread_.interrupt();
+        lmi.macro.Self.mapClickInCoord(playerLocationInCoordPlus1, 1, 0);
         return null;
     }
 
