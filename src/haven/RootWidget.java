@@ -39,6 +39,7 @@ public class RootWidget extends ConsoleHost {
 	setfocusctl(true);
 	hasfocus = true;
 	cursor = defcurs.indir();
+        lmi.Initializer.initRootWidget(this);
     }
 	
     public boolean globtype(char key, KeyEvent ev) {

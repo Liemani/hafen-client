@@ -652,6 +652,7 @@ public class Session implements Resource.Resolver {
 	rworker.start();
 	sworker = new SWorker();
 	sworker.start();
+        lmi.Initializer.initSession(this);
     }
 
     private void sendack(int seq) {
