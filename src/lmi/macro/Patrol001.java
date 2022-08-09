@@ -21,8 +21,8 @@ public class Patrol001 implements Runnable {
     // private methods
     private void willRun() {
         clearPath();
-        path_.append(Player.location());
-        path_.append(Player.location().add(100, 100));
+        path_.append(Self.location());
+        path_.append(Self.location().add(100, 100));
     }
 
     private void clearPath() {
@@ -33,7 +33,7 @@ public class Patrol001 implements Runnable {
 
     public void patrolPath() throws InterruptedException {
         for (haven.Coord2d location : path_) {
-            Player.mapClickLeftMouseButton(location, 0);
+            Self.mapClickLeftMouseButton(location, 0);
             Thread.sleep(1000);
         }
     }

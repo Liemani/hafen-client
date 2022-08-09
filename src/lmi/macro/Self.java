@@ -1,6 +1,6 @@
 package lmi.macro;
 
-public class Player {
+public class Self {
     public static void debugDescribe() {
         System.out.println("[gob()]");
         lmi.Debug.debugDescribeField(gob());
