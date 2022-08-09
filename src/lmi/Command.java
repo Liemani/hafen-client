@@ -22,6 +22,11 @@ class Command {
         return null;
     }
 
+    static Void selectCharacterTest() {
+        lmi.macro.Util.selectCharacter("test");
+        return null;
+    }
+
     static Void dig() {
         lmi.macro.Player.dig();
         return null;
@@ -29,6 +34,24 @@ class Command {
 
     static Void playerDescribe() {
         Player.debugDescribe();
+        return null;
+    }
+
+    static Void printLastClickedGob() {
+        lmi.macro.Util.printLastClickedGob();
+        return null;
+    }
+
+    static Void mapClickEast50() {
+        haven.Coord2d playerLocation = lmi.macro.Player.location();
+        lmi.macro.Player.mapClickLeftMouseButton(playerLocation.add(50.0, 0.0), 0);
+        return null;
+    }
+
+    static Void mapClickSouth1() {
+        haven.Coord playerLocationInCoord = Player.location().floor(haven.OCache.posres);
+        haven.Coord playerLocationInCoordPlus1 = playerLocationInCoord.add(1, 0);
+        lmi.macro.Player.mapClickInCoord(playerLocationInCoordPlus1, 1, 0);
         return null;
     }
 
@@ -68,58 +91,58 @@ class Command {
         return null;
     }
 
-    static Void recordMouseLocation() {
-        AWTEventGenerator.setMouseLocation(ObjectShadow.ui_.mc.x, ObjectShadow.ui_.mc.y);
-
-        return null;
-    }
-
-    static Void printRecordedMouseLocation() {
-        Debug.debugDescribeField(AWTEventGenerator.class);
-
-        return null;
-    }
-
-    // awt commands
-    static Void awtGenerateMouseClick() {
-        AWTEventGenerator.generateMouseClickGeneral(java.awt.event.MouseEvent.BUTTON3);
-
-        return null;
-    }
-
-    static Void awtGenerateMouseRightClick() {
-        AWTEventGenerator.generateMouseClickModified(0, java.awt.event.MouseEvent.BUTTON3);
-
-        return null;
-    }
-
-    static Void toggleEquipment() {
-        AWTEventGenerator.generateCtrlE();
-
-        return null;
-    }
-
-    static Void openAxeCraftWindow() {
-        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
-        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
-        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
-        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_A);
-        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
-
-        return null;
-    }
-
-    static Void typeEnter() {
-        AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_ENTER);
-
-        return null;
-    }
-
-    static Void typeTab() {
-        AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_TAB);
-
-        return null;
-    }
+//      static Void recordMouseLocation() {
+//          AWTEventGenerator.setMouseLocation(ObjectShadow.ui_.mc.x, ObjectShadow.ui_.mc.y);
+//  
+//          return null;
+//      }
+//  
+//      static Void printRecordedMouseLocation() {
+//          Debug.debugDescribeField(AWTEventGenerator.class);
+//  
+//          return null;
+//      }
+//  
+//      // awt commands
+//      static Void awtGenerateMouseClick() {
+//          AWTEventGenerator.generateMouseClickGeneral(java.awt.event.MouseEvent.BUTTON3);
+//  
+//          return null;
+//      }
+//  
+//      static Void awtGenerateMouseRightClick() {
+//          AWTEventGenerator.generateMouseClickModified(0, java.awt.event.MouseEvent.BUTTON3);
+//  
+//          return null;
+//      }
+//  
+//      static Void toggleEquipment() {
+//          AWTEventGenerator.generateCtrlE();
+//  
+//          return null;
+//      }
+//  
+//      static Void openAxeCraftWindow() {
+//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
+//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
+//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
+//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_A);
+//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
+//  
+//          return null;
+//      }
+//  
+//      static Void typeEnter() {
+//          AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_ENTER);
+//  
+//          return null;
+//      }
+//  
+//      static Void typeTab() {
+//          AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_TAB);
+//  
+//          return null;
+//      }
 
     // Wrapping ObjectFinder
     static Void objectInit() {
@@ -190,16 +213,10 @@ class Command {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-//      // iterateWidget()
-//      private static void iterateWidget(haven.Widget widget, int indentCount) {
-//          haven.Widget child = widget.child;
-//  
-//          for (; child != null; child = child.next) {
-//              Util.insertIndent(indentCount);
-//              System.out.println(child.getClass().getName());
-//              iterateWidget(child, indentCount + 1);
-//          }
-//      }
+    static Void listCurrentObject() {
+        ObjectFinder.listLast();
+        return null;
+    }
 
     // non-command methods
     // all methods with default access modifier will count on as executable command

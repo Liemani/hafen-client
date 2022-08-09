@@ -272,6 +272,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	opts.hide();
 	zerg = add(new Zergwnd(), Utils.getprefc("wndc-zerg", UI.scale(new Coord(187, 50))));
 	zerg.hide();
+        lmi.ObjectShadow.initGameUI(this);
     }
 
     protected void attached() {

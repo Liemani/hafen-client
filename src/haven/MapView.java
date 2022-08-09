@@ -504,6 +504,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	this.clickmap = new ClickMap();
 	clmaptree.add(clickmap);
 	setcanfocus(true);
+        lmi.ObjectShadow.initMapView(this);
     }
     
     protected void envdispose() {
@@ -1935,6 +1936,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	}
 	
 	protected void hit(Coord pc, Coord2d mc, ClickData inf) {
+        if (inf.ci instanceof Gob.GobClick)
+            lmi.macro.Util.storeLastClickedGob(((Gob.GobClick)inf.ci).gob);
 	    Object[] args = {pc, mc.floor(posres), clickb, ui.modflags()};
 	    if(inf != null)
 		args = Utils.extend(args, inf.clickargs());
