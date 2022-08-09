@@ -12,7 +12,12 @@ public class ObjectShadow {
     public static haven.GameUI gameUI_; // haven.GameUI::GameUI()
     public static haven.MapView mapView_;   // haven.MapView::MapView()
     public static haven.Session session_;   // haven.Session::Session()
-    public static haven.Charlist characterList_;
+    public static haven.Charlist characterList_;    // haven.Charlist::Charlist()
+    public static haven.IMeter[] gaugeArray_;  // haven.IMeter::IMeter()
+
+    static void init() {
+        gaugeArray_ = new haven.IMeter[3];
+    }
 
     // initializer
     static void initMainFrame(haven.MainFrame mainFrame) { mainFrame_ = mainFrame; }
@@ -25,7 +30,16 @@ public class ObjectShadow {
     static void initGameUI(haven.GameUI gameUI) { gameUI_ = gameUI; }
     static void initMapView(haven.MapView mapView) { mapView_ = mapView; }
     static void initSession(haven.Session session) { session_ = session; }
-    static void initCharList(haven.Charlist characterList) { characterList_ = characterList; }
+    static void initCharacterList(haven.Charlist characterList) { characterList_ = characterList; }
+
+    static void setGaugeArray(haven.IMeter gauge) {
+        if (Util.resourceName(gauge).equals(Constant.Gauge.ResourceName.HIT_POINT))
+            gaugeArray_[Constant.Gauge.Index.HIT_POINT] = gauge;
+        else if (Util.resourceName(gauge).equals(Constant.Gauge.ResourceName.STAMINA))
+            gaugeArray_[Constant.Gauge.Index.STAMINA] = gauge;
+        else if (Util.resourceName(gauge).equals(Constant.Gauge.ResourceName.ENERGY))
+            gaugeArray_[Constant.Gauge.Index.ENERGY] = gauge;
+    }
 
     // package methods
     static haven.Coord getMouseLocation() {
