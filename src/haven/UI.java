@@ -169,7 +169,7 @@ public class UI {
 	rwidgets.put(root, 0);
 	if(fun != null)
 	    fun.init(this);
-    lmi.ObjectShadow.initUI(this);
+        lmi.Initializer.initUI(this);
     }
 	
     public void setreceiver(Receiver rcvr) {

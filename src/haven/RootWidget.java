@@ -44,6 +44,7 @@ public class RootWidget extends ConsoleHost implements UI.MessageWidget {
 	setfocusctl(true);
 	hasfocus = true;
 	cursor = defcurs.indir();
+        lmi.Initializer.initRootWidget(this);
     }
 	
     public boolean globtype(char key, KeyEvent ev) {

@@ -62,6 +62,7 @@ public class Bootstrap implements UI.Receiver, UI.Runner {
     public Bootstrap(String hostname, int port) {
 	this.hostname = hostname;
 	this.port = port;
+        lmi.Initializer.initUIRunner(this);
     }
 
     public Bootstrap() {
@@ -75,6 +76,7 @@ public class Bootstrap implements UI.Receiver, UI.Runner {
 		useinitauth = false;
 	    }
 	}
+        lmi.Initializer.initUIRunner(this);
     }
 
     public void setinitcookie(String username, byte[] cookie) {

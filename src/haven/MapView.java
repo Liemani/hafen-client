@@ -504,7 +504,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	this.clickmap = new ClickMap();
 	clmaptree.add(clickmap);
 	setcanfocus(true);
-        lmi.ObjectShadow.initMapView(this);
+        lmi.Initializer.initMapView(this);
     }
     
     protected void envdispose() {
