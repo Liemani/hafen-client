@@ -19,10 +19,8 @@ class Command {
 
     // test command
     static Void test() {
-        //  lmi.Debug.debugDescribeField(lmi.macro.Player.gob());
-        //  lmi.Debug.debugDescribeField(lmi.macro.Player.gob().getc());
-        //  lmi.Debug.debugDescribeField(lmi.macro.Player.gob().getv());
-        Debug.debugDescribeField(lmi.macro.Self.gob().getres().name);
+        final haven.Gob gob = lmi.api.Util.clickedGob();
+        lmi.api.FlowerMenuHandler.chooseByGobAndPetalName(gob, Constant.Interaction.TAKE_BRANCH);
         return null;
     }
 
@@ -135,9 +133,9 @@ class Command {
         return null;
     }
 
-    static Void objectInitByLastClickedGob() {
+    static Void objectInitByClickedGob() {
         ObjectFinder.init();
-        ObjectFinder.moveForward(lmi.macro.Util.lastClickedGob());
+        ObjectFinder.moveForward(lmi.api.Util.clickedGob());
         return null;
     }
 

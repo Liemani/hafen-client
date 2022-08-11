@@ -1,11 +1,5 @@
 package lmi;
 
-import java.io.PrintStream;
-
-import java.util.Set;
-
-import java.lang.reflect.Method;
-
 public class MainRunnable implements Runnable {
     // Runnable requirment
     public void run() {
@@ -24,7 +18,7 @@ public class MainRunnable implements Runnable {
                 continue;
             }
 
-            Method command = lmi.Command.getCommandByString(commandString);
+            java.lang.reflect.Method command = lmi.Command.getCommandByString(commandString);
             if (command != null) {
                 System.out.println("[" + command.getName() + ": invoking]");
                 try { command.invoke(null); } catch (Exception e) { e.printStackTrace(); }
@@ -38,9 +32,9 @@ public class MainRunnable implements Runnable {
     }
 
     // private class methods
-    private static void printCommandStringList(PrintStream outputStream) {
+    private static void printCommandStringList(java.io.PrintStream outputStream) {
         outputStream.println("command list:");
-        Set<String> commandStringSet = lmi.Command.getCommandStringSet();
+        java.util.Set<String> commandStringSet = lmi.Command.getCommandStringSet();
         commandStringSet.forEach((commandString) -> {
             outputStream.println("\t" + commandString);
         });

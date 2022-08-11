@@ -23,6 +23,7 @@ public class Constant {
         // haven.Widget sender = haven.Charlist, String = character name
         public static final String SELECT_CHARACTER = "play";
         public static final String CLICK = "click";
+        public static final String FLOWER_MENU = "cl";
         public static final String AFK = "afk";
     }
 
@@ -57,5 +58,34 @@ public class Constant {
             public static final int STAMINA = 1;
             public static final int ENERGY = 2;
         }
+    }
+
+    // flower menu petal name
+    public static class Interaction {
+        public static final String CHIP_STONE = "Chip stone";
+        public static final String PICK = "Pick";
+        public static final String PICK_ALMOND = "Pick almond";
+        public static final String PICK_BERRIES = "Pick berries";
+        public static final String PICK_CATKIN = "Pick catkin";
+        public static final String PICK_CHESTNUT = "Pick chestnut";
+        public static final String PICK_CONE = "Pick cone";
+        public static final String PICK_DRUPES = "Pick drupes";
+        public static final String PICK_LEAF = "Pick leaf";
+        public static final String PICK_FRUIT = "Pick fruit";
+        public static final String PICK_FRUITS = "Pick fruits";
+        public static final String PICK_SAMARA = "Pick samara";
+        public static final String PICK_SEEDS = "Pick seeds";
+        public static final String TAKE_BARK = "Take bark";
+        public static final String TAKE_BOUGH = "Take bough";
+        public static final String TAKE_BRANCH = "Take branch";
+    }
+
+    public static class Time {
+        public static final long GENERAL_TIMEOUT = 1000;
+        public static final long GENERAL_SLEEP = 500;
+    }
+
+    public static class MeshId {
+        public static final int NONE = -1;
     }
 }
