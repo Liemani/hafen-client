@@ -14,15 +14,13 @@ public class Patrol000 implements Runnable {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) { e.printStackTrace(); }
-
-        didRun();
     }
 
     // private methods
     private void willRun() {
         clearPath();
         path_.append(lmi.api.Self.location());
-        path_.append(lmi.api.Self.location().add(100, 100));
+        path_.append(lmi.api.Self.location().add(11.0, 0.0));
     }
 
     private void clearPath() {
@@ -36,9 +34,5 @@ public class Patrol000 implements Runnable {
             lmi.api.Self.move(location);
             Thread.sleep(1000);
         }
-    }
-
-    private void didRun() {
-        System.out.println("[macro is terminating]");
     }
 }

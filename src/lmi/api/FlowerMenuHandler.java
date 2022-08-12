@@ -1,15 +1,42 @@
 package lmi.api;
 
 public class FlowerMenuHandler {
-    static haven.FlowerMenu flowerMenu_;
+    // assume widget_ never collision
+    // 따라서 일단 열렸다 닫히면 반드시 의도한 flower menu가 열렸던 것으로 간주한다
+    private static haven.FlowerMenu widget_;
+    private static boolean isWidgetOpened_ = false;
 
-    public static void set(haven.FlowerMenu flowerMenu) {
-        flowerMenu_ = flowerMenu;
+    public static haven.FlowerMenu widget() {
+        synchronized(widget_) {
+            return widget_;
+        }
     }
 
-    // If you don't know meshID, pass -1
+    public static haven.FlowerMenu widgetAnotherWay() {
+        haven.Widget lastChildOfRootWidget = lmi.ObjectShadow.rootWidget_.lchild;
+        if (lastChildOfRootWidget instanceof haven.FlowerMenu)
+            return (haven.FlowerMenu)lmi.ObjectShadow.rootWidget_.lchild;
+        else
+            return null;
+    }
+
+    public static void setWidget(haven.FlowerMenu widget) {
+        synchronized(widget_) {
+            widget_ = widget;
+            isWidgetOpened_ = true;
+        }
+    }
+
+    // open
+    public static void openWait(haven.Gob gob, int meshId) throws InterruptedException {
+        open(gob, meshId);
+        waitOpen();
+    }
+
     public static void open(haven.Gob gob, int meshId) {
+        // If you don't know meshID, pass -1
         haven.Coord gobLocationInCoord = CoordinateHandler.convertCoord2dToCoord(gob.rc);
+        isWidgetOpened_ = false;
         WidgetMessageHandler.openFlowerMenu(
                 lmi.ObjectShadow.mapView_,
                 Util.mapViewCenter_,
@@ -21,18 +48,21 @@ public class FlowerMenuHandler {
                 meshId);
     }
 
-    // TODO 플라워 메뉴를 스테이틱 변수에 직접 설정함에 따라 widget()이 반환하는 값을 이 값으로 수정하고
-    // 이미 구현되어 있는 widget() 함수는 추후 사용할지도 모르니 구체적인 다른 이름으로 남겨두자
-    public static haven.FlowerMenu widget() {
-        haven.Widget lastChildOfRootWidget = lmi.ObjectShadow.rootWidget_.lchild;
-        if (lastChildOfRootWidget instanceof haven.FlowerMenu)
-            return (haven.FlowerMenu)lmi.ObjectShadow.rootWidget_.lchild;
-        else
-            return null;
-    }
-
+    // TODO return state or thorow exception?
     // wait open: if opened, return true, else false
     public static boolean waitOpen() throws InterruptedException {
+        final long startTime = System.currentTimeMillis();
+        final long timeoutLimit = startTime + lmi.Constant.Time.GENERAL_TIMEOUT;
+        while (!isWidgetOpened_) {
+            Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
+            final long currentTime = System.currentTimeMillis();
+            if (currentTime > timeoutLimit)
+                return false;
+        }
+        return true;
+    }
+
+    public static boolean waitOpenAnotherWay() throws InterruptedException {
         final long startTime = System.currentTimeMillis();
         final long timeoutLimit = startTime + lmi.Constant.Time.GENERAL_TIMEOUT;
         while (widget() == null) {
@@ -43,6 +73,7 @@ public class FlowerMenuHandler {
         }
         return true;
     }
+
     // choose
     // TODO 한 번 더 시도하고 없어야 없다고 할 수 있다.
     public static void chooseByGobAndPetalName(haven.Gob gob, String name) {
@@ -78,6 +109,7 @@ public class FlowerMenuHandler {
         WidgetMessageHandler.choosePetalByIndex(widget(), index);
     }
 
+    // cancel
     public static void cancel() {
         WidgetMessageHandler.cancelFlowerMenu(widget());
     }
