@@ -7,8 +7,6 @@ public class Connect implements Runnable {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) { e.printStackTrace(); }
-
-        didRun();
     }
 
     public void main() throws InterruptedException {
@@ -29,9 +27,5 @@ public class Connect implements Runnable {
 
     private haven.Coord centerOfLogInButton() {
         return new haven.Coord(400, 510).add(lmi.ObjectShadow.rootWidget_.child.c);
-    }
-
-    private void didRun() {
-        System.out.println("[macro is terminating]");
     }
 }

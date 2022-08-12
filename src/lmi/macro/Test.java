@@ -7,8 +7,6 @@ public class Test implements Runnable {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) { e.printStackTrace(); }
-
-        didRun();
     }
 
     private void main() throws InterruptedException {
@@ -22,9 +20,5 @@ public class Test implements Runnable {
             }
             ++index;
         }
-    }
-
-    private void didRun() {
-        System.out.println("[macro is terminating]");
     }
 }

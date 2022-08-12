@@ -62,4 +62,10 @@ public class Util {
         while (lmi.ObjectShadow.gameUI_.prog != null)
             Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
     }
+
+    public static void newWidget(haven.Widget widget) {
+        if (widget.getClass() == haven.FlowerMenu.class) {
+            FlowerMenuHandler.setWidget((haven.FlowerMenu)widget);
+        }
+    }
 }

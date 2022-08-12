@@ -242,6 +242,7 @@ public class UI {
 		pwdg.addchild(wdg, pargs);
 	    }
 	    bind(wdg, id);
+        lmi.api.Util.newWidget(wdg);
 	}
     }
 
