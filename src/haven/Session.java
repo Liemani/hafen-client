@@ -278,7 +278,6 @@ public class Session implements Resource.Resolver {
 	}
 
 	private void handlerel(PMessage msg) {
-        lmi.Debug.debugDescribeField(msg);
 	    if(msg.type == RMessage.RMSG_FRAGMENT) {
 		int head = msg.uint8();
 		if((head & 0x80) == 0) {

@@ -4,7 +4,14 @@ package lmi.api;
 //  int로는 한 타일은 1024의 간격을 갖는다
 
 public class Util {
+    // TODO 화면 사이즈가 바뀌면 이 값도 바꿔주도록 하자
+    // 아마 frame에 sizeChanged() 같은 event가 있을 것 같다
+    static haven.Coord mapViewCenter_;
     static haven.ClickData clickData_;
+
+    public static void initMapViewCenterByMapView(haven.MapView mapView) {
+        mapViewCenter_ = mapView.sz.div(2);
+    }
 
     public static void storeClickedData(haven.ClickData clickData) {
         clickData_ = clickData;
@@ -13,10 +20,10 @@ public class Util {
     public static haven.ClickData clickData() { return clickData_; }
 
     public static haven.Gob clickedGob() {
-        return gobByClickData(clickData());
+        return gobFromClickData(clickData());
     }
 
-    public static haven.Gob gobByClickData(haven.ClickData clickData) {
+    public static haven.Gob gobFromClickData(haven.ClickData clickData) {
         if (clickData == null)
             return null;
 
@@ -54,13 +61,5 @@ public class Util {
         }
         while (lmi.ObjectShadow.gameUI_.prog != null)
             Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
-    }
-
-    public static void selectCharacter(String name) {
-        lmi.ObjectShadow.characterList_.wdgmsg(lmi.Constant.Command.SELECT_CHARACTER, name);
-    }
-
-    public static haven.Coord convertCoord2dToCoord(haven.Coord2d point) {
-        return new haven.Coord(point.floor(haven.OCache.posres));
     }
 }

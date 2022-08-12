@@ -21,8 +21,8 @@ public class Patrol000 implements Runnable {
     // private methods
     private void willRun() {
         clearPath();
-        path_.append(Self.location());
-        path_.append(Self.location().add(100, 100));
+        path_.append(lmi.api.Self.location());
+        path_.append(lmi.api.Self.location().add(100, 100));
     }
 
     private void clearPath() {
@@ -33,7 +33,7 @@ public class Patrol000 implements Runnable {
 
     public void patrolPath() throws InterruptedException {
         for (haven.Coord2d location : path_) {
-            Self.mapClickLeftMouseButton(location, 0);
+            lmi.api.Self.move(location);
             Thread.sleep(1000);
         }
     }

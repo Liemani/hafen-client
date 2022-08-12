@@ -19,8 +19,8 @@ class Command {
 
     // test command
     static Void test() {
-        final haven.Gob gob = lmi.api.Util.clickedGob();
-        lmi.api.FlowerMenuHandler.chooseByGobAndPetalName(gob, Constant.Interaction.TAKE_BRANCH);
+//          final haven.Gob gob = lmi.api.Util.clickedGob();
+//          lmi.api.FlowerMenuHandler.chooseByGobAndPetalName(gob, Constant.Interaction.TAKE_BRANCH);
         return null;
     }
 
@@ -60,70 +60,65 @@ class Command {
         return null;
     }
 
-    static Void macroDescribeLastClickedGob() {
-        lmi.macro.Util.describeLastClickedGob();
+    static Void macroDescribeClickedGob() {
+        lmi.api.Util.describeClickedGob();
         return null;
     }
 
     // action command
     static Void dig() {
-        lmi.macro.Self.dig();
+        lmi.api.Self.dig();
         return null;
     }
 
     // etc command
-    static Void playerDescribe() {
-        lmi.macro.Self.debugDescribe();
-        return null;
-    }
-
     static Void printObjectShadow() {
         Debug.debugDescribeField(System.out, lmi.ObjectShadow.class);
         return null;
     }
 
     static Void recordMouseLocation() {
-        lmi.macro.AWTEventGenerator.setMouseLocation(ObjectShadow.ui_.mc.x, ObjectShadow.ui_.mc.y);
+        lmi.api.AWTEventGenerator.setMouseLocation(ObjectShadow.ui_.mc.x, ObjectShadow.ui_.mc.y);
         return null;
     }
 
     static Void printRecordedMouseLocation() {
-        lmi.macro.AWTEventGenerator.printRecordedMouseLocation();
+        lmi.api.AWTEventGenerator.printRecordedMouseLocation();
         return null;
     }
 
 //      // awt commands
 //      static Void awtGenerateMouseClick() {
-//          lmi.macro.AWTEventGenerator.generateMouseClickGeneral(java.awt.event.MouseEvent.BUTTON3);
+//          lmi.api.AWTEventGenerator.generateMouseClickGeneral(java.awt.event.MouseEvent.BUTTON3);
 //          return null;
 //      }
 //  
 //      static Void awtGenerateMouseRightClick() {
-//          lmi.macro.AWTEventGenerator.generateMouseClickModified(0, java.awt.event.MouseEvent.BUTTON3);
+//          lmi.api.AWTEventGenerator.generateMouseClickModified(0, java.awt.event.MouseEvent.BUTTON3);
 //          return null;
 //      }
 //  
 //      static Void toggleEquipment() {
-//          lmi.macro.AWTEventGenerator.generateCtrlE();
+//          lmi.api.AWTEventGenerator.generateCtrlE();
 //          return null;
 //      }
 //  
 //      static Void openAxeCraftWindow() {
-//          lmi.macro.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
-//          lmi.macro.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
-//          lmi.macro.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
-//          lmi.macro.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_A);
-//          lmi.macro.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
+//          lmi.api.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
+//          lmi.api.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
+//          lmi.api.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
+//          lmi.api.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_A);
+//          lmi.api.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
 //          return null;
 //      }
 //  
 //      static Void typeEnter() {
-//          lmi.macro.AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_ENTER);
+//          lmi.api.AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_ENTER);
 //          return null;
 //      }
 //  
 //      static Void typeTab() {
-//          lmi.macro.AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_TAB);
+//          lmi.api.AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_TAB);
 //          return null;
 //      }
 

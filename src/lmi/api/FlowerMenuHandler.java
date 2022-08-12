@@ -1,51 +1,34 @@
 package lmi.api;
 
 public class FlowerMenuHandler {
+    static haven.FlowerMenu flowerMenu_;
+
+    public static void set(haven.FlowerMenu flowerMenu) {
+        flowerMenu_ = flowerMenu;
+    }
+
+    // If you don't know meshID, pass -1
+    public static void open(haven.Gob gob, int meshId) {
+        haven.Coord gobLocationInCoord = CoordinateHandler.convertCoord2dToCoord(gob.rc);
+        WidgetMessageHandler.openFlowerMenu(
+                lmi.ObjectShadow.mapView_,
+                Util.mapViewCenter_,
+                gobLocationInCoord,
+                lmi.Constant.InteractionType.GENERAL,
+                (int)gob.id,
+                gobLocationInCoord,
+                0,
+                meshId);
+    }
+
+    // TODO 플라워 메뉴를 스테이틱 변수에 직접 설정함에 따라 widget()이 반환하는 값을 이 값으로 수정하고
+    // 이미 구현되어 있는 widget() 함수는 추후 사용할지도 모르니 구체적인 다른 이름으로 남겨두자
     public static haven.FlowerMenu widget() {
         haven.Widget lastChildOfRootWidget = lmi.ObjectShadow.rootWidget_.lchild;
         if (lastChildOfRootWidget instanceof haven.FlowerMenu)
             return (haven.FlowerMenu)lmi.ObjectShadow.rootWidget_.lchild;
         else
             return null;
-    }
-
-    // open
-    public static void openByGob(haven.Gob gob) {
-        final haven.Coord gobLocation = Util.convertCoord2dToCoord(lmi.api.Util.clickedGob().rc);
-        sendWidgetMessageForFlowerMenuOpen(
-                Interaction.mapViewCenter(),
-                gobLocation,
-                0,  // i don't know '(int)1' case
-                (int)lmi.api.Util.clickedGob().id,
-                gobLocation,
-                0,  // i don't know using overlay case
-                -1);    // i don't know where this is used
-    }
-
-    public static void sendWidgetMessageForFlowerMenuOpen(haven.Coord mapViewClickPoint, haven.Coord mapClickPoint, int hasOverlay, int gobId, haven.Coord gobLocationInCoord, int overlayId, int meshId) {
-        lmi.ObjectShadow.mapView_.wdgmsg(
-                lmi.Constant.Command.CLICK,
-                mapViewClickPoint,
-                mapClickPoint,
-                lmi.Constant.Mouse.Button.RIGHT,
-                0,
-                hasOverlay,
-                gobId,
-                gobLocationInCoord,
-                overlayId,
-                meshId);
-    }
-
-    public static void openByClickData(haven.ClickData clickData) {
-        final haven.Gob gob = Util.gobByClickData(clickData);
-        Object[] args = {
-            Interaction.mapViewCenter(),
-            Util.convertCoord2dToCoord(gob.rc),
-            lmi.Constant.Mouse.Button.RIGHT,
-            0};
-        if(clickData != null)
-            args = haven.Utils.extend(args, clickData.clickargs());
-        lmi.ObjectShadow.mapView_.wdgmsg(lmi.Constant.Command.CLICK, args);
     }
 
     // wait open: if opened, return true, else false
@@ -60,22 +43,16 @@ public class FlowerMenuHandler {
         }
         return true;
     }
-
-    // cancel
-    public static void cancel() {
-        widget().wdgmsg(lmi.Constant.Command.FLOWER_MENU, -1);
-    }
-
     // choose
     // TODO 한 번 더 시도하고 없어야 없다고 할 수 있다.
     public static void chooseByGobAndPetalName(haven.Gob gob, String name) {
         try {
-            boolean result = lmi.api.FlowerMenuHandler.waitOpen();
+            boolean result = waitOpen();
             if (result == false)
                 return;    // flower menu didn't open -> there is nothing can interact
-            lmi.api.FlowerMenuHandler.chooseAndWaitByName("Take branch");
+            chooseAndWaitByName("Take branch");
         } catch (IllegalArgumentException e) {
-            lmi.api.FlowerMenuHandler.cancel();
+            cancel();
             return;    // no that name petal -> there is no to work
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -89,16 +66,19 @@ public class FlowerMenuHandler {
     public static void chooseByName(String name) throws IllegalArgumentException {
         for (haven.FlowerMenu.Petal petal : widget().opts)
             if (petal.name.contentEquals(name)) {
-                chooseByIndex(petal.num);
+                try {
+                    chooseByIndex(petal.num);
+                } catch (IndexOutOfBoundsException e) { e.printStackTrace(); }
                 return;
             }
         throw new IllegalArgumentException();
     }
 
     public static void chooseByIndex(int index) throws IndexOutOfBoundsException {
-        if (0 <= index && index < widget().opts.length)
-            widget().wdgmsg(lmi.Constant.Command.FLOWER_MENU, index, 0);
-        else
-            throw new IndexOutOfBoundsException();
+        WidgetMessageHandler.choosePetalByIndex(widget(), index);
+    }
+
+    public static void cancel() {
+        WidgetMessageHandler.cancelFlowerMenu(widget());
     }
 }

@@ -1,29 +1,11 @@
 package lmi.api;
 
 public class Self {
-    public static void debugDescribe() {
-        System.out.println("[gob()]");
-        lmi.Debug.debugDescribeField(gob());
-        System.out.println("[location()]");
-        lmi.Debug.debugDescribeField(location());
-        System.out.println("[pose()]");
-        lmi.Debug.debugDescribeField(pose());
-        System.out.println("[hardHitPoint()]");
-        lmi.Debug.debugDescribeField(hardHitPoint());
-        System.out.println("[softHitPoint()]");
-        lmi.Debug.debugDescribeField(softHitPoint());
-        System.out.println("[stamina()]");
-        lmi.Debug.debugDescribeField(stamina());
-        System.out.println("[energy()]");
-        lmi.Debug.debugDescribeField(energy());
-    }
-
-    // never reuse return value(it could be changed)
+    // access properties
     public static haven.Gob gob() {
         return lmi.ObjectShadow.mapView_.player();
     }
 
-    // methods
     public static haven.Coord2d location() {
         return gob().rc;
     }
@@ -32,7 +14,6 @@ public class Self {
          return gob().getpose();
     }
 
-    // gauge data
     public static double hardHitPoint() {
         haven.IMeter gaugeWidget = getMeterWidgetByResourceName(lmi.Constant.Gauge.Index.HIT_POINT);
         return haven.LMI.gaugeMeters(gaugeWidget).get(lmi.Constant.Gauge.HitPointIndex.HARD).a;
@@ -61,7 +42,82 @@ public class Self {
         return GobHandler.velocity(gob());
     }
 
+    // simple move
     public static void moveNorthTile() {
-        Interaction.mapClickLeftMouseButton(CoordinateHandler.north1Tile(location()), 0);
+        move(CoordinateHandler.northTile(location()));
+    }
+
+    // move
+    public static void move(haven.Coord2d clickedMapPoint) {
+        // 1 tile has 11.0 width
+        WidgetMessageHandler.mapViewClick(
+                lmi.ObjectShadow.mapView_,
+                Util.mapViewCenter_,
+                CoordinateHandler.convertCoord2dToCoord(clickedMapPoint),
+                lmi.Constant.Input.Mouse.LEFT,
+                lmi.Constant.Input.Modifier.NONE);
+    }
+
+    public static void moveByIntCoordinate(haven.Coord clickedMapPoint) {
+        // 1 tile has 1024 width
+        WidgetMessageHandler.mapViewClick(
+                lmi.ObjectShadow.mapView_,
+                Util.mapViewCenter_,
+                clickedMapPoint,
+                lmi.Constant.Input.Mouse.LEFT,
+                lmi.Constant.Input.Modifier.NONE);
+    }
+
+    // do action
+    public static void dig() {
+        act(lmi.Constant.Action.DIG);
+    }
+
+    public static void mine() {
+        act(lmi.Constant.Action.MINE);
+    }
+
+    public static void carry() {
+        act(lmi.Constant.Action.CARRY);
+    }
+
+    public static void destroy() {
+        act(lmi.Constant.Action.DESTROY);
+    }
+
+    public static void fish() {
+        act(lmi.Constant.Action.FISH);
+    }
+
+    public static void inspect() {
+        act(lmi.Constant.Action.INSPECT);
+    }
+
+    public static void repair() {
+        act(lmi.Constant.Action.REPAIR);
+    }
+
+    public static void crime() {
+        act(lmi.Constant.Action.CRIME);
+    }
+
+    public static void swim() {
+        act(lmi.Constant.Action.SWIM);
+    }
+
+    public static void tracking() {
+        act(lmi.Constant.Action.TRACKING);
+    }
+
+    public static void aggro() {
+        act(lmi.Constant.Action.AGGRO);
+    }
+
+    public static void shoot() {
+        act(lmi.Constant.Action.SHOOT);
+    }
+
+    public static void act(String action) {
+        WidgetMessageHandler.act(lmi.ObjectShadow.gameUI_.menu, action);
     }
 }

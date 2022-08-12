@@ -87,13 +87,25 @@ public abstract class ConsoleHost extends Widget implements ReadLine.Owner {
 
     public ConsoleHost(Coord sz) {
 	super(sz);
+        // debug
+        System.out.println("[new ConsoleHost()]");
+        new Exception().printStackTrace();
+        // end debug
     }
 
     public ConsoleHost() {
+        // debug
+        System.out.println("[new ConsoleHost()]");
+        new Exception().printStackTrace();
+        // end debug
     }
     
     public ConsoleHost(UI ui, Coord c, Coord sz) {
 	super(ui, c, sz);
+        // debug
+        System.out.println("[new ConsoleHost()]");
+        new Exception().printStackTrace();
+        // end debug
     }
     
     public void drawcmd(GOut g, Coord c) {
