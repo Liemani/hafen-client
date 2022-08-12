@@ -9,8 +9,6 @@ import java.lang.reflect.Modifier;
 
 
 class Command {
-    static Thread macroThread_ = null;
-
     // type define
     private static class CommandMap extends TreeMap<String, Method> {};
 
@@ -25,38 +23,33 @@ class Command {
     }
 
     // macro command
-    static Void macroInterrupte() {
-        macroThread_.interrupt();
+    static Void macroInterrupt() {
+        MacroThread.interrupt();
         return null;
     }
 
     static Void macroConnect() {
-        macroThread_ = new Thread(new lmi.macro.Connect());
-        macroThread_.start();
+        MacroThread.start(new lmi.macro.Connect());
         return null;
     }
 
     static Void macroPatrol000() {
-        macroThread_ = new Thread(new lmi.macro.Patrol000());
-        macroThread_.start();
+        MacroThread.start(new lmi.macro.Patrol000());
         return null;
     }
 
     static Void macroPatrol001() {
-        macroThread_ = new Thread(new lmi.macro.Patrol001());
-        macroThread_.start();
+        MacroThread.start(new lmi.macro.Patrol001());
         return null;
     }
 
     static Void macroPatrol002() {
-        macroThread_ = new Thread(new lmi.macro.Patrol002());
-        macroThread_.start();
+        MacroThread.start(new lmi.macro.Patrol002());
         return null;
     }
 
     static Void macroTest() {
-        macroThread_ = new Thread(new lmi.macro.Test());
-        macroThread_.start();
+        MacroThread.start(new lmi.macro.Test());
         return null;
     }
 

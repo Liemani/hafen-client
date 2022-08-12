@@ -12,8 +12,6 @@ public class Patrol002 implements Runnable {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) { e.printStackTrace(); }
-
-        didRun();
     }
 
     // private methods
@@ -34,9 +32,5 @@ public class Patrol002 implements Runnable {
         Thread.sleep(2000);
         lmi.api.Self.moveByIntCoordinate(secondPoint);
         Thread.sleep(2000);
-    }
-
-    private void didRun() {
-        System.out.println("[macro is terminating]");
     }
 }
