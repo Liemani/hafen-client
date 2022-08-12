@@ -36,6 +36,10 @@ public class Console {
     public PrintWriter out;
     
     {
+        // debug
+        System.out.println("[new Console()]");
+        new Exception().printStackTrace();
+        // end debug
 	clearout();
     }
 

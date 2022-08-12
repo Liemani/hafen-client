@@ -28,11 +28,11 @@ public class Patrol002 implements Runnable {
     }
 
     private void main() throws InterruptedException {
-        haven.Coord firstPoint = Util.convertCoord2dToCoord(Self.location().add(0.0, -11.0));
-        haven.Coord secondPoint = Util.convertCoord2dToCoord(Self.location()).add(1, 0);
-        Self.mapClickInCoord(firstPoint, 1, 0);
+        haven.Coord firstPoint = lmi.api.CoordinateHandler.convertCoord2dToCoord(lmi.api.Self.location().add(0.0, -11.0));
+        haven.Coord secondPoint = lmi.api.CoordinateHandler.convertCoord2dToCoord(lmi.api.Self.location()).add(1, 0);
+        lmi.api.Self.moveByIntCoordinate(firstPoint);
         Thread.sleep(2000);
-        Self.mapClickInCoord(secondPoint, 1, 0);
+        lmi.api.Self.moveByIntCoordinate(secondPoint);
         Thread.sleep(2000);
     }
 

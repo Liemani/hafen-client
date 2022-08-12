@@ -28,7 +28,10 @@ public class ObjectShadow {
     static void initUI(haven.UI ui) { ui_ = ui; }
     static void initRootWidget(haven.RootWidget rootWidget) { rootWidget_ = rootWidget; }
     static void initGameUI(haven.GameUI gameUI) { gameUI_ = gameUI; }
-    static void initMapView(haven.MapView mapView) { mapView_ = mapView; }
+    static void initMapView(haven.MapView mapView) {
+        mapView_ = mapView;
+        lmi.api.Util.initMapViewCenterByMapView(mapView_);
+    }
     static void initSession(haven.Session session) { session_ = session; }
     static void initCharacterList(haven.Charlist characterList) { characterList_ = characterList; }
 

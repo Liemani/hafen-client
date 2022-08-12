@@ -195,6 +195,8 @@ public class Widget {
     }
 
     public Widget(Coord sz) {
+        System.out.println("[Widget()]");
+        new Exception().printStackTrace();
 	this.c = Coord.z;
 	this.sz = sz;
     }
@@ -204,6 +206,8 @@ public class Widget {
     }
 
     public Widget(UI ui, Coord c, Coord sz) {
+        System.out.println("[Widget()]");
+        new Exception().printStackTrace();
 	this.ui = ui;
 	this.c = c;
 	this.sz = sz;
