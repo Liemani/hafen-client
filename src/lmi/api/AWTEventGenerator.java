@@ -12,7 +12,7 @@ public class AWTEventGenerator {
     }
 
     public static void printRecordedMouseLocation() {
-        lmi.Debug.debugDescribeField(mouseLocation_);
+        lmi.Debug.describeField(mouseLocation_);
     }
 
     // methods for command

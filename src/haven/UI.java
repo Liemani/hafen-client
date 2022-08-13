@@ -327,7 +327,7 @@ public class UI {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         System.out.println("[UI::wdgmsg()] {\"sender\": \"" + sender.getClass().getName() + "\", \"command\": \"" + msg + "\"}");
         for (Object object : args) {
-            lmi.Debug.debugDescribeField(object);
+            lmi.Debug.describeField(object);
         }
 	int id = widgetid(sender);
 	if(id < 0) {
@@ -340,6 +340,7 @@ public class UI {
 	
     public void uimsg(int id, String msg, Object... args) {
 	Widget wdg = getwidget(id);
+    System.out.println(wdg.getClass().getName());
 	if(wdg != null) {
 	    synchronized(this) {
 		wdg.uimsg(msg.intern(), args);
