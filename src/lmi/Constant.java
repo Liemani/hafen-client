@@ -93,4 +93,12 @@ public class Constant {
     public static class MeshId {
         public static final int NONE = -1;
     }
+
+    public static class HitBoxSize {
+        public static class Width {
+        }
+
+        public static class Height {
+        }
+    }
 }

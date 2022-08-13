@@ -35,6 +35,7 @@ public class Self {
     }
 
     public static haven.IMeter getMeterWidgetByResourceName(int gaugeIndex) {
+        // lmi.Constant.Guage.Index
         return lmi.ObjectShadow.gaugeArray_[gaugeIndex];
     }
 
@@ -48,6 +49,11 @@ public class Self {
     }
 
     // move
+    public static void moveAndWaitArriving(haven.Coord2d clickedMapPoint) throws InterruptedException {
+        move(clickedMapPoint);
+        waitArriving();
+    }
+
     public static void move(haven.Coord2d clickedMapPoint) {
         // 1 tile has 11.0 width
         WidgetMessageHandler.mapViewClick(
@@ -66,6 +72,19 @@ public class Self {
                 clickedMapPoint,
                 lmi.Constant.Input.Mouse.LEFT,
                 lmi.Constant.Input.Modifier.NONE);
+    }
+
+    public static void waitArriving() throws InterruptedException {
+        final long startTime = System.currentTimeMillis();
+        final long timeoutLimit = startTime + lmi.Constant.Time.GENERAL_TIMEOUT;
+        while (Self.velocity() == 0) {
+            Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
+            long currentTime = System.currentTimeMillis();
+            if (currentTime > timeoutLimit)
+                break;
+        }
+        while (Self.velocity() != 0)
+            Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
     }
 
     // do action

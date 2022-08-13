@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-
 class Command {
     // type define
     private static class CommandMap extends TreeMap<String, Method> {};
@@ -66,7 +65,7 @@ class Command {
 
     // etc command
     static Void printObjectShadow() {
-        Debug.debugDescribeField(System.out, lmi.ObjectShadow.class);
+        Debug.describeField(System.out, lmi.ObjectShadow.class);
         return null;
     }
 
@@ -139,7 +138,7 @@ class Command {
         }
 
         ObjectFinder.moveBackward();
-        Debug.debugDescribeField(ObjectFinder.last());
+        Debug.describeField(ObjectFinder.last());
         return null;
     }
 
@@ -149,7 +148,7 @@ class Command {
     }
 
     static Void objectDescribe() {
-        Debug.debugDescribeField(ObjectFinder.last());
+        Debug.describeField(ObjectFinder.last());
         return null;
     }
 
@@ -162,18 +161,18 @@ class Command {
 
         System.out.println("[" + Debug.convertToDebugDescriptionClassNameHashCode(object) + "]");
         for (Object element : (Iterable)object) {
-            Debug.debugDescribeField(element);
+            Debug.describeField(element);
         }
         return null;
     }
 
     private static void wrapObjectFinderFind(Util.MemberType type, Class classObjectToReset, boolean willAppend) {
-        Debug.debugDescribeClassNameHashCodeWithTag("current: ", ObjectFinder.last());
+        Debug.describeClassNameHashCodeWithTag("current: ", ObjectFinder.last());
 
         Object object = null;
         try {
             object = ObjectFinder.find(type, classObjectToReset);
-            Debug.debugDescribeField(object);
+            Debug.describeField(object);
             if (willAppend) {
                 if (!type.isField())
                     ObjectFinder.init();

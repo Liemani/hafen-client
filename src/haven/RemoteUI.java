@@ -64,13 +64,13 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
 			Object[] pargs = msg.list();
 			Object[] cargs = msg.list();
             System.out.println("[ui.newwidget()]");
-            lmi.Debug.debugDescribeField(type);
+            lmi.Debug.describeField(type);
 			ui.newwidget(id, type, parent, pargs, cargs);
 		    } else if(msg.type == RMessage.RMSG_WDGMSG) {
 			int id = msg.int32();
 			String name = msg.string();
             System.out.println("[ui.uimsg()]");
-            lmi.Debug.debugDescribeField(name);
+            lmi.Debug.describeField(name);
 			ui.uimsg(id, name, msg.list());
 		    } else if(msg.type == RMessage.RMSG_DSTWDG) {
 			int id = msg.int32();

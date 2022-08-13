@@ -264,6 +264,7 @@ public class CharWnd extends Window {
 	}
 
 	public void update(Object... args) {
+        lmi.Debug.describeField(this);
 	    int a = 0;
 	    this.glut = ((Number)args[a++]).doubleValue();
 	    this.lglut = ((Number)args[a++]).doubleValue();
