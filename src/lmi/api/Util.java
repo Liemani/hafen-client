@@ -35,20 +35,7 @@ public class Util {
         return gobClick.gob;
     }
 
-    public static void describeClickedGob() { lmi.Debug.debugDescribeField(clickedGob()); }
-
-    public static void waitArriving() throws InterruptedException {
-        final long startTime = System.currentTimeMillis();
-        final long timeoutLimit = startTime + lmi.Constant.Time.GENERAL_TIMEOUT;
-        while (Self.velocity() == 0) {
-            Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
-            long currentTime = System.currentTimeMillis();
-            if (currentTime > timeoutLimit)
-                break;
-        }
-        while (Self.velocity() != 0)
-            Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
-    }
+    public static void describeClickedGob() { lmi.Debug.describeField(clickedGob()); }
 
     public static void waitHourGlassFailable() throws InterruptedException {
         final long startTime = System.currentTimeMillis();

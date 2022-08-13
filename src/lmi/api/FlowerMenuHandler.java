@@ -2,12 +2,11 @@ package lmi.api;
 
 public class FlowerMenuHandler {
     // assume widget_ never collision
-    // 따라서 일단 열렸다 닫히면 반드시 의도한 flower menu가 열렸던 것으로 간주한다
     private static haven.FlowerMenu widget_;
     private static boolean isWidgetOpened_ = false;
 
     public static haven.FlowerMenu widget() {
-        synchronized(widget_) {
+        synchronized(FlowerMenuHandler.class) {
             return widget_;
         }
     }
@@ -21,7 +20,7 @@ public class FlowerMenuHandler {
     }
 
     public static void setWidget(haven.FlowerMenu widget) {
-        synchronized(widget_) {
+        synchronized(FlowerMenuHandler.class) {
             widget_ = widget;
             isWidgetOpened_ = true;
         }
@@ -30,7 +29,7 @@ public class FlowerMenuHandler {
     // open
     public static void openWait(haven.Gob gob, int meshId) throws InterruptedException {
         open(gob, meshId);
-        waitOpen();
+        waitOpening();
     }
 
     public static void open(haven.Gob gob, int meshId) {
@@ -48,9 +47,8 @@ public class FlowerMenuHandler {
                 meshId);
     }
 
-    // TODO return state or thorow exception?
-    // wait open: if opened, return true, else false
-    public static boolean waitOpen() throws InterruptedException {
+    // wait opening: if opened, return true, else false
+    public static boolean waitOpening() throws InterruptedException {
         final long startTime = System.currentTimeMillis();
         final long timeoutLimit = startTime + lmi.Constant.Time.GENERAL_TIMEOUT;
         while (!isWidgetOpened_) {
@@ -75,10 +73,11 @@ public class FlowerMenuHandler {
     }
 
     // choose
-    // TODO 한 번 더 시도하고 없어야 없다고 할 수 있다.
+    // TODO 한 번 더 시도하고 없어야 없다고 할 수 있다
+    // TODO 지금 waitOpening을 사용하는데 이거 안쓰는게 좋을 것 같다
     public static void chooseByGobAndPetalName(haven.Gob gob, String name) {
         try {
-            boolean result = waitOpen();
+            boolean result = waitOpening();
             if (result == false)
                 return;    // flower menu didn't open -> there is nothing can interact
             chooseAndWaitByName("Take branch");
@@ -90,7 +89,7 @@ public class FlowerMenuHandler {
 
     public static void chooseAndWaitByName(String name) throws IllegalArgumentException, InterruptedException {
         chooseByName(name);
-        Util.waitArriving();
+        Self.waitArriving();
         Util.waitHourGlassFailable();
     }
 
