@@ -7,6 +7,7 @@ public class Initializer {
         ObjectFinder.init();
         ObjectShadow.init();
         new Thread(new lmi.MainRunnable()).start();
+        Debug.init();
     }
 
     public static void initMainFrame(haven.MainFrame mainFrame) { ObjectShadow.initMainFrame(mainFrame); }
