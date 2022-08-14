@@ -186,6 +186,12 @@ class Command {
         return null;
     }
 
+    // etc
+    static Void toggleDebugIsPrint() {
+        Debug.toggleIsPrint();
+        return null;
+    }
+
     // non-command methods
     // all methods with default access modifier will count on as executable command
     public static void init() {
