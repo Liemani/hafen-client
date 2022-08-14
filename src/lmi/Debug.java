@@ -16,6 +16,17 @@ import java.util.ArrayList;
 import lmi.Util;
 
 public class Debug {
+    static boolean isPrint_;
+
+    static void init() {
+        isPrint_ = true;
+    }
+
+    static void toggleIsPrint() {
+        isPrint_ = !isPrint_;
+        System.out.println("[isPrint: " + isPrint_ + "]");
+    }
+
     static class Context {
         // closer type definition
         static interface Symbol { }
@@ -232,6 +243,9 @@ public class Debug {
     }
 
     public static void describeField(PrintStream printStream, Object object, int indentSize) {
+        if (!isPrint_)
+            return;
+
         String rawDescription;
 
         if (object != null && Util.isClassType(object))
