@@ -3,7 +3,7 @@ package lmi.api;
 public class Self {
     // access properties
     public static haven.Gob gob() {
-        return lmi.ObjectShadow.mapView_.player();
+        return lmi.ObjectShadow.mapView().player();
     }
 
     public static haven.Coord2d location() {
@@ -15,49 +15,43 @@ public class Self {
     }
 
     public static double hardHitPoint() {
-        haven.IMeter gaugeWidget = getMeterWidgetByResourceName(lmi.Constant.Gauge.Index.HIT_POINT);
-        return haven.LMI.gaugeMeters(gaugeWidget).get(lmi.Constant.Gauge.HitPointIndex.HARD).a;
+        return haven.LMI.gaugeWidgetGaugeArray(lmi.ObjectShadow.gaugeWidgetArray()[lmi.Constant.Gauge.Index.HIT_POINT])
+            .get(lmi.Constant.Gauge.HitPointIndex.HARD)
+            .a;
     }
 
     public static double softHitPoint() {
-        haven.IMeter gaugeWidget = getMeterWidgetByResourceName(lmi.Constant.Gauge.Index.HIT_POINT);
-        return haven.LMI.gaugeMeters(gaugeWidget).get(lmi.Constant.Gauge.HitPointIndex.SOFT).a;
+        return haven.LMI.gaugeWidgetGaugeArray(lmi.ObjectShadow.gaugeWidgetArray()[lmi.Constant.Gauge.Index.HIT_POINT])
+            .get(lmi.Constant.Gauge.HitPointIndex.SOFT)
+            .a;
     }
 
     public static double stamina() {
-        haven.IMeter gaugeWidget = getMeterWidgetByResourceName(lmi.Constant.Gauge.Index.STAMINA);
-        return haven.LMI.gaugeMeters(gaugeWidget).get(0).a;
+        return haven.LMI.gaugeWidgetGaugeArray(lmi.ObjectShadow.gaugeWidgetArray()[lmi.Constant.Gauge.Index.STAMINA])
+            .get(0)
+            .a;
     }
 
     public static double energy() {
-        haven.IMeter gaugeWidget = getMeterWidgetByResourceName(lmi.Constant.Gauge.Index.ENERGY);
-        return haven.LMI.gaugeMeters(gaugeWidget).get(0).a;
-    }
-
-    public static haven.IMeter getMeterWidgetByResourceName(int gaugeIndex) {
-        // lmi.Constant.Guage.Index
-        return lmi.ObjectShadow.gaugeArray_[gaugeIndex];
+        return haven.LMI.gaugeWidgetGaugeArray(lmi.ObjectShadow.gaugeWidgetArray()[lmi.Constant.Gauge.Index.ENERGY])
+            .get(0)
+            .a;
     }
 
     public static double velocity() {
         return GobHandler.velocity(gob());
     }
 
-    // simple move
-    public static void moveNorthTile() {
-        move(CoordinateHandler.northTile(location()));
-    }
-
     // move
-    public static void moveAndWaitArriving(haven.Coord2d clickedMapPoint) throws InterruptedException {
-        move(clickedMapPoint);
-        waitArriving();
+    public static boolean moveAndWaitArriving(haven.Coord2d mapPoint) throws InterruptedException {
+        move(mapPoint);
+        return waitArriving(mapPoint);
     }
 
     public static void move(haven.Coord2d clickedMapPoint) {
         // 1 tile has 11.0 width
         WidgetMessageHandler.mapViewClick(
-                lmi.ObjectShadow.mapView_,
+                lmi.ObjectShadow.mapView(),
                 Util.mapViewCenter_,
                 CoordinateHandler.convertCoord2dToCoord(clickedMapPoint),
                 lmi.Constant.Input.Mouse.LEFT,
@@ -67,24 +61,30 @@ public class Self {
     public static void moveByIntCoordinate(haven.Coord clickedMapPoint) {
         // 1 tile has 1024 width
         WidgetMessageHandler.mapViewClick(
-                lmi.ObjectShadow.mapView_,
+                lmi.ObjectShadow.mapView(),
                 Util.mapViewCenter_,
                 clickedMapPoint,
                 lmi.Constant.Input.Mouse.LEFT,
                 lmi.Constant.Input.Modifier.NONE);
     }
 
-    public static void waitArriving() throws InterruptedException {
-        final long startTime = System.currentTimeMillis();
-        final long timeoutLimit = startTime + lmi.Constant.Time.GENERAL_TIMEOUT;
-        while (Self.velocity() == 0) {
+    public static boolean waitArriving(haven.Coord2d destination) throws InterruptedException {
+        long currentTime = System.currentTimeMillis();
+        long timeoutLimit = currentTime + lmi.Constant.Time.GENERAL_TIMEOUT;
+        while (!Self.isArrived(destination)) {
+            currentTime = System.currentTimeMillis();
+            if (currentTime > timeoutLimit
+                    && Self.velocity() == 0.0)
+                return false;
+            if (Self.velocity() != 0.0)
+                timeoutLimit = currentTime + lmi.Constant.Time.GENERAL_TIMEOUT;
             Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
-            long currentTime = System.currentTimeMillis();
-            if (currentTime > timeoutLimit)
-                break;
         }
-        while (Self.velocity() != 0)
-            Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
+        return true;
+    }
+
+    public static boolean isArrived(haven.Coord2d destination) {
+        return Math.abs(Self.location().x - destination.x) < lmi.Constant.COORD2D_PER_COORD;
     }
 
     // do action
@@ -137,6 +137,12 @@ public class Self {
     }
 
     public static void act(String action) {
-        WidgetMessageHandler.act(lmi.ObjectShadow.gameUI_.menu, action);
+        WidgetMessageHandler.act(lmi.ObjectShadow.gameUI().menu, action);
+    }
+
+    // etc
+    // simple move
+    public static void moveNorthTile() {
+        move(CoordinateHandler.northTile(location()));
     }
 }

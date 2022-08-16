@@ -340,7 +340,7 @@ public class UI {
 	
     public void uimsg(int id, String msg, Object... args) {
 	Widget wdg = getwidget(id);
-    System.out.println(wdg.getClass().getName());
+//      System.out.println("[RemoteUI::run() ui.uimsg()] {\"command\": \"" + msg + "\", \"widgetClass\": \"" + wdg.getClass().getName() + "\"}");
 	if(wdg != null) {
 	    synchronized(this) {
 		wdg.uimsg(msg.intern(), args);

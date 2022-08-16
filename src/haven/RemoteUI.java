@@ -63,24 +63,21 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
 			int parent = msg.int32();
 			Object[] pargs = msg.list();
 			Object[] cargs = msg.list();
-            System.out.println("[ui.newwidget()]");
-            lmi.Debug.describeField(type);
+//              System.out.println("[RemoteUI::run() ui.newwidget()] {\"command\": \"" + type + "\"}");
 			ui.newwidget(id, type, parent, pargs, cargs);
 		    } else if(msg.type == RMessage.RMSG_WDGMSG) {
 			int id = msg.int32();
 			String name = msg.string();
-            System.out.println("[ui.uimsg()]");
-            lmi.Debug.describeField(name);
 			ui.uimsg(id, name, msg.list());
 		    } else if(msg.type == RMessage.RMSG_DSTWDG) {
 			int id = msg.int32();
-            System.out.println("[ui.destroy()]");
+//              System.out.println("[RemoteUI::run() ui.destroy()]");
 			ui.destroy(id);
 		    } else if(msg.type == RMessage.RMSG_ADDWDG) {
 			int id = msg.int32();
 			int parent = msg.int32();
 			Object[] pargs = msg.list();
-            System.out.println("[ui.addwidget()]");
+//              System.out.println("[RemoteUI::run() ui.addwidget()]");
 			ui.addwidget(id, parent, pargs);
 		    } else if(msg.type == RMessage.RMSG_WDGBAR) {
 			/* Ignore for now. */
