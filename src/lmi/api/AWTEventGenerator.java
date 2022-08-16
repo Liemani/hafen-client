@@ -154,7 +154,7 @@ public class AWTEventGenerator {
     // private methods
     private static void generateKeyEvent(int id, int modifiers, int keyCode, char keyChar, int keyLocation) {
         KeyEvent event = new KeyEvent(
-                lmi.ObjectShadow.joglPanel_,
+                lmi.ObjectShadow.joglPanel(),
                 id,
                 System.currentTimeMillis(),
                 modifiers,
@@ -162,15 +162,15 @@ public class AWTEventGenerator {
                 keyChar,
                 keyLocation);
 
-        synchronized(lmi.ObjectShadow.dispatcher_) {
-            lmi.ObjectShadow.dispatcher_.events.add(event);
-            lmi.ObjectShadow.dispatcher_.notifyAll();
+        synchronized(lmi.ObjectShadow.dispatcher()) {
+            lmi.ObjectShadow.dispatcher().events.add(event);
+            lmi.ObjectShadow.dispatcher().notifyAll();
         }
     }
 
     private static void generateMouseEvent(int id, int modifiers, int x, int y, int button) {
         MouseEvent event = new MouseEvent(
-                lmi.ObjectShadow.joglPanel_,
+                lmi.ObjectShadow.joglPanel(),
                 id,
                 System.currentTimeMillis(),
                 modifiers,
@@ -180,9 +180,9 @@ public class AWTEventGenerator {
                 false,
                 button);
 
-        synchronized(lmi.ObjectShadow.dispatcher_) {
-            lmi.ObjectShadow.dispatcher_.events.add(event);
-            lmi.ObjectShadow.dispatcher_.notifyAll();
+        synchronized(lmi.ObjectShadow.dispatcher()) {
+            lmi.ObjectShadow.dispatcher().events.add(event);
+            lmi.ObjectShadow.dispatcher().notifyAll();
         }
     }
 }

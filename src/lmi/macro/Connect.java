@@ -10,22 +10,23 @@ public class Connect implements Runnable {
     }
 
     public void main() throws InterruptedException {
-        String characterName = "Liemani";
+        String characterName = "Liewomani";
 
         haven.Coord logInButtonLocation = centerOfLogInButton();
         lmi.api.AWTEventGenerator.generateMouseClickGeneral(logInButtonLocation, java.awt.event.MouseEvent.BUTTON1);
         waitLoadingCharacterList();
-        lmi.api.WidgetMessageHandler.selectCharacter(lmi.ObjectShadow.characterList_, characterName);
+        lmi.api.WidgetMessageHandler.selectCharacter(lmi.ObjectShadow.characterList(), characterName);
     }
 
     private void waitLoadingCharacterList() throws InterruptedException {
-        while (lmi.ObjectShadow.characterList_ == null)
+        while (lmi.ObjectShadow.characterList() == null)
             Thread.currentThread().sleep(100);
     }
 
 //  on boot haven.RootWidget@5f832aaa
 
     private haven.Coord centerOfLogInButton() {
-        return new haven.Coord(400, 510).add(lmi.ObjectShadow.rootWidget_.child.c);
+        // TODO chang lmi.ObjectShadow.rootWidget() to really intend
+        return new haven.Coord(400, 510).add(lmi.ObjectShadow.rootWidget().child.c);
     }
 }

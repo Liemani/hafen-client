@@ -55,6 +55,7 @@ public class Glob {
 	this.sess = sess;
 	map = new MCache(sess);
 	party = new Party(this);
+    lmi.Initializer.initGlob(this);
     }
 
     @Resource.PublishedCode(name = "wtr")

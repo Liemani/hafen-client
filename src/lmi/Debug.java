@@ -19,7 +19,7 @@ public class Debug {
     static boolean isPrint_;
 
     static void init() {
-        isPrint_ = true;
+        isPrint_ = false;
     }
 
     static void toggleIsPrint() {
@@ -222,6 +222,15 @@ public class Debug {
             else
                 return encloserStack_.get(size - 1);
         }
+    }
+
+    // printStackTrace
+    public static void printStackTraceWithTag(String tag) {
+        if (!isPrint_)
+            return;
+
+        System.out.print(tag);
+        new Exception().printStackTrace();
     }
 
     // describeField

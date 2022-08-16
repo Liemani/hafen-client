@@ -12,9 +12,9 @@ public class FlowerMenuHandler {
     }
 
     public static haven.FlowerMenu widgetAnotherWay() {
-        haven.Widget lastChildOfRootWidget = lmi.ObjectShadow.rootWidget_.lchild;
+        haven.Widget lastChildOfRootWidget = lmi.ObjectShadow.rootWidget().lchild;
         if (lastChildOfRootWidget instanceof haven.FlowerMenu)
-            return (haven.FlowerMenu)lmi.ObjectShadow.rootWidget_.lchild;
+            return (haven.FlowerMenu)lmi.ObjectShadow.rootWidget().lchild;
         else
             return null;
     }
@@ -37,7 +37,7 @@ public class FlowerMenuHandler {
         haven.Coord gobLocationInCoord = CoordinateHandler.convertCoord2dToCoord(gob.rc);
         isWidgetOpened_ = false;
         WidgetMessageHandler.openFlowerMenu(
-                lmi.ObjectShadow.mapView_,
+                lmi.ObjectShadow.mapView(),
                 Util.mapViewCenter_,
                 gobLocationInCoord,
                 lmi.Constant.InteractionType.GENERAL,
