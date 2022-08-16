@@ -1,8 +1,12 @@
 package lmi.api;
 
 public class CoordinateHandler {
-    public static haven.Coord convertCoord2dToCoord(haven.Coord2d point) {
-        return point.floor(haven.OCache.posres);
+    public static haven.Coord convertCoord2dToCoord(haven.Coord2d mapPoint) {
+        return mapPoint.floor(haven.OCache.posres);
+    }
+
+    public static haven.Coord2d convertCoordToCoord2d(haven.Coord mapPoint) {
+	    return mapPoint.mul(haven.OCache.posres);
     }
 
     // center of tile
@@ -12,7 +16,6 @@ public class CoordinateHandler {
         return new haven.Coord2d(x, y);
     }
 
-    // TODO check whether the center is 512 or 511 by printing new Coord2d(5.5, 5.5).floor(posres)
     public static haven.Coord tileCenter(haven.Coord point) {
         return point.div(1024).mul(1024).add(512, 512);
     }
@@ -48,5 +51,22 @@ public class CoordinateHandler {
 
     public static haven.Coord2d northTile(haven.Coord2d mapPoint) {
         return mapPoint.add(0.0, -11.0);
+    }
+
+    // etc
+    public static haven.Coord clone(haven.Coord mapPoint) {
+        return new haven.Coord(mapPoint.x, mapPoint.y);
+    }
+
+    public static haven.Coord2d clone(haven.Coord2d mapPoint) {
+        return new haven.Coord2d(mapPoint.x, mapPoint.y);
+    }
+
+    public static haven.Coord2d newCoordinateByOffset(haven.Coord2d point, double xOffset, double yOffset) {
+        return point.add(xOffset, yOffset);
+    }
+
+    public static haven.Coord newCoordinateByOffset(haven.Coord point, int xOffset, int yOffset) {
+        return point.add(xOffset, yOffset);
     }
 }

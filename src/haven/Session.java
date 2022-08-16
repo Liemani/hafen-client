@@ -486,7 +486,6 @@ public class Session implements Resource.Resolver {
 	    try {
 		long to, last = 0, retries = 0;
 		while(true) {
-					
 		    long now = System.currentTimeMillis();
 		    if(state == "conn") {
 			if(now - last > 2000) {

@@ -40,13 +40,13 @@ public class Util {
     public static void waitHourGlassFailable() throws InterruptedException {
         final long startTime = System.currentTimeMillis();
         final long timeoutLimit = startTime + lmi.Constant.Time.GENERAL_TIMEOUT;
-        while (lmi.ObjectShadow.gameUI_.prog == null) {
+        while (lmi.ObjectShadow.gameUI().prog == null) {
             Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
             long currentTime = System.currentTimeMillis();
             if (currentTime > timeoutLimit)
                 break;
         }
-        while (lmi.ObjectShadow.gameUI_.prog != null)
+        while (lmi.ObjectShadow.gameUI().prog != null)
             Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
     }
 

@@ -14,13 +14,6 @@ class Command {
     // fields
     private static CommandMap map_;
 
-    // test command
-    static Void test() {
-//          final haven.Gob gob = lmi.api.Util.clickedGob();
-//          lmi.api.FlowerMenuHandler.chooseByGobAndPetalName(gob, Constant.Interaction.TAKE_BRANCH);
-        return null;
-    }
-
     // macro command
     static Void macroInterrupt() {
         MacroThread.interrupt();
@@ -70,7 +63,7 @@ class Command {
     }
 
     static Void recordMouseLocation() {
-        lmi.api.AWTEventGenerator.setMouseLocation(ObjectShadow.ui_.mc.x, ObjectShadow.ui_.mc.y);
+        lmi.api.AWTEventGenerator.setMouseLocation(ObjectShadow.ui().mc.x, ObjectShadow.ui().mc.y);
         return null;
     }
 
@@ -211,5 +204,53 @@ class Command {
 
     public static Set<String> getCommandStringSet() {
         return map_.keySet();
+    }
+
+    // test command
+    static Void test() {
+        test004();
+        return null;
+    }
+
+    private static void test000() {
+        final haven.Gob gob = lmi.api.Util.clickedGob();
+        lmi.api.FlowerMenuHandler.chooseByGobAndPetalName(gob, Constant.Interaction.TAKE_BRANCH);
+    }
+
+    private static void test001() {
+        System.out.println(lmi.api.Self.hardHitPoint());
+        System.out.println(lmi.api.Self.softHitPoint());
+        System.out.println(lmi.api.Self.stamina());
+        System.out.println(lmi.api.Self.energy());
+    }
+
+    private static void test002() {
+        java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> map = haven.LMI.gobAttr(lmi.api.Self.gob());
+        map.forEach((unused, value) -> {
+                Debug.describeField(value);
+                });
+    }
+
+    private static void test003() {
+        haven.Coord2d targetLocation = lmi.api.CoordinateHandler.northTile(lmi.api.Self.location());
+        lmi.api.Self.move(targetLocation);
+        while (!lmi.api.Self.isArrived(targetLocation)) {
+            try {
+                Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
+            } catch (Exception e) { e.printStackTrace(); }
+            Debug.describeField(lmi.api.Self.location());
+            Debug.describeField(targetLocation);
+        }
+        System.out.println("[self is arrived]");
+    }
+
+    private static void test004() {
+        haven.Coord2d targetLocation = lmi.api.CoordinateHandler.newCoordinateByOffset(lmi.api.Self.location(), 33.0, 33.0);
+        try {
+            if (lmi.api.Self.moveAndWaitArriving(targetLocation))
+                System.out.println("[moveAndWaitArriving() success]");
+            else
+                System.out.println("[moveAndWaitArriving() failed]");
+        } catch (Exception e) { System.out.println("[interrupted]"); }
     }
 }
