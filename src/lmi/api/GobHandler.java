@@ -1,32 +1,73 @@
 package lmi.api;
 
+import lmi.*;
+
 public class GobHandler {
-    private static haven.OCache objectCache_;
-
-    public static void init(haven.OCache objectCache) { objectCache_ = objectCache; }
-
-    //  while(it.hasNext()) {
-    //      System.out.println(it.next());
-    //  }
-    public static java.util.Iterator<haven.Gob> iterator() { return objectCache_.iterator(); }
-
-    public static haven.Coord2d location(haven.Gob gob) {
-        return gob.rc;
-    }
-
-    public static boolean isStop(haven.Gob gob) {
-        return velocity(gob) == 0.0;
-    }
-
-    public static boolean isMoving(haven.Gob gob) {
-        return velocity(gob) != 0.0;
-    }
+//      iter = oc.iterator();
+//      while(iter.hasNext()) {
+//          System.out.println(iter.next());
+//      }
+    public static java.util.Iterator<haven.Gob> iterator() { return ObjectShadow.objectCache().iterator(); }
+    public static haven.Coord2d location(haven.Gob gob) { return gob.rc; }
+    public static boolean isStop(haven.Gob gob) { return velocity(gob) == 0.0; }
+    public static boolean isMoving(haven.Gob gob) { return velocity(gob) != 0.0; }
 
     public static haven.Resource resource(haven.Gob gob) {
         return gob.getres();
     }
 
-    public static double velocity(haven.Gob gob) {
-        return gob.getv();
+    public static String resourceName(haven.Gob gob) {
+        return resource(gob).name;
+    }
+
+    public static String resourceBasename(haven.Gob gob) {
+        String name = resourceName(gob);
+        int lastIndexOfSlash = name.lastIndexOf('/');
+        String basename = name.substring(lastIndexOfSlash + 1);
+        return basename;
+    }
+
+    public static double velocity(haven.Gob gob) { return gob.getv(); }
+
+    // find gob
+    public static haven.Gob closestGob() {
+        java.util.Iterator<haven.Gob> iterator;
+        haven.Gob gob = null;
+        while (true) {
+            try {
+                iterator = GobHandler.iterator();
+                gob = closestGob(iterator);
+                break;
+            } catch (Exception e) { }
+        }
+
+        return gob;
+    }
+
+    private static haven.Gob closestGob(java.util.Iterator<haven.Gob> iterator) {
+        haven.Gob gob;
+        double distance;
+
+        haven.Gob closestGob = null;
+        double closestDistance = 1100.0;
+
+        while (iterator.hasNext()) {
+            gob = iterator.next();
+            if (gob.getClass() != haven.Gob.class)
+                continue;
+            if (gob == Self.gob())
+                continue;
+            distance = Self.distance(gob);
+            if (distance < closestDistance) {
+                closestGob = gob;
+                closestDistance = distance;
+            }
+        }
+
+        return closestGob;
+    }
+
+    public static double distance(haven.Gob lhs, haven.Gob rhs) {
+        return GobHandler.location(lhs).dist(GobHandler.location(rhs));
     }
 }

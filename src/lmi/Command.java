@@ -7,6 +7,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import lmi.api.*;
+
 class Command {
     // type define
     private static class CommandMap extends TreeMap<String, Method> {};
@@ -208,7 +210,7 @@ class Command {
 
     // test command
     static Void test() {
-        test004();
+        test008();
         return null;
     }
 
@@ -252,5 +254,38 @@ class Command {
             else
                 System.out.println("[moveAndWaitArriving() failed]");
         } catch (Exception e) { System.out.println("[interrupted]"); }
+    }
+
+    private static void test005() {
+        int count = 0;
+        java.util.Iterator<haven.Gob> iterator = GobHandler.iterator();
+        while (iterator.hasNext()) {
+            ++count;
+            haven.Gob gob = iterator.next();
+            System.out.println(GobHandler.resourceName(gob));
+            System.out.println(count);
+        }
+    }
+
+    private static void test006() {
+        haven.Gob gob = GobHandler.closestGob();
+        System.out.println("[distance of closest gob] " + Self.distance(gob));
+        System.out.println("[resource name of closest gob] " + GobHandler.resourceName(gob));
+//          Debug.describeField(Self.gob());
+//          Debug.describeField(gob);
+    }
+
+    private static void test007() {
+        try {
+            Self.moveCenter();
+        } catch (Exception e) { System.out.println("[test007() is interrupted]"); }
+    }
+
+    private static void test008() {
+        try {
+            Self.moveCenter();
+            for (int count = 0; count < 10; ++count)
+                Self.moveNorthTile();
+        } catch (Exception e) { System.out.println("[test008() is interrupted]"); }
     }
 }

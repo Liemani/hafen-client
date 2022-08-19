@@ -70,7 +70,7 @@ public class OCache implements Iterable<Gob> {
 
     public OCache(Glob glob) {
 	this.glob = glob;
-        lmi.api.GobHandler.init(this);
+        lmi.Initializer.initObjectCache(this);
     }
 
     public synchronized void callback(ChangeCallback cb) {
