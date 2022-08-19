@@ -55,7 +55,7 @@ public class GobHandler {
             gob = iterator.next();
             if (gob.getClass() != haven.Gob.class)
                 continue;
-            if (gob == Self.gob())
+            if (Self.coordinateEquals(gob))
                 continue;
             distance = Self.distance(gob);
             if (distance < closestDistance) {

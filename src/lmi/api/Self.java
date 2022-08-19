@@ -87,8 +87,7 @@ public class Self {
     }
 
     public static boolean isArrived(haven.Coord2d destination) {
-        return Self.location().x == destination.x
-            && Self.location().y == destination.y;
+        return Self.coordinateEquals(destination);
     }
 
     // do action
@@ -159,5 +158,13 @@ public class Self {
         haven.Coord2d center = CoordinateHandler.tileCenter(Self.location());
         final boolean result = moveAndWaitArriving(center);
         return result;
+    }
+
+    public static boolean coordinateEquals(haven.Gob gob) {
+        return CoordinateHandler.equals(Self.location(), GobHandler.location(gob));
+    }
+
+    public static boolean coordinateEquals(haven.Coord2d point) {
+        return CoordinateHandler.equals(Self.location(), point);
     }
 }
