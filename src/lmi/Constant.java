@@ -27,7 +27,7 @@ public class Constant {
     }
 
     public static class InteractionType {
-        public static final int GENERAL = 0;
+        public static final int DEFAULT = 0;
         public static final int HAS_OVERLAY = 1;
     }
 
@@ -96,6 +96,7 @@ public class Constant {
 
     public static class MeshId {
         public static final int NONE = -1;
+        public static final int DEFAULT = 0;
     }
 
     public static class HitBoxSize {

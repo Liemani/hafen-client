@@ -53,10 +53,9 @@ public class Self {
     }
 
     public static void move(haven.Coord2d clickedMapPoint) {
-        // 1 tile has 11.0 width
-        WidgetMessageHandler.mapViewClick(
+        WidgetMessageHandler.click(
                 lmi.ObjectShadow.mapView(),
-                Util.mapViewCenter_,
+                Util.mapViewCenter(),
                 CoordinateHandler.convertCoord2dToCoord(clickedMapPoint),
                 lmi.Constant.Input.Mouse.LEFT,
                 lmi.Constant.Input.Modifier.NONE);
@@ -64,9 +63,9 @@ public class Self {
 
     public static void moveByIntCoordinate(haven.Coord clickedMapPoint) {
         // 1 tile has 1024 width
-        WidgetMessageHandler.mapViewClick(
+        WidgetMessageHandler.click(
                 lmi.ObjectShadow.mapView(),
-                Util.mapViewCenter_,
+                Util.mapViewCenter(),
                 clickedMapPoint,
                 lmi.Constant.Input.Mouse.LEFT,
                 lmi.Constant.Input.Modifier.NONE);

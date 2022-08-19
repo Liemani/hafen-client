@@ -27,24 +27,15 @@ public class FlowerMenuHandler {
     }
 
     // open
-    public static void openWait(haven.Gob gob, int meshId) throws InterruptedException {
-        open(gob, meshId);
+    public static void interactWait(haven.Gob gob, int meshId) throws InterruptedException {
+        FlowerMenuHandler.interact(gob, meshId);
         waitOpening();
     }
 
-    public static void open(haven.Gob gob, int meshId) {
+    public static void interact(haven.Gob gob, int meshId) {
         // If you don't know meshID, pass -1
-        haven.Coord gobLocationInCoord = CoordinateHandler.convertCoord2dToCoord(gob.rc);
         isWidgetOpened_ = false;
-        WidgetMessageHandler.openFlowerMenu(
-                lmi.ObjectShadow.mapView(),
-                Util.mapViewCenter_,
-                gobLocationInCoord,
-                lmi.Constant.InteractionType.GENERAL,
-                (int)gob.id,
-                gobLocationInCoord,
-                0,
-                meshId);
+        WidgetMessageHandler.interact(gob, meshId);
     }
 
     // wait opening: if opened, return true, else false
@@ -89,7 +80,6 @@ public class FlowerMenuHandler {
 
     public static void chooseAndWaitByName(String name) throws IllegalArgumentException, InterruptedException {
         chooseByName(name);
-        Self.waitArriving();
         Util.waitHourGlassFailable();
     }
 

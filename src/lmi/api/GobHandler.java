@@ -70,4 +70,9 @@ public class GobHandler {
     public static double distance(haven.Gob lhs, haven.Gob rhs) {
         return GobHandler.location(lhs).dist(GobHandler.location(rhs));
     }
+
+    // etc
+    public static int id(haven.Gob gob) {
+        return (int)gob.id;
+    }
 }
