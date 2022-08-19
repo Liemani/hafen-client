@@ -54,47 +54,47 @@ class Command {
 
     // etc command
     static Void recordMouseLocation() {
-        lmi.api.AWTEventGenerator.setMouseLocation(ObjectShadow.ui().mc.x, ObjectShadow.ui().mc.y);
+        AWTEventGenerator.setMouseLocation(ObjectShadow.ui().mc.x, ObjectShadow.ui().mc.y);
         return null;
     }
 
     static Void printRecordedMouseLocation() {
-        lmi.api.AWTEventGenerator.printRecordedMouseLocation();
+        AWTEventGenerator.printRecordedMouseLocation();
         return null;
     }
 
 //      // awt commands
 //      static Void awtGenerateMouseClick() {
-//          lmi.api.AWTEventGenerator.generateMouseClickGeneral(java.awt.event.MouseEvent.BUTTON3);
+//          AWTEventGenerator.generateMouseClickGeneral(java.awt.event.MouseEvent.BUTTON3);
 //          return null;
 //      }
 //  
 //      static Void awtGenerateMouseRightClick() {
-//          lmi.api.AWTEventGenerator.generateMouseClickModified(0, java.awt.event.MouseEvent.BUTTON3);
+//          AWTEventGenerator.generateMouseClickModified(0, java.awt.event.MouseEvent.BUTTON3);
 //          return null;
 //      }
 //  
 //      static Void toggleEquipment() {
-//          lmi.api.AWTEventGenerator.generateCtrlE();
+//          AWTEventGenerator.generateCtrlE();
 //          return null;
 //      }
 //  
 //      static Void openAxeCraftWindow() {
-//          lmi.api.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
-//          lmi.api.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
-//          lmi.api.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
-//          lmi.api.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_A);
-//          lmi.api.AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
+//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
+//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
+//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
+//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_A);
+//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
 //          return null;
 //      }
 //  
 //      static Void typeEnter() {
-//          lmi.api.AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_ENTER);
+//          AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_ENTER);
 //          return null;
 //      }
 //  
 //      static Void typeTab() {
-//          lmi.api.AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_TAB);
+//          AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_TAB);
 //          return null;
 //      }
 
@@ -185,8 +185,8 @@ class Command {
         map_ = new CommandMap();
         Method methodArray[] = Command.class.getDeclaredMethods();
         for (Method method : methodArray) {
-            if (!lmi.Util.methodHasModifier(method, Modifier.PUBLIC)
-                    && !lmi.Util.methodHasModifier(method, Modifier.PRIVATE)) {
+            if (!Util.methodHasModifier(method, Modifier.PUBLIC)
+                    && !Util.methodHasModifier(method, Modifier.PRIVATE)) {
                 map_.put(method.getName(), method);
             }
         }
@@ -201,63 +201,57 @@ class Command {
     }
 
     // test command
-    static haven.Gob gob = null;
-    static Void test1() {
-        test000();
-        return null;
-    }
-
-    static Void test2() {
-        test011();
-        return null;
-    }
-
-    private static void test000() {
+    static Void interactWaitClosestGob() {
         final haven.Gob gob = GobHandler.closestGob();
         try {
             FlowerMenuHandler.interactWait(gob, Constant.MeshId.NONE);
 //              FlowerMenuHandler.chooseByGobAndPetalName(gob, Constant.Interaction.TAKE_BRANCH);
         } catch (Exception e) {}
+        return null;
     }
 
-    private static void test001() {
-        System.out.println(lmi.api.Self.hardHitPoint());
-        System.out.println(lmi.api.Self.softHitPoint());
-        System.out.println(lmi.api.Self.stamina());
-        System.out.println(lmi.api.Self.energy());
+    static Void describeSelf() {
+        System.out.println(Self.hardHitPoint());
+        System.out.println(Self.softHitPoint());
+        System.out.println(Self.stamina());
+        System.out.println(Self.energy());
+        return null;
     }
 
-    private static void test002() {
-        java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> map = haven.LMI.gobAttr(lmi.api.Self.gob());
+    static Void describeSelfAttribute() {
+        java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> map = haven.LMI.gobAttr(Self.gob());
         map.forEach((unused, value) -> {
                 Debug.describeField(value);
                 });
+        return null;
     }
 
-    private static void test003() {
-        haven.Coord2d targetLocation = lmi.api.CoordinateHandler.northTile(lmi.api.Self.location());
-        lmi.api.Self.move(targetLocation);
-        while (!lmi.api.Self.isArrived(targetLocation)) {
+    static Void moveNorthTileWait() {
+        haven.Coord2d targetLocation = CoordinateHandler.northTile(Self.location());
+        Self.move(targetLocation);
+        while (!Self.isArrived(targetLocation)) {
             try {
                 Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
             } catch (Exception e) { e.printStackTrace(); }
-            Debug.describeField(lmi.api.Self.location());
+            Debug.describeField(Self.location());
             Debug.describeField(targetLocation);
         }
         System.out.println("[self is arrived]");
+        return null;
     }
 
-    private static void test004() {
-        haven.Coord2d targetLocation = lmi.api.CoordinateHandler.newCoordinateByOffset(lmi.api.Self.location(), 33.0, 33.0);
+    static Void moveEastSouthWait() {
+        haven.Coord2d targetLocation = CoordinateHandler.newCoordinateByOffset(Self.location(), 33.0, 33.0);
         try {
-            if (lmi.api.Self.moveAndWaitArriving(targetLocation))
+            if (Self.moveAndWaitArriving(targetLocation))
                 System.out.println("[moveAndWaitArriving() success]");
             else
                 System.out.println("[moveAndWaitArriving() failed]");
         } catch (Exception e) { System.out.println("[interrupted]"); }
+        return null;
     }
 
-    private static void test005() {
+    static Void describeAllGob() {
         int count = 0;
         java.util.Iterator<haven.Gob> iterator = GobHandler.iterator();
         while (iterator.hasNext()) {
@@ -266,43 +260,50 @@ class Command {
             System.out.println(GobHandler.resourceName(gob));
             System.out.println(count);
         }
+        return null;
     }
 
-    private static void test006() {
-        haven.Gob gob = GobHandler.closestGob();
-        System.out.println("[distance of closest gob] " + Self.distance(gob));
-        System.out.println("[resource name of closest gob] " + GobHandler.resourceName(gob));
-//          Debug.describeField(Self.gob());
-//          Debug.describeField(gob);
-    }
-
-    private static void test007() {
+    static Void moveCenter() {
         try {
             Self.moveCenter();
-        } catch (Exception e) { System.out.println("[test007() is interrupted]"); }
+        } catch (Exception e) { System.out.println("[moveCenter() is interrupted]"); }
+        return null;
     }
 
-    private static void test008() {
+    static Void moveNorthTileTenTimes() {
         try {
             Self.moveCenter();
             for (int count = 0; count < 10; ++count)
                 Self.moveNorthTile();
-        } catch (Exception e) { System.out.println("[test008() is interrupted]"); }
+        } catch (Exception e) { System.out.println("[moveNorthTileTenTimes() is interrupted]"); }
+        return null;
     }
 
-    private static void test009() {
+    static Void describeCursorGItem() {
         haven.Widget gItem = WidgetManager.cursorGItem();
         Debug.describeField(gItem);
+        return null;
     }
 
-    private static void test010() {
+    static Void liftClosestGob() {
         haven.Gob gob = GobHandler.closestGob();
         WidgetMessageHandler.lift(gob);
+        return null;
     }
 
-    private static void test011() {
+    static Void putNorthTile() {
         haven.Coord2d location = CoordinateHandler.northTile(Self.location());
         haven.Coord locationInCoord = CoordinateHandler.convertCoord2dToCoord(location);
         WidgetMessageHandler.put(locationInCoord);
+        return null;
     }
+
+    static Void describeClosestGob() {
+        haven.Gob gob = GobHandler.closestGob();
+        System.out.println("[closest gob] " + GobHandler.resourceName(gob));
+        System.out.println("[disstance] " + Self.distance(gob));
+        return null;
+    }
+
+//      static Void
 }
