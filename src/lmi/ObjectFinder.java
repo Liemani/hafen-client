@@ -50,20 +50,20 @@ class ObjectFinder {
 
         boolean typeIsField = type.isField();
 
-        if (typeIsField && classObjectToReset == null && last() == null
-                || !typeIsField && last() == null) {
+        if (typeIsField && classObjectToReset == null && ObjectFinder.last() == null
+                || !typeIsField && ObjectFinder.last() == null) {
             System.out.println("cannot progress more!");
             throw new Exception();
         }
 
         if (classObjectToReset == null)
-            classObjectToReset = last().getClass();
+            classObjectToReset = ObjectFinder.last().getClass();
 
         Object object = null;
         if (typeIsField)
-            object = Util.getObjectByInputFromField(last(), classObjectToReset);
+            object = Util.getObjectByInputFromField(ObjectFinder.last(), classObjectToReset);
         else
-            object = Util.getObjectByInputFromMethod(last(), classObjectToReset);
+            object = Util.getObjectByInputFromMethod(ObjectFinder.last(), classObjectToReset);
 
         return object;
     }
