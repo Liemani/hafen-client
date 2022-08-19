@@ -105,4 +105,134 @@ public class Constant {
         public static class Height {
         }
     }
+
+    public static class gfx {
+        public static class borka {
+            public static final String BODY = "body";
+        }
+
+        public static class terobjs {
+            public static class arch {
+                public static final String PALISADEBIGGATE = "palisadebiggate";
+                public static final String PALISADECP = "palisadecp";
+                public static final String PALISADESEG = "palisadeseg";
+                public static final String POLEBIGGATE = "polebiggate";
+                public static final String POLECP = "polecp";
+                public static final String POLESEG = "poleseg";
+            }
+
+            // gfx/terobjs/bumlings/basalt0
+            // 0 ~ 3
+            public static class bumlings {
+                public static final String BASALT = "basalt";
+                public static final String DOLOMITE = "dolomite";
+                public static final String FLINT = "flint";
+                public static final String GRANITE = "granite";
+                public static final String LIMESTONE = "limestone";
+                public static final String QUARTZ = "quartz";
+                public static final String SCHIST = "schist";
+            }
+
+            public static class bushes {
+                public static final String ARROWWOOD = "arrowwood";
+                public static final String BLACKCURRANT = "blackcurrant";
+                public static final String ELDERBERRYBUSH = "elderberrybush";
+                public static final String GORSE = "gorse";
+                public static final String HOLLY = "holly";
+                public static final String REDCURRANT = "redcurrant";
+                public static final String SPINDLEBUSH = "spindlebush";
+            }
+
+            public static class furn {
+                public static final String BOUGHBED = "boughbed";
+            }
+
+            public static class items {
+                public static final String BLACKCURRANTBERRY = "blackcurrantberry";
+                public static final String BRANCH = "branch";
+                public static final String CLOGS = "clogs";
+                public static final String LIMESTONE = "limestone";
+                public static final String QUARTZ = "quartz";
+                public static final String SQUIRRELTAIL_BLOOD = "squirreltail-blood";
+            }
+
+            public static class plants {
+                public static final String BARLEY = "barley";
+                public static final String BEET = "beet";
+                public static final String CARROT = "carrot";
+                public static final String FLAX = "flax";
+                public static final String HEMP = "hemp";
+                public static final String LEEK = "leek";
+                public static final String LETTUCE = "lettuce";
+                public static final String PIPEWEED = "pipeweed";
+                public static final String POPPY = "poppy";
+                public static final String PUMPKIN = "pumpkin";
+                public static final String REDONION = "redonion";
+                public static final String TURNIP = "turnip";
+                public static final String WHEAT = "wheat";
+                public static final String YELLOWONION = "yellowonion";
+            }
+
+            // gfx/terobjs/stockpile-anyleather
+            public static class stockpile {
+                public static final String ANYLEATHER = "anyleather";
+                public static final String BOARD = "board";
+                public static final String BRANCH = "branch";
+                public static final String BRICK = "brick";
+                public static final String METAL = "metal";
+                public static final String NUGGET_METAL = "nugget-metal";
+                public static final String ORE = "ore";
+                public static final String SOIL = "soil";
+                public static final String STONE = "stone";
+                public static final String WBLOCK = "wblock";
+            }
+
+            //  almondtree
+            //  almondtreelog
+            //  almondtreestump
+            public static class trees {
+                public static final String ALMONDTREE = "almondtree";
+                public static final String APPLETREE = "appletree";
+                public static final String BAYWILLOW = "baywillow";
+                public static final String BEECH = "beech";
+                public static final String BIRCH = "birch";
+                public static final String BLACKPINE = "blackpine";
+                public static final String CHECKERTREE = "checkertree";
+                public static final String CHESTNUTTREE = "chestnuttree";
+                public static final String CRABAPPLETREE = "crabappletree";
+                public static final String DOGWOODLOG = "dogwoodlog";
+                public static final String GRAYALDER = "grayalder";
+                public static final String HAZEL = "hazel";
+                public static final String PLUMTREE = "plumtree";
+                public static final String POPLAR = "poplar";
+                public static final String ROWAN = "rowan";
+                public static final String SALLOW = "sallow";
+                public static final String TEREBINTH = "terebinth";
+                public static final String WILLOW = "willow";
+            }
+
+            public static class treesException {
+                public static final String OLDSTUMP = "oldstump";
+                public static final String OLDTRUNK = "oldtrunk";
+            }
+
+            public static class vehicle {
+                public static final String CART = "cart";
+                public static final String DUGOUT = "dugout";
+                public static final String PLOW = "plow";
+                public static final String ROWBOAT = "rowboat";
+            }
+
+            public static final String BARREL = "barrel";
+            public static final String BEEHIVE = "beehive";
+            public static final String CASTINGMOLD_SMALL = "castingmold-small";
+            public static final String CHEST = "chest";
+            public static final String CRATE = "crate";
+            public static final String CRUCIBLE = "crucible";
+            public static final String HEARTH_FIRE = "pow";
+            public static final String PRIMSMELTER = "primsmelter";
+            public static final String SURVOBJ = "survobj";
+            public static final String TROUGH = "trough";
+        }
+    }
 }

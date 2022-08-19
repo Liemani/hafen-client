@@ -2,19 +2,20 @@ package lmi;
 
 public class ObjectShadow {
     // static fields
-    static haven.MainFrame mainFrame_;   // haven.MainFrame::MainFrame()
-    static Thread mainThread_;   // haven.MainFrame::run()
-    static haven.JOGLPanel joglPanel_;   // haven.JOGLPanel::JOGLPanel()
-    static haven.UIPanel.Dispatcher dispatcher_; // haven.JOGLPanel::JOGLPanel()
-    static haven.UI.Runner uiRunner_;    // haven.Bootstrap::Bootstrap(), haven.RemoteUI::RemoteUI()
-    static haven.UI ui_; // haven.UI::UI()
-    static haven.RootWidget rootWidget_; // haven.RootWidget::RootWidget()
-    static haven.GameUI gameUI_; // haven.GameUI::GameUI()
-    static haven.MapView mapView_;   // haven.MapView::MapView()
-    static haven.Session session_;   // haven.Session::Session()
-    static haven.Charlist characterList_;    // haven.Charlist::Charlist()
-    static haven.IMeter[] gaugeWidgetArray_;  // haven.IMeter::IMeter()
-    static haven.Glob glob_;    // haven.Glob::Glob()
+    private static haven.MainFrame mainFrame_;   // haven.MainFrame::MainFrame()
+    private static Thread mainThread_;   // haven.MainFrame::run()
+    private static haven.JOGLPanel joglPanel_;   // haven.JOGLPanel::JOGLPanel()
+    private static haven.UIPanel.Dispatcher dispatcher_; // haven.JOGLPanel::JOGLPanel()
+    private static haven.UI.Runner uiRunner_;    // haven.Bootstrap::Bootstrap(), haven.RemoteUI::RemoteUI()
+    private static haven.UI ui_; // haven.UI::UI()
+    private static haven.RootWidget rootWidget_; // haven.RootWidget::RootWidget()
+    private static haven.GameUI gameUI_; // haven.GameUI::GameUI()
+    private static haven.MapView mapView_;   // haven.MapView::MapView()
+    private static haven.Session session_;   // haven.Session::Session()
+    private static haven.Charlist characterList_;    // haven.Charlist::Charlist()
+    private static haven.IMeter[] gaugeWidgetArray_;  // haven.IMeter::IMeter()
+    private static haven.Glob glob_;    // haven.Glob::Glob()
+    private static haven.OCache objectCache_;
 
     // initialize
     static void init() { gaugeWidgetArray_ = new haven.IMeter[3]; }
@@ -33,6 +34,7 @@ public class ObjectShadow {
     public static haven.Charlist characterList() { return characterList_; }
     public static haven.IMeter[] gaugeWidgetArray() { return gaugeWidgetArray_; }
     public static haven.Glob glob() { return glob_; }
+    public static haven.OCache objectCache() { return objectCache_; }
 
     // setter
     static void setMainFrame(haven.MainFrame mainFrame) { mainFrame_ = mainFrame; }
@@ -50,6 +52,7 @@ public class ObjectShadow {
     static void setSession(haven.Session session) { session_ = session; }
     static void setCharacterList(haven.Charlist characterList) { characterList_ = characterList; }
     static void setGlob(haven.Glob glob) { glob_ = glob; }
+    static void setObjectCache(haven.OCache objectCache) { objectCache_ = objectCache; }
 
     static void setGaugeArray(haven.IMeter gauge) {
         if (Util.resourceName(gauge).equals(Constant.Gauge.ResourceName.HIT_POINT))

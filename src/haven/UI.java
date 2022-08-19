@@ -326,9 +326,7 @@ public class UI {
 	
     public void wdgmsg(Widget sender, String msg, Object... args) {
         System.out.println("[UI::wdgmsg()] {\"sender\": \"" + sender.getClass().getName() + "\", \"command\": \"" + msg + "\"}");
-        for (Object object : args) {
-            lmi.Debug.describeField(object);
-        }
+        for (Object object : args) { lmi.Debug.describeField(object); }
 	int id = widgetid(sender);
 	if(id < 0) {
 	    new Warning("wdgmsg sender (%s) is not in rwidgets, message is %s", sender.getClass().getName(), msg).issue();
