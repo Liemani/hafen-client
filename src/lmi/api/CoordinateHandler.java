@@ -1,6 +1,7 @@
 package lmi.api;
 
 public class CoordinateHandler {
+    // convert
     public static haven.Coord convertCoord2dToCoord(haven.Coord2d mapPoint) {
         return mapPoint.floor(haven.OCache.posres);
     }
@@ -68,5 +69,13 @@ public class CoordinateHandler {
 
     public static haven.Coord newCoordinateByOffset(haven.Coord point, int xOffset, int yOffset) {
         return point.add(xOffset, yOffset);
+    }
+
+    public static boolean equals(haven.Coord lhs, haven.Coord rhs) {
+        return lhs.x == rhs.x && lhs.y == rhs.y;
+    }
+
+    public static boolean equals(haven.Coord2d lhs, haven.Coord2d rhs) {
+        return lhs.x == rhs.x && lhs.y == rhs.y;
     }
 }
