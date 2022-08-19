@@ -10,6 +10,10 @@ public class Self {
         return gob().rc;
     }
 
+    public static double direction() {
+        return gob().a;
+    }
+
     public static haven.Skeleton.Pose pose() {
          return gob().getpose();
     }
@@ -84,7 +88,8 @@ public class Self {
     }
 
     public static boolean isArrived(haven.Coord2d destination) {
-        return Math.abs(Self.location().x - destination.x) < lmi.Constant.COORD2D_PER_COORD;
+        return Self.location().x == destination.x
+            && Self.location().y == destination.y;
     }
 
     // do action
@@ -141,8 +146,19 @@ public class Self {
     }
 
     // etc
-    // simple move
-    public static void moveNorthTile() {
-        move(CoordinateHandler.northTile(location()));
+    public static boolean moveNorthTile() throws InterruptedException {
+        haven.Coord2d northTile = CoordinateHandler.northTile(Self.location());
+        final boolean result = moveAndWaitArriving(northTile);
+        return result;
+    }
+
+    public static double distance(haven.Gob gob) {
+        return Self.location().dist(GobHandler.location(gob));
+    }
+
+    public static boolean moveCenter() throws InterruptedException {
+        haven.Coord2d center = CoordinateHandler.tileCenter(Self.location());
+        final boolean result = moveAndWaitArriving(center);
+        return result;
     }
 }

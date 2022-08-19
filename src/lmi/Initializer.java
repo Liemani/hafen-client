@@ -23,6 +23,7 @@ public class Initializer {
     public static void initSession(haven.Session session) { ObjectShadow.setSession(session); }
     public static void initCharList(haven.Charlist characterList) { ObjectShadow.setCharacterList(characterList); }
     public static void initGlob(haven.Glob glob) { ObjectShadow.setGlob(glob); }
+    public static void initObjectCache(haven.OCache objectCache) { ObjectShadow.setObjectCache(objectCache); }
 
     public static void initGaugeArray(haven.IMeter gauge) { ObjectShadow.setGaugeArray(gauge); }
 }
