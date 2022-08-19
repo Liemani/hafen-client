@@ -6,8 +6,12 @@ package lmi.api;
 public class Util {
     // TODO 화면 사이즈가 바뀌면 이 값도 바꿔주도록 하자
     // 아마 frame에 sizeChanged() 같은 event가 있을 것 같다
-    static haven.Coord mapViewCenter_;
+    private static haven.Coord mapViewCenter_;
     static haven.ClickData clickData_;
+
+    public static haven.Coord mapViewCenter() {
+        return Util.mapViewCenter_;
+    }
 
     public static void initMapViewCenterByMapView(haven.MapView mapView) {
         mapViewCenter_ = mapView.sz.div(2);

@@ -1,5 +1,7 @@
 package lmi.api;
 
+import lmi.*;
+
 // TODO change all methods to get sender as argument
 public class WidgetMessageHandler {
     // act
@@ -12,26 +14,27 @@ public class WidgetMessageHandler {
     public static void cancelAct() {
     }
 
-    // MapView click
-    public static void mapViewClick(
+    // click
+    public static void click(
             haven.MapView mapView,
             haven.Coord clickedMapViewPoint,
             haven.Coord clickedMapPoint,
-            int button,
+            int mouseButton,
             int modifiers) {
         mapView.wdgmsg(
                 lmi.Constant.Command.CLICK,
                 clickedMapViewPoint,
                 clickedMapPoint,
-                button,
+                mouseButton,
                 modifiers);
     }
 
-    // FlowerMenu
-    public static void openFlowerMenu(
+    public static void clickObject(
             haven.MapView mapView,
             haven.Coord clickedMapViewPoint,
             haven.Coord clickedMapPoint,
+            int mouseButton,
+            int modifiers,
             int interactionType,
             int gobId,
             haven.Coord gobLocation,
@@ -41,8 +44,8 @@ public class WidgetMessageHandler {
                 lmi.Constant.Command.CLICK,
                 clickedMapViewPoint,
                 clickedMapPoint,
-                lmi.Constant.Input.Mouse.RIGHT,
-                0,
+                mouseButton,
+                modifiers,
                 interactionType,
                 gobId,
                 gobLocation,
@@ -53,7 +56,7 @@ public class WidgetMessageHandler {
     public static void openFlowerMenuByClickData(haven.MapView mapView, haven.ClickData clickData) {
         final haven.Gob gob = Util.gobFromClickData(clickData);
         Object[] args = {
-            Util.mapViewCenter_,
+            Util.mapViewCenter(),
             CoordinateHandler.convertCoord2dToCoord(gob.rc),
             lmi.Constant.Input.Mouse.RIGHT,
             0};
@@ -76,5 +79,48 @@ public class WidgetMessageHandler {
     // characterList
     public static void selectCharacter(haven.Charlist charList, String name) {
         charList.wdgmsg(lmi.Constant.Command.SELECT_CHARACTER, name);
+    }
+
+    // convenient
+    public static void interact(haven.Gob gob, int meshId) {
+        haven.Coord2d gobLocation = GobHandler.location(gob);
+        haven.Coord gobLocationInCoord = CoordinateHandler.convertCoord2dToCoord(gobLocation);
+        WidgetMessageHandler.clickObject(
+                ObjectShadow.mapView(),
+                lmi.api.Util.mapViewCenter(),
+                gobLocationInCoord,
+                Constant.Input.Mouse.RIGHT,
+                Constant.Input.Modifier.NONE,
+                Constant.InteractionType.DEFAULT,
+                GobHandler.id(gob),
+                gobLocationInCoord,
+                0,
+                meshId);
+    }
+
+    public static void lift(haven.Gob gob) {
+        Self.carry();
+        haven.Coord2d gobLocation = GobHandler.location(gob);
+        haven.Coord gobLocationInCoord = CoordinateHandler.convertCoord2dToCoord(gobLocation);
+        WidgetMessageHandler.clickObject(
+                ObjectShadow.mapView(),
+                lmi.api.Util.mapViewCenter(),
+                gobLocationInCoord,
+                Constant.Input.Mouse.LEFT,
+                Constant.Input.Modifier.NONE,
+                Constant.InteractionType.DEFAULT,
+                GobHandler.id(gob),
+                gobLocationInCoord,
+                0,
+                Constant.MeshId.NONE);
+    }
+
+    public static void put(haven.Coord location) {
+        click(
+            ObjectShadow.mapView(),
+            lmi.api.Util.mapViewCenter(),
+            location,
+            Constant.Input.Mouse.RIGHT,
+            Constant.Input.Modifier.NONE);
     }
 }

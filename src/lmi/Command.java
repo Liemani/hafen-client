@@ -52,18 +52,7 @@ class Command {
         return null;
     }
 
-    // action command
-    static Void dig() {
-        lmi.api.Self.dig();
-        return null;
-    }
-
     // etc command
-    static Void printObjectShadow() {
-        Debug.describeField(System.out, lmi.ObjectShadow.class);
-        return null;
-    }
-
     static Void recordMouseLocation() {
         lmi.api.AWTEventGenerator.setMouseLocation(ObjectShadow.ui().mc.x, ObjectShadow.ui().mc.y);
         return null;
@@ -110,8 +99,9 @@ class Command {
 //      }
 
     // Wrapping ObjectFinder
-    static Void objectInit() {
-        wrapObjectFinderFind(Util.MemberType.FIELD, ObjectShadow.class, true);
+    static Void objectInitWithRootWidget() {
+        ObjectFinder.init();
+        ObjectFinder.moveForward(ObjectShadow.rootWidget());
         return null;
     }
 
@@ -161,6 +151,8 @@ class Command {
         return null;
     }
 
+    // TODO modified ObjectShadow's fields access modifier to private,
+    //  and now can't use this features for objectInit()
     private static void wrapObjectFinderFind(Util.MemberType type, Class classObjectToReset, boolean willAppend) {
         Debug.describeClassNameHashCodeWithTag("current: ", ObjectFinder.last());
 
@@ -209,14 +201,23 @@ class Command {
     }
 
     // test command
-    static Void test() {
-        test008();
+    static haven.Gob gob = null;
+    static Void test1() {
+        test000();
+        return null;
+    }
+
+    static Void test2() {
+        test011();
         return null;
     }
 
     private static void test000() {
-        final haven.Gob gob = lmi.api.Util.clickedGob();
-        lmi.api.FlowerMenuHandler.chooseByGobAndPetalName(gob, Constant.Interaction.TAKE_BRANCH);
+        final haven.Gob gob = GobHandler.closestGob();
+        try {
+            FlowerMenuHandler.interactWait(gob, Constant.MeshId.NONE);
+//              FlowerMenuHandler.chooseByGobAndPetalName(gob, Constant.Interaction.TAKE_BRANCH);
+        } catch (Exception e) {}
     }
 
     private static void test001() {
@@ -287,5 +288,21 @@ class Command {
             for (int count = 0; count < 10; ++count)
                 Self.moveNorthTile();
         } catch (Exception e) { System.out.println("[test008() is interrupted]"); }
+    }
+
+    private static void test009() {
+        haven.Widget gItem = WidgetManager.cursorGItem();
+        Debug.describeField(gItem);
+    }
+
+    private static void test010() {
+        haven.Gob gob = GobHandler.closestGob();
+        WidgetMessageHandler.lift(gob);
+    }
+
+    private static void test011() {
+        haven.Coord2d location = CoordinateHandler.northTile(Self.location());
+        haven.Coord locationInCoord = CoordinateHandler.convertCoord2dToCoord(location);
+        WidgetMessageHandler.put(locationInCoord);
     }
 }
