@@ -20,8 +20,9 @@ public class MainRunnable implements Runnable {
 
             java.lang.reflect.Method command = lmi.Command.getCommandByString(commandString);
             if (command != null) {
-                System.out.println("[" + command.getName() + ": invoking]");
-                try { command.invoke(null); } catch (Exception e) { e.printStackTrace(); }
+                try {
+                    command.invoke(null);
+                } catch (Exception e) { e.printStackTrace(); }
             } else {
                 System.out.println("[" + commandString + ": unknown command]");
             }

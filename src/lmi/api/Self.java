@@ -1,8 +1,13 @@
 package lmi.api;
 
+import lmi.*;
+
 public class Self {
     // access properties
     public static haven.Gob gob() {
+        if (lmi.ObjectShadow.mapView() == null)
+            return null;
+
         return lmi.ObjectShadow.mapView().player();
     }
 
@@ -47,26 +52,49 @@ public class Self {
     }
 
     // move
+    private static haven.Coord2d moveDestination_ = null;
+    private static final Object movingMonitor_ = new Object();
     public static boolean moveAndWaitArriving(haven.Coord2d mapPoint) throws InterruptedException {
         move(mapPoint);
         return waitArriving(mapPoint);
     }
 
-    public static void move(haven.Coord2d clickedMapPoint) {
+    public static void waitMoveStrict(haven.Coord2d mapPoint) throws InterruptedException {
+        move(mapPoint);
+        synchronized (movingMonitor_) {
+            movingMonitor_.wait();
+        }
+        moveDestination_ = null;
+    }
+
+    // OCache::$move::apply()
+    // LinMove::$linstep::apply()
+    public static void notifyStopping(haven.Gob gob) {
+        if (gob == Self.gob()
+                && Self.coordinateEquals(moveDestination_)) {
+            synchronized (movingMonitor_) {
+                movingMonitor_.notify();
+            }
+        }
+    }
+
+    public static void move(haven.Coord2d mapPoint) {
+        final haven.Coord mapPointInIntCoordinate = CoordinateHandler.convertCoord2dToCoord(mapPoint);
+        moveDestination_ = mapPoint;
         WidgetMessageHandler.click(
                 lmi.ObjectShadow.mapView(),
                 Util.mapViewCenter(),
-                CoordinateHandler.convertCoord2dToCoord(clickedMapPoint),
+                mapPointInIntCoordinate,
                 lmi.Constant.Input.Mouse.LEFT,
                 lmi.Constant.Input.Modifier.NONE);
     }
 
-    public static void moveByIntCoordinate(haven.Coord clickedMapPoint) {
+    public static void moveByIntCoordinate(haven.Coord mapPoint) {
         // 1 tile has 1024 width
         WidgetMessageHandler.click(
                 lmi.ObjectShadow.mapView(),
                 Util.mapViewCenter(),
-                clickedMapPoint,
+                mapPoint,
                 lmi.Constant.Input.Mouse.LEFT,
                 lmi.Constant.Input.Modifier.NONE);
     }
@@ -150,6 +178,11 @@ public class Self {
         return result;
     }
 
+    public static void waitMoveNorthTileStrict() throws InterruptedException {
+        haven.Coord2d northTile = CoordinateHandler.northTile(Self.location());
+        waitMoveStrict(northTile);
+    }
+
     public static double distance(haven.Gob gob) {
         return Self.location().dist(GobHandler.location(gob));
     }
@@ -160,11 +193,20 @@ public class Self {
         return result;
     }
 
+    public static void waitMoveCenterStrict() throws InterruptedException {
+        haven.Coord2d center = CoordinateHandler.tileCenter(Self.location());
+        waitMoveStrict(center);
+    }
+
     public static boolean coordinateEquals(haven.Gob gob) {
+        if (gob == null)
+            return false;
         return CoordinateHandler.equals(Self.location(), GobHandler.location(gob));
     }
 
     public static boolean coordinateEquals(haven.Coord2d point) {
+        if (point == null)
+            return false;
         return CoordinateHandler.equals(Self.location(), point);
     }
 }
