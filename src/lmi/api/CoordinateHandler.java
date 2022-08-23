@@ -1,13 +1,15 @@
 package lmi.api;
 
+import lmi.*;
+
 public class CoordinateHandler {
     // convert
     public static haven.Coord convertCoord2dToCoord(haven.Coord2d mapPoint) {
         return mapPoint.floor(haven.OCache.posres);
     }
 
-    public static haven.Coord2d convertCoordToCoord2d(haven.Coord mapPoint) {
-	    return mapPoint.mul(haven.OCache.posres);
+    public static haven.Coord2d convertCoordToCoord2d(haven.Coord mapPointInIntCoordinate) {
+	    return mapPointInIntCoordinate.mul(haven.OCache.posres);
     }
 
     // center of tile
@@ -72,10 +74,12 @@ public class CoordinateHandler {
     }
 
     public static boolean equals(haven.Coord lhs, haven.Coord rhs) {
-        return lhs.x == rhs.x && lhs.y == rhs.y;
+        return Math.abs(lhs.x - rhs.x) < Constant.COORD2D_PER_COORD
+            && Math.abs(lhs.y - rhs.y) < Constant.COORD2D_PER_COORD;
     }
 
     public static boolean equals(haven.Coord2d lhs, haven.Coord2d rhs) {
-        return lhs.x == rhs.x && lhs.y == rhs.y;
+        return Math.abs(lhs.x - rhs.x) < Constant.COORD2D_PER_COORD
+            && Math.abs(lhs.y - rhs.y) < Constant.COORD2D_PER_COORD;
     }
 }

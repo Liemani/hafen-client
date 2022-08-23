@@ -720,7 +720,7 @@ public class Debug {
 
         while (classObject != null) {
             description.append(descriptionMethodsAsClass(object, classObject));
-            classObject = (Class)classObject.getGenericSuperclass();
+            classObject = (Class)classObject.getSuperclass();
         }
 
         description.append("}");
