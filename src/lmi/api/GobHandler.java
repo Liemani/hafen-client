@@ -13,11 +13,16 @@ public class GobHandler {
     public static boolean isMoving(haven.Gob gob) { return velocity(gob) != 0.0; }
 
     public static haven.Resource resource(haven.Gob gob) {
+        if (gob == null)
+            return null;
         return gob.getres();
     }
 
     public static String resourceName(haven.Gob gob) {
-        return resource(gob).name;
+        haven.Resource resource = resource(gob);
+        if (resource == null)
+            return null;
+        return resource.name;
     }
 
     public static String resourceBasename(haven.Gob gob) {
@@ -38,7 +43,7 @@ public class GobHandler {
                 iterator = GobHandler.iterator();
                 gob = closestGob(iterator);
                 break;
-            } catch (Exception e) { }
+            } catch (Exception e) {}
         }
 
         return gob;

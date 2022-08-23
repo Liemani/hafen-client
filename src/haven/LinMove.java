@@ -100,7 +100,10 @@ public class LinMove extends Moving {
 		return;
 	    LinMove lm = (LinMove)m;
 	    if(t < 0)
+        {
 		g.delattr(Moving.class);
+        lmi.api.Self.notifyStopping(g);
+        }
 	    else
 		lm.sett(t);
 	    if(e >= 0)

@@ -29,7 +29,7 @@ public class FlowerMenuHandler {
     // open
     public static void interactWait(haven.Gob gob, int meshId) throws InterruptedException {
         FlowerMenuHandler.interact(gob, meshId);
-        waitOpening();
+        waitOpeningSimple();
     }
 
     public static void interact(haven.Gob gob, int meshId) {
@@ -38,8 +38,13 @@ public class FlowerMenuHandler {
         WidgetMessageHandler.interact(gob, meshId);
     }
 
+    // TODO implement this
+    public static boolean waitOpeningStrict() throws InterruptedException {
+        return false;
+    }
+
     // wait opening: if opened, return true, else false
-    public static boolean waitOpening() throws InterruptedException {
+    public static boolean waitOpeningSimple() throws InterruptedException {
         final long startTime = System.currentTimeMillis();
         final long timeoutLimit = startTime + lmi.Constant.Time.GENERAL_TIMEOUT;
         while (!isWidgetOpened_) {
@@ -65,10 +70,10 @@ public class FlowerMenuHandler {
 
     // choose
     // TODO 한 번 더 시도하고 없어야 없다고 할 수 있다
-    // TODO 지금 waitOpening을 사용하는데 이거 안쓰는게 좋을 것 같다
+    // TODO 지금 waitOpeningSimple을 사용하는데 이거 안쓰는게 좋을 것 같다
     public static void chooseByGobAndPetalName(haven.Gob gob, String name) {
         try {
-            boolean result = waitOpening();
+            boolean result = waitOpeningSimple();
             if (result == false)
                 return;    // flower menu didn't open -> there is nothing can interact
             chooseAndWaitByName("Take branch");

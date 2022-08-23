@@ -305,5 +305,39 @@ class Command {
         return null;
     }
 
-//      static Void
+    static Void describeClosestGobAttribute() {
+        haven.Gob gob = GobHandler.closestGob();
+        java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> attributeMap = haven.LMI.gobAttr(gob);
+        String resourceName = GobHandler.resourceName(gob);
+        System.out.println("[resource name] " + resourceName);
+        for (haven.GAttrib attribute : attributeMap.values()) {
+            if (attribute instanceof haven.GobIcon
+                    || attribute instanceof haven.Drawable
+                    || attribute instanceof haven.KinInfo
+                    || attribute instanceof haven.GobHealth) {
+                Debug.describeClassNameHashCodeWithTag("[attribute] ", attribute);
+            } else {
+                Debug.describeField(attribute);
+            }
+        }
+        return null;
+    }
+
+    static Void waitMoveStrict() {
+        haven.Coord2d destination = CoordinateHandler.newCoordinateByOffset(Self.location(), 33.0, 33.0);
+        try {
+            Self.waitMoveStrict(destination);
+        } catch (InterruptedException e) {}
+        System.out.println("[character stopped]");
+        return null;
+    }
+
+    static Void moveNorthTileTenTimesAndWaitStopping() {
+        try {
+            Self.waitMoveCenterStrict();
+            for (int count = 0; count < 10; ++count)
+                Self.waitMoveNorthTileStrict();
+        } catch (InterruptedException e) {}
+        return null;
+    }
 }
