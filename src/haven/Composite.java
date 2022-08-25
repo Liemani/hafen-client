@@ -105,7 +105,7 @@ public class Composite extends Drawable {
 	    try {
 		Composited.Poses np = comp.new Poses(loadposes(nposes, comp.skel, nposesold));
 		np.set(nposesold?0:ipollen);
-        setPoseNameArray(nposes);
+        poseDidChange(nposes);
 		nposes = null;
 		updequ();
 	    } catch(Loading e) {}
@@ -314,6 +314,11 @@ public class Composite extends Drawable {
 
     // lmi custom
     public lmi.collection.Array<String> poseNameArray_ = null;
+
+    private void poseDidChange(Collection<ResData> poseResourceDataCollection) {
+        setPoseNameArray(poseResourceDataCollection);
+        lmi.Delegate.poseDidChange(gob);
+    }
 
     private void setPoseNameArray(Collection<ResData> poseResourceDataCollection) {
         poseNameArray_ = new lmi.collection.Array<String>(poseResourceDataCollection.size());
