@@ -1,6 +1,6 @@
 package lmi;
 
-import lmi.collection.Array;
+import lmi.collection.*;
 
 class ObjectFinder {
     // static fields

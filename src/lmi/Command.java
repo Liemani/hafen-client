@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import lmi.api.*;
+import lmi.collection.*;
 
 class Command {
     // type define
@@ -286,8 +287,8 @@ class Command {
     }
 
     static Void liftClosestGob() {
-        haven.Gob gob = GobHandler.closestGob();
-        WidgetMessageHandler.lift(gob);
+        haven.Gob closestGob = GobHandler.closestGob();
+        WidgetMessageHandler.lift(closestGob);
         return null;
     }
 
@@ -299,23 +300,42 @@ class Command {
     }
 
     static Void describeClosestGob() {
-        haven.Gob gob = GobHandler.closestGob();
-        System.out.println("[closest gob] " + GobHandler.resourceName(gob));
-        System.out.println("[disstance] " + Self.distance(gob));
+        haven.Gob closestGob = GobHandler.closestGob();
+        System.out.println("[closest gob] " + GobHandler.resourceName(closestGob));
+        System.out.println("[disstance] " + Self.distance(closestGob));
+        return null;
+    }
+
+    static Void describeClosestGobOverlay() {
+        haven.Gob closestGob = GobHandler.closestGob();
+        System.out.println("[closest gob] " + GobHandler.resourceName(closestGob));
+        for (haven.Gob.Overlay overlay : closestGob.ols) {
+            try {
+                System.out.println(overlay.res.get().name);
+                for (byte b : overlay.sdt.rbuf)
+                    System.out.print(" " + b);
+            } catch (NullPointerException e) {
+                System.out.println("[describeClosestGobOverlay() null pointer exception has occured]");
+            }
+        }
         return null;
     }
 
     static Void describeClosestGobAttribute() {
-        haven.Gob gob = GobHandler.closestGob();
-        java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> attributeMap = haven.LMI.gobAttr(gob);
-        String resourceName = GobHandler.resourceName(gob);
+        haven.Gob closestGob = GobHandler.closestGob();
+        java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> attributeMap = haven.LMI.gobAttr(closestGob);
+        String resourceName = GobHandler.resourceName(closestGob);
         System.out.println("[resource name] " + resourceName);
         for (haven.GAttrib attribute : attributeMap.values()) {
             if (attribute instanceof haven.GobIcon
                     || attribute instanceof haven.Drawable
                     || attribute instanceof haven.KinInfo
                     || attribute instanceof haven.GobHealth) {
-                Debug.describeClassNameHashCodeWithTag("[attribute] ", attribute);
+                if (attribute instanceof haven.ResDrawable) {
+                    Debug.describeField(attribute);
+                } else {
+                    Debug.describeClassNameHashCodeWithTag("[attribute] ", attribute);
+                }
             } else {
                 Debug.describeField(attribute);
             }
@@ -338,6 +358,62 @@ class Command {
             for (int count = 0; count < 10; ++count)
                 Self.waitMoveNorthTileStrict();
         } catch (InterruptedException e) {}
+        return null;
+    }
+
+    static Void describeClosestGobSdt() {
+        haven.Gob closestGob = GobHandler.closestGob();
+        final haven.Resource resource = GobHandler.resource(closestGob);
+        if(resource == null) {
+            System.out.println("[resource is null]");
+            return null;
+        }
+        haven.ResDrawable resourceDrawable = (haven.ResDrawable)GobHandler.attribute(closestGob, haven.ResDrawable.class);
+        byte[] buffer = haven.LMI.resourceDrawableBuffer(resourceDrawable);
+        if (buffer == null) {
+            System.out.println("[buffer is null]");
+            return null;
+        }
+        System.out.print("[buffer] length: " + buffer.length);
+        for (byte b : buffer)
+            System.out.print(" " + b);
+        System.out.println();
+        return null;
+    }
+
+    static Void investigateGobBoundingBoxWidth() {
+        haven.Gob closestGob = GobHandler.closestGob();
+        double start = 1024;
+        return null;
+    }
+
+    static haven.Gob storedGob_ = null;
+    static Void storeClosestGob() {
+        storedGob_ = GobHandler.closestGob();
+        return null;
+    }
+
+    static Void describeStoredGob() {
+        System.out.println("[storedGob_.removed] " + storedGob_.removed);
+        return null;
+    }
+
+    static Void describeSelfPose() {
+        haven.Composite composite = Self.gob().getattr(haven.Composite.class);
+        if (composite == null) {
+            System.out.println("[composite is null]");
+            return null;
+        }
+
+        Array<String> poseNameArray = composite.poseNameArray_;
+        if (poseNameArray == null) {
+            System.out.println("[poseNameArray is null]");
+            return null;
+        }
+
+        for (String poseName : poseNameArray) {
+            System.out.println("[pose name] " + poseName);
+        }
         return null;
     }
 }
