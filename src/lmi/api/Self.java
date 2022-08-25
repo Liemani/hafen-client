@@ -15,6 +15,10 @@ public class Self {
         return gob().rc;
     }
 
+    public static haven.Coord locationInCoord() {
+        return CoordinateHandler.convertCoord2dToCoord(Self.location());
+    }
+
     public static double direction() {
         return gob().a;
     }
@@ -69,12 +73,12 @@ public class Self {
 
     // OCache::$move::apply()
     // LinMove::$linstep::apply()
-    public static void notifyStopping(haven.Gob gob) {
-        if (gob == Self.gob()
-                && Self.coordinateEquals(moveDestination_)) {
-            synchronized (movingMonitor_) {
-                movingMonitor_.notify();
-            }
+    public static void notifyIfArrived(haven.Gob gob) {
+        if (!Self.coordinateEquals(moveDestination_))
+            return;
+
+        synchronized (movingMonitor_) {
+            movingMonitor_.notify();
         }
     }
 
@@ -201,12 +205,21 @@ public class Self {
     public static boolean coordinateEquals(haven.Gob gob) {
         if (gob == null)
             return false;
+
         return CoordinateHandler.equals(Self.location(), GobHandler.location(gob));
     }
 
     public static boolean coordinateEquals(haven.Coord2d point) {
         if (point == null)
             return false;
+
         return CoordinateHandler.equals(Self.location(), point);
+    }
+
+    public static boolean coordinateEquals(haven.Coord point) {
+        if (point == null)
+            return false;
+
+        return CoordinateHandler.equals(Self.locationInCoord(), point);
     }
 }
