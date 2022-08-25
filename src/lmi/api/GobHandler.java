@@ -12,6 +12,7 @@ public class GobHandler {
     public static boolean isStop(haven.Gob gob) { return velocity(gob) == 0.0; }
     public static boolean isMoving(haven.Gob gob) { return velocity(gob) != 0.0; }
 
+    // resource
     public static haven.Resource resource(haven.Gob gob) {
         if (gob == null)
             return null;
@@ -28,10 +29,20 @@ public class GobHandler {
     public static String resourceBasename(haven.Gob gob) {
         String name = resourceName(gob);
         int lastIndexOfSlash = name.lastIndexOf('/');
+        if (lastIndexOfSlash < 0)
+            return name;
         String basename = name.substring(lastIndexOfSlash + 1);
         return basename;
     }
 
+    // attribute
+    public static haven.GAttrib attribute(haven.Gob gob, Class<? extends haven.GAttrib> attributeClass) {
+        if (gob == null)
+            return null;
+        return gob.getattr(attributeClass);
+    }
+
+    // velocity
     public static double velocity(haven.Gob gob) { return gob.getv(); }
 
     // find gob

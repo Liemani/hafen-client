@@ -346,9 +346,8 @@ public class OCache implements Iterable<Gob> {
 			    break;
 		    }
 		    synchronized(gob) {
-                if (gob == lmi.api.Self.gob()) {
-                    System.out.println("[delta.type] " + d.type);
-                }
+                if (gob == lmi.api.Self.gob())
+                    System.out.println("[d.type] " + d.type);
 			deltas.get(d.type).apply(gob, d.clone());
 		    }
 		    synchronized(this) {
