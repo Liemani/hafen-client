@@ -3,6 +3,15 @@
 package lmi.collection;
 
 public class Array<Element> extends java.util.ArrayList<Element> {
+    // constructor
+    public Array() {
+        super();
+    }
+
+    public Array(int capacity) {
+        super(capacity);
+    }
+
     // Inspecting and Array
     public boolean isEmpty() {
         return super.isEmpty();
