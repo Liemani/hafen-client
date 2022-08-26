@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-class Util {
+public class Util {
     enum MemberType {
         FIELD,
         METHOD;
@@ -121,5 +121,18 @@ class Util {
     static void insertIndent(int indentCount) {
         while (--indentCount >= 0)
             System.out.print("  ");
+    }
+
+    // string functions
+    public static String convertToString(byte[] array, int offset) {
+        int stringLength = Util.strlen(array, offset);
+        return new String(array, offset, stringLength);
+    }
+
+    public static int strlen(byte[] array, int startOfString) {
+        int endOfString = startOfString;
+        while (endOfString < array.length && array[endOfString] != 0)
+            ++endOfString;
+        return endOfString - startOfString;
     }
 }

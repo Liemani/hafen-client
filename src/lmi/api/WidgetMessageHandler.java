@@ -5,9 +5,9 @@ import lmi.*;
 // TODO change all methods to get sender as argument
 public class WidgetMessageHandler {
     // act
-    public static void act(haven.MenuGrid menuGrid, String action) {
+    public static void act(haven.MenuGrid widget, String action) {
         // look lmi.Constant.Action for available String value
-        menuGrid.wdgmsg(lmi.Constant.Command.ACT, action);
+        WidgetMessageHandler.wdgmsg(widget, lmi.Constant.Command.ACT);
     }
 
     // TODO implement behavior or this could locate on lmi.api.Self if didn't use wdgmsg()
@@ -16,12 +16,13 @@ public class WidgetMessageHandler {
 
     // click
     public static void click(
-            haven.MapView mapView,
+            haven.MapView widget,
             haven.Coord clickedMapViewPoint,
             haven.Coord clickedMapPoint,
             int mouseButton,
             int modifiers) {
-        mapView.wdgmsg(
+        WidgetMessageHandler.wdgmsg(
+                widget,
                 lmi.Constant.Command.CLICK,
                 clickedMapViewPoint,
                 clickedMapPoint,
@@ -30,7 +31,7 @@ public class WidgetMessageHandler {
     }
 
     public static void clickObject(
-            haven.MapView mapView,
+            haven.MapView widget,
             haven.Coord clickedMapViewPoint,
             haven.Coord clickedMapPoint,
             int mouseButton,
@@ -40,7 +41,8 @@ public class WidgetMessageHandler {
             haven.Coord gobLocation,
             int overlayId,
             int meshId) {
-        mapView.wdgmsg(
+        WidgetMessageHandler.wdgmsg(
+                widget,
                 lmi.Constant.Command.CLICK,
                 clickedMapViewPoint,
                 clickedMapPoint,
@@ -53,7 +55,13 @@ public class WidgetMessageHandler {
                 meshId);
     }
 
-    public static void openFlowerMenuByClickData(haven.MapView mapView, haven.ClickData clickData) {
+    public static void wdgmsg(haven.Widget widget, String command, Object... args) {
+        widget.wdgmsg(command, args);
+        WaitManager.waitMessage(command);
+    }
+
+    @Deprecated
+    public static void openFlowerMenuByClickData(haven.MapView widget, haven.ClickData clickData) {
         final haven.Gob gob = Util.gobFromClickData(clickData);
         Object[] args = {
             Util.mapViewCenter(),
@@ -62,23 +70,35 @@ public class WidgetMessageHandler {
             0};
         if(clickData != null)
             args = haven.Utils.extend(args, clickData.clickargs());
-        mapView.wdgmsg(lmi.Constant.Command.CLICK, args);
+        WidgetMessageHandler.wdgmsg(widget, lmi.Constant.Command.CLICK, args);
     }
 
-    public static void choosePetalByIndex(haven.FlowerMenu flowerMenu, int index) throws IndexOutOfBoundsException {
-        if (0 <= index && index < flowerMenu.opts.length)
-            flowerMenu.wdgmsg(lmi.Constant.Command.FLOWER_MENU, index, 0);
-        else
+    public static void choosePetalByIndex(haven.FlowerMenu widget, int index) throws IndexOutOfBoundsException {
+        if (widget == null)
+            return;
+
+        final int petalCount = widget.opts.length;
+        if (0 <= index && index < petalCount) {
+            WidgetMessageHandler.wdgmsg(
+                    widget,
+                    lmi.Constant.Command.FLOWER_MENU_CLOSE,
+                    index,
+                    0);
+        } else {
             throw new IndexOutOfBoundsException();
+        }
     }
 
-    public static void cancelFlowerMenu(haven.FlowerMenu flowerMenu) {
-        flowerMenu.wdgmsg(lmi.Constant.Command.FLOWER_MENU, -1);
+    public static void closeFlowerMenu(haven.FlowerMenu widget) {
+        WidgetMessageHandler.wdgmsg(
+                widget,
+                lmi.Constant.Command.FLOWER_MENU_CLOSE,
+                -1);
     }
 
     // characterList
-    public static void selectCharacter(haven.Charlist charList, String name) {
-        charList.wdgmsg(lmi.Constant.Command.SELECT_CHARACTER, name);
+    public static void selectCharacter(haven.Charlist widget, String name) {
+        WidgetMessageHandler.wdgmsg(widget, lmi.Constant.Command.SELECT_CHARACTER, name);
     }
 
     // convenient

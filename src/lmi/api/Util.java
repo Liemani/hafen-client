@@ -1,5 +1,7 @@
 package lmi.api;
 
+import lmi.*;
+
 //  좌표 체계는 double 값으로 11의 배수가 각 타일의 한 꼭지점이다
 //  int로는 한 타일은 1024의 간격을 갖는다
 
@@ -43,15 +45,15 @@ public class Util {
 
     public static void waitHourGlassFailable() throws InterruptedException {
         final long startTime = System.currentTimeMillis();
-        final long timeoutLimit = startTime + lmi.Constant.Time.GENERAL_TIMEOUT;
+        final long timeoutLimit = startTime + Constant.TimeOut.GENERAL;
         while (lmi.ObjectShadow.gameUI().prog == null) {
-            Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
+            Thread.sleep(Constant.TimeOut.FREQUENT);
             long currentTime = System.currentTimeMillis();
             if (currentTime > timeoutLimit)
                 break;
         }
         while (lmi.ObjectShadow.gameUI().prog != null)
-            Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
+            Thread.sleep(Constant.TimeOut.FREQUENT);
     }
 
     public static void newWidget(haven.Widget widget) {

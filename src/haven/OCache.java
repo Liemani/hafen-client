@@ -245,7 +245,6 @@ public class OCache implements Iterable<Gob> {
 	    Coord2d c = msg.coord().mul(posres);
 	    double a = (msg.uint16() / 65536.0) * Math.PI * 2;
 	    g.move(c, a);
-        lmi.Delegate.didMove(g);
 	}
     }
 
@@ -346,8 +345,7 @@ public class OCache implements Iterable<Gob> {
 			    break;
 		    }
 		    synchronized(gob) {
-                if (gob == lmi.api.Self.gob())
-                    System.out.println("[d.type] " + d.type);
+            System.out.println("[OCache::GobInfo::apply() d.type] " + d.type);
 			deltas.get(d.type).apply(gob, d.clone());
 		    }
 		    synchronized(this) {

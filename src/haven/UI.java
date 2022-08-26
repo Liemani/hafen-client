@@ -242,7 +242,7 @@ public class UI {
 		pwdg.addchild(wdg, pargs);
 	    }
 	    bind(wdg, id);
-        lmi.api.Util.newWidget(wdg);
+        lmi.Delegate.flowerMenuDidAdded();
 	}
     }
 
@@ -325,8 +325,11 @@ public class UI {
     }
 	
     public void wdgmsg(Widget sender, String msg, Object... args) {
+    if (!msg.contentEquals("click")
+            && !msg.contentEquals("focus")) {
         System.out.println("[UI::wdgmsg()] {\"sender\": \"" + sender.getClass().getName() + "\", \"command\": \"" + msg + "\"}");
         for (Object object : args) { lmi.Debug.describeField(object); }
+    }
 	int id = widgetid(sender);
 	if(id < 0) {
 	    new Warning("wdgmsg sender (%s) is not in rwidgets, message is %s", sender.getClass().getName(), msg).issue();
@@ -338,7 +341,16 @@ public class UI {
 	
     public void uimsg(int id, String msg, Object... args) {
 	Widget wdg = getwidget(id);
-//      System.out.println("[RemoteUI::run() ui.uimsg()] {\"command\": \"" + msg + "\", \"widgetClass\": \"" + wdg.getClass().getName() + "\"}");
+    if (!msg.contentEquals("glut")
+            && !msg.contentEquals("msg")
+            && !msg.contentEquals("chres")
+            && !msg.contentEquals("tt")
+            && !msg.contentEquals("set")
+            && !msg.contentEquals("tip")
+            && !msg.contentEquals("auth")
+            && !msg.contentEquals("ppower")
+            && !msg.contentEquals("max"))
+        System.out.println("[RemoteUI::run() ui.uimsg()] {\"command\": \"" + msg + "\", \"widgetClass\": \"" + wdg.getClass().getName() + "\"}");
 	if(wdg != null) {
 	    synchronized(this) {
 		wdg.uimsg(msg.intern(), args);
