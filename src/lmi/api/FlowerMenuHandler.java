@@ -1,5 +1,7 @@
 package lmi.api;
 
+import lmi.*;
+
 public class FlowerMenuHandler {
     // assume widget_ never collision
     private static haven.FlowerMenu widget_;
@@ -11,6 +13,7 @@ public class FlowerMenuHandler {
         }
     }
 
+    @Deprecated
     public static haven.FlowerMenu widgetAnotherWay() {
         haven.Widget lastChildOfRootWidget = lmi.ObjectShadow.rootWidget().lchild;
         if (lastChildOfRootWidget instanceof haven.FlowerMenu)
@@ -27,84 +30,97 @@ public class FlowerMenuHandler {
     }
 
     // open
-    public static void interactWait(haven.Gob gob, int meshId) throws InterruptedException {
-        FlowerMenuHandler.interact(gob, meshId);
-        waitOpeningSimple();
-    }
-
-    public static void interact(haven.Gob gob, int meshId) {
-        // If you don't know meshID, pass -1
-        isWidgetOpened_ = false;
+    private static final Object openMonitor_ = new Object();
+    // TODO refine implementation
+    public static boolean open(haven.Gob gob, int meshId) {
         WidgetMessageHandler.interact(gob, meshId);
-    }
+        Util.addTimer(openMonitor_);
 
-    // TODO implement this
-    public static boolean waitOpeningStrict() throws InterruptedException {
-        return false;
-    }
-
-    // wait opening: if opened, return true, else false
-    public static boolean waitOpeningSimple() throws InterruptedException {
-        final long startTime = System.currentTimeMillis();
-        final long timeoutLimit = startTime + lmi.Constant.Time.GENERAL_TIMEOUT;
-        while (!isWidgetOpened_) {
-            Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
-            final long currentTime = System.currentTimeMillis();
-            if (currentTime > timeoutLimit)
-                return false;
+        try {
+            synchronized (openMonitor_) {
+                openMonitor_.wait();
+            }
+        } catch (InterruptedException e) {
+            Util.removeTimer();
+            return false;
         }
+
+        Util.removeTimer();
         return true;
     }
 
-    public static boolean waitOpenAnotherWay() throws InterruptedException {
-        final long startTime = System.currentTimeMillis();
-        final long timeoutLimit = startTime + lmi.Constant.Time.GENERAL_TIMEOUT;
-        while (widget() == null) {
-            Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
-            long currentTime = System.currentTimeMillis();
-            if (currentTime > timeoutLimit)
-                return false;
+    public static void notifyOpen() {
+        synchronized (openMonitor_) {
+            openMonitor_.notify();
         }
-        return true;
     }
 
     // choose
     // TODO 한 번 더 시도하고 없어야 없다고 할 수 있다
-    // TODO 지금 waitOpeningSimple을 사용하는데 이거 안쓰는게 좋을 것 같다
+    // TODO 지금 open을 사용하는데 이거 안쓰는게 좋을 것 같다
     public static void chooseByGobAndPetalName(haven.Gob gob, String name) {
+        boolean result = FlowerMenuHandler.open(gob, Constant.MeshId.DEFAULT);
         try {
-            boolean result = waitOpeningSimple();
             if (result == false)
                 return;    // flower menu didn't open -> there is nothing can interact
-            chooseAndWaitByName("Take branch");
+            FlowerMenuHandler.chooseByName("Take branch");
         } catch (IllegalArgumentException e) {
-            cancel();
+            boolean isClosed = FlowerMenuHandler.close();
+            if (!isClosed)
+                System.out.println("flower menu failed closing");
             return;    // no that name petal -> there is no to work
-        } catch (Exception e) { e.printStackTrace(); }
-    }
-
-    public static void chooseAndWaitByName(String name) throws IllegalArgumentException, InterruptedException {
-        chooseByName(name);
-        Util.waitHourGlassFailable();
+        }
     }
 
     public static void chooseByName(String name) throws IllegalArgumentException {
-        for (haven.FlowerMenu.Petal petal : widget().opts)
+        if (name == null)
+            throw new IllegalArgumentException();
+
+        for (haven.FlowerMenu.Petal petal : FlowerMenuHandler.widget().opts)
             if (petal.name.contentEquals(name)) {
                 try {
                     chooseByIndex(petal.num);
-                } catch (IndexOutOfBoundsException e) { e.printStackTrace(); }
+                } catch (IndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                }
                 return;
             }
+
         throw new IllegalArgumentException();
     }
 
-    public static void chooseByIndex(int index) throws IndexOutOfBoundsException {
-        WidgetMessageHandler.choosePetalByIndex(widget(), index);
+    // private methods
+    private static void interact(haven.Gob gob, int meshId) {
+        // If you don't know meshID, pass -1
+        WidgetMessageHandler.interact(gob, meshId);
     }
 
-    // cancel
-    public static void cancel() {
-        WidgetMessageHandler.cancelFlowerMenu(widget());
+    private static void chooseByIndex(int index) throws IndexOutOfBoundsException {
+        WidgetMessageHandler.choosePetalByIndex(FlowerMenuHandler.widget(), index);
+    }
+
+    // close
+    private static final Object closeMonitor_ = new Object();
+    public static boolean close() {
+        WidgetMessageHandler.closeFlowerMenu(widget());
+        Util.addTimer(closeMonitor_);
+
+        try {
+            synchronized (closeMonitor_) {
+                closeMonitor_.wait();
+            }
+        } catch (InterruptedException e) {
+            Util.removeTimer();
+            return false;
+        }
+
+        Util.removeTimer();
+        return true;
+    }
+
+    public static void notifyClose() {
+        synchronized (closeMonitor_) {
+            closeMonitor_.notify();
+        }
     }
 }

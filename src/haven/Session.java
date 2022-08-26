@@ -224,7 +224,10 @@ public class Session implements Resource.Resolver {
 		for(ListIterator<RMessage> i = pending.listIterator(); i.hasNext(); ) {
 		    RMessage msg = i.next();
 		    if(msg.seq <= seq)
+            {
+            lmi.Delegate.didGetACK(msg);
 			i.remove();
+            }
 		}
 	    }
 	}
@@ -278,6 +281,7 @@ public class Session implements Resource.Resolver {
 	}
 
 	private void handlerel(PMessage msg) {
+//          System.out.println("[Session::RWorker::handlerel() msg.type] " + msg.type);
 	    if(msg.type == RMessage.RMSG_FRAGMENT) {
 		int head = msg.uint8();
 		if((head & 0x80) == 0) {
@@ -430,6 +434,7 @@ public class Session implements Resource.Resolver {
 			}
 		    }
 		    if(state != "conn") {
+//                  System.out.println("[Session::RWorker::run() msg.type] " + msg.type);
 			if(msg.type == MSG_SESS) {
 			} else if(msg.type == MSG_REL) {
 			    int seq = msg.uint16();
