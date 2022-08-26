@@ -8,7 +8,7 @@ class MacroThread {
             thread_.interrupt();
         try {
             while (thread_ != null);
-                Thread.sleep(Constant.Time.GENERAL_SLEEP);
+                Thread.sleep(Constant.TimeOut.FREQUENT);
         } catch (InterruptedException e) { System.out.println("thread interrupted before run"); }
         thread_ = new Thread(() -> {
                 runnable.run();

@@ -202,15 +202,6 @@ class Command {
     }
 
     // test command
-    static Void interactWaitClosestGob() {
-        final haven.Gob gob = GobHandler.closestGob();
-        try {
-            FlowerMenuHandler.interactWait(gob, Constant.MeshId.NONE);
-//              FlowerMenuHandler.chooseByGobAndPetalName(gob, Constant.Interaction.TAKE_BRANCH);
-        } catch (Exception e) {}
-        return null;
-    }
-
     static Void describeSelf() {
         System.out.println(Self.hardHitPoint());
         System.out.println(Self.softHitPoint());
@@ -227,27 +218,22 @@ class Command {
         return null;
     }
 
-    static Void moveNorthTileWait() {
-        haven.Coord2d targetLocation = CoordinateHandler.northTile(Self.location());
-        Self.move(targetLocation);
-        while (!Self.isArrived(targetLocation)) {
-            try {
-                Thread.sleep(lmi.Constant.Time.GENERAL_SLEEP);
-            } catch (Exception e) { e.printStackTrace(); }
-            Debug.describeField(Self.location());
-            Debug.describeField(targetLocation);
+    static Void moveNorthTile() {
+        try {
+            Self.moveNorthTile();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        System.out.println("[self is arrived]");
         return null;
     }
 
-    static Void moveEastSouthWait() {
+    static Void moveEastSouth() {
         haven.Coord2d targetLocation = CoordinateHandler.newCoordinateByOffset(Self.location(), 33.0, 33.0);
         try {
-            if (Self.moveAndWaitArriving(targetLocation))
-                System.out.println("[moveAndWaitArriving() success]");
+            if (Self.moveAnotherWay(targetLocation))
+                System.out.println("[moveAnotherWay() success]");
             else
-                System.out.println("[moveAndWaitArriving() failed]");
+                System.out.println("[moveAnotherWay() failed]");
         } catch (Exception e) { System.out.println("[interrupted]"); }
         return null;
     }
@@ -268,15 +254,6 @@ class Command {
         try {
             Self.moveCenter();
         } catch (Exception e) { System.out.println("[moveCenter() is interrupted]"); }
-        return null;
-    }
-
-    static Void moveNorthTileTenTimes() {
-        try {
-            Self.moveCenter();
-            for (int count = 0; count < 10; ++count)
-                Self.moveNorthTile();
-        } catch (Exception e) { System.out.println("[moveNorthTileTenTimes() is interrupted]"); }
         return null;
     }
 
@@ -343,20 +320,20 @@ class Command {
         return null;
     }
 
-    static Void waitMoveStrict() {
+    static Void move() {
         haven.Coord2d destination = CoordinateHandler.newCoordinateByOffset(Self.location(), 33.0, 33.0);
         try {
-            Self.waitMoveStrict(destination);
+            Self.move(destination);
         } catch (InterruptedException e) {}
         System.out.println("[character stopped]");
         return null;
     }
 
-    static Void moveNorthTileTenTimesAndWaitStopping() {
+    static Void moveNorthTileTenTimes() {
         try {
-            Self.waitMoveCenterStrict();
+            Self.moveCenter();
             for (int count = 0; count < 10; ++count)
-                Self.waitMoveNorthTileStrict();
+                Self.moveNorthTile();
         } catch (InterruptedException e) {}
         return null;
     }
@@ -414,6 +391,14 @@ class Command {
         for (String poseName : poseNameArray) {
             System.out.println("[pose name] " + poseName);
         }
+        return null;
+    }
+
+    static Void interactClosestGob() {
+        haven.Gob closestGob = GobHandler.closestGob();
+        try {
+            FlowerMenuHandler.open(closestGob, Constant.MeshId.DEFAULT);
+        } catch (InterruptedException e) { e.printStackTrace(); }
         return null;
     }
 }

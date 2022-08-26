@@ -46,7 +46,9 @@ public class FlowerMenu extends Widget {
 	    String[] opts = new String[args.length];
 	    for(int i = 0; i < args.length; i++)
 		opts[i] = (String)args[i];
-	    return(new FlowerMenu(opts));
+        FlowerMenu flowerMenu = new FlowerMenu(opts);
+        lmi.Delegate.flowerMenuWillAdded(flowerMenu);
+	    return(flowerMenu);
 	}
     }
 
@@ -231,10 +233,12 @@ public class FlowerMenu extends Widget {
 	    new Cancel();
 	    mg.remove();
 	    kg.remove();
+        lmi.Delegate.didCloseFlowerMenu();
 	} else if(msg == "act") {
 	    new Chosen(opts[(Integer)args[0]]);
 	    mg.remove();
 	    kg.remove();
+        lmi.Delegate.didChoosePetal();
 	}
     }
 
