@@ -260,11 +260,11 @@ class Command {
         return null;
     }
 
-    static Void liftClosestGob() {
-        haven.Gob closestGob = GobHandler.closestGob();
-        WidgetMessageHandler.lift(closestGob);
-        return null;
-    }
+//      static Void liftClosestGob() {
+//          haven.Gob closestGob = GobHandler.closestGob();
+//          WidgetMessageHandler.lift(closestGob);
+//          return null;
+//      }
 
     static Void putNorthTile() {
         haven.Coord2d location = CoordinateHandler.northTile(Self.location());

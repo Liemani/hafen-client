@@ -79,73 +79,9 @@ public class Self {
         return result;
     }
 
-    public static void notifyIfArrived(haven.Gob gob) {
-        if (!Self.coordinateEquals(moveDestination_))
-            return;
-
-        WaitManager.notifyIfCommandEquals(Constant.Command.Custom.MOVE);
-    }
-
-    public static void clickIntCoordinate(haven.Coord point) {
-        WidgetMessageHandler.click(
-                lmi.ObjectShadow.mapView(),
-                Util.mapViewCenter(),
-                point,
-                lmi.Constant.Input.Mouse.LEFT,
-                lmi.Constant.Input.Modifier.NONE);
-    }
-
     // do action
-    public static void dig() {
-        act(lmi.Constant.Action.DIG);
-    }
-
-    public static void mine() {
-        act(lmi.Constant.Action.MINE);
-    }
-
-    public static void carry() {
-        act(lmi.Constant.Action.CARRY);
-    }
-
-    public static void destroy() {
-        act(lmi.Constant.Action.DESTROY);
-    }
-
-    public static void fish() {
-        act(lmi.Constant.Action.FISH);
-    }
-
-    public static void inspect() {
-        act(lmi.Constant.Action.INSPECT);
-    }
-
-    public static void repair() {
-        act(lmi.Constant.Action.REPAIR);
-    }
-
-    public static void crime() {
-        act(lmi.Constant.Action.CRIME);
-    }
-
-    public static void swim() {
-        act(lmi.Constant.Action.SWIM);
-    }
-
-    public static void tracking() {
-        act(lmi.Constant.Action.TRACKING);
-    }
-
-    public static void aggro() {
-        act(lmi.Constant.Action.AGGRO);
-    }
-
-    public static void shoot() {
-        act(lmi.Constant.Action.SHOOT);
-    }
-
-    public static boolean act(String action) {
-        return WidgetMessageHandler.act(lmi.ObjectShadow.gameUI().menu, action);
+    public static boolean sendActMessage_(String action) {
+        return WidgetMessageHandler.sendActMessage(ObjectShadow.gameUI().menu, action);
     }
 
     // etc
@@ -184,25 +120,76 @@ public class Self {
         return CoordinateHandler.equals(Self.locationInCoord(), point);
     }
 
+    public static boolean lift(haven.Gob gob) {
+        carry_();
+        haven.Coord2d gobLocation = GobHandler.location(gob);
+        haven.Coord gobLocationInCoord = CoordinateHandler.convertCoord2dToCoord(gobLocation);
+        return WidgetMessageHandler.actClick(gob);
+    }
+
+    public static void notifyIfArrived(haven.Gob gob) {
+        if (!Self.coordinateEquals(moveDestination_))
+            return;
+
+        WaitManager.notifyIfCommandEquals(Constant.Command.Custom.MOVE);
+    }
+
     // private methods
     private static boolean move_(haven.Coord2d point) {
-        final haven.Coord pointInIntCoordinate = CoordinateHandler.convertCoord2dToCoord(point);
         moveDestination_ = point;
-        return WidgetMessageHandler.click(
-                lmi.ObjectShadow.mapView(),
-                Util.mapViewCenter(),
-                pointInIntCoordinate,
-                lmi.Constant.Input.Mouse.LEFT,
-                lmi.Constant.Input.Modifier.NONE);
+        return WidgetMessageHandler.move(point);
     }
 
     private static boolean move_(haven.Coord point) {
         moveDestination_ = CoordinateHandler.convertCoordToCoord2d(point);
-        return WidgetMessageHandler.click(
-                lmi.ObjectShadow.mapView(),
-                Util.mapViewCenter(),
-                point,
-                lmi.Constant.Input.Mouse.LEFT,
-                lmi.Constant.Input.Modifier.NONE);
+        return WidgetMessageHandler.move(point);
+    }
+
+    private static void dig_() {
+        sendActMessage_(lmi.Constant.Action.DIG);
+    }
+
+    private static void mine_() {
+        sendActMessage_(lmi.Constant.Action.MINE);
+    }
+
+    private static void carry_() {
+        sendActMessage_(lmi.Constant.Action.CARRY);
+    }
+
+    private static void destroy_() {
+        sendActMessage_(lmi.Constant.Action.DESTROY);
+    }
+
+    private static void fish_() {
+        sendActMessage_(lmi.Constant.Action.FISH);
+    }
+
+    private static void inspect_() {
+        sendActMessage_(lmi.Constant.Action.INSPECT);
+    }
+
+    private static void repair_() {
+        sendActMessage_(lmi.Constant.Action.REPAIR);
+    }
+
+    private static void crime_() {
+        sendActMessage_(lmi.Constant.Action.CRIME);
+    }
+
+    private static void swim_() {
+        sendActMessage_(lmi.Constant.Action.SWIM);
+    }
+
+    private static void tracking_() {
+        sendActMessage_(lmi.Constant.Action.TRACKING);
+    }
+
+    private static void aggro_() {
+        sendActMessage_(lmi.Constant.Action.AGGRO);
+    }
+
+    private static void shoot_() {
+        sendActMessage_(lmi.Constant.Action.SHOOT);
     }
 }
