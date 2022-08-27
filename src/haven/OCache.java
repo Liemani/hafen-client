@@ -245,6 +245,7 @@ public class OCache implements Iterable<Gob> {
 	    Coord2d c = msg.coord().mul(posres);
 	    double a = (msg.uint16() / 65536.0) * Math.PI * 2;
 	    g.move(c, a);
+        lmi.Delegate.didMove(g);
 	}
     }
 

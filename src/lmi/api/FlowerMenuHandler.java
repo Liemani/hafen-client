@@ -15,10 +15,10 @@ public class FlowerMenuHandler {
     public static boolean choose(haven.Gob gob, int meshId, String name) {
         if (gob == null || name == null) return false;
 
-        if (!open_(gob, meshId, name)) return false;
+        if (!open_(gob, meshId)) return false;
         if (choose_(name)) return true;
 
-        System.out.println("[flower menu choose failed]");
+        System.out.println("[FlowerMenuHandler::choose() flower menu choose failed]");
         if (!close_()) System.out.println("[flower menu close failed]");
         return false;
     }
@@ -26,26 +26,30 @@ public class FlowerMenuHandler {
     // private methods
     private static void clear_() { widget_ = null; }
 
-    private static boolean open_(haven.Gob gob, int meshId, String name) {
-        if (!FlowerMenuHandler.sendInteractMessage_(gob, meshId)) return false;
-        return WaitManager.wait(Constant.Command.Custom.NEW_WIDGET_DID_ADDED, Constant.TimeOut.FREQUENT);
+    // private methods
+    private static boolean open_(haven.Gob gob, int meshId) {
+        return sendInteractMessage_(gob, meshId);
     }
 
     private static boolean close_() {
-        if (widget_ == null) return true;
-        if (!sendCloseMessage_()) return false;
-        if (WaitManager.wait(Constant.Command.Custom.FLOWER_MENU_CLOSED, Constant.TimeOut.FREQUENT)) {
+        final boolean succeeded = sendCloseMessage_();
+        if (succeeded)
             clear_();
-            return true;
-        } else {
-            return false;
-        }
+        return succeeded;
     }
 
     private static boolean choose_(String name) {
-        if (widget_ == null) return false;
-        if (!chooseByName(name)) return false;
-        return WaitManager.wait(Constant.Command.Custom.FLOWER_MENU_CLOSED, Constant.TimeOut.FREQUENT);
+        return chooseByName(name);
+    }
+
+    private static boolean chooseByName(String name) {
+        for (haven.FlowerMenu.Petal petal : widget_.opts) {
+            if (petal.name.contentEquals(name)) {
+                return sendChoosePetalMessage_(petal.num);
+            }
+        }
+
+        return false;
     }
 
     private static boolean sendInteractMessage_(haven.Gob gob, int meshId) {
@@ -63,15 +67,5 @@ public class FlowerMenuHandler {
 
     private static boolean sendCloseMessage_() {
         return WidgetMessageHandler.sendCloseFlowerMenuMessage(widget_);
-    }
-
-    private static boolean chooseByName(String name) {
-        for (haven.FlowerMenu.Petal petal : widget_.opts) {
-            if (petal.name.contentEquals(name)) {
-                return sendChoosePetalMessage_(petal.num);
-            }
-        }
-
-        return false;
     }
 }
