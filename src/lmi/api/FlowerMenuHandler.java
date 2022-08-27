@@ -52,18 +52,23 @@ public class FlowerMenuHandler {
         return WidgetMessageHandler.interact(gob, meshId);
     }
 
-    private static boolean sendChooseMessage_(int index) {
-        return WidgetMessageHandler.choose(widget_, index);
+    private static boolean sendChoosePetalMessage_(int index) {
+        final int petalCount = widget_.opts.length;
+        if (0 <= index && index < petalCount) {
+            return WidgetMessageHandler.sendChoosePetalMessage(widget_, index);
+        } else {
+            return false;
+        }
     }
 
     private static boolean sendCloseMessage_() {
-        return WidgetMessageHandler.closeFlowerMenu(widget_);
+        return WidgetMessageHandler.sendCloseFlowerMenuMessage(widget_);
     }
 
     private static boolean chooseByName(String name) {
         for (haven.FlowerMenu.Petal petal : widget_.opts) {
             if (petal.name.contentEquals(name)) {
-                return sendChooseMessage_(petal.num);
+                return sendChoosePetalMessage_(petal.num);
             }
         }
 

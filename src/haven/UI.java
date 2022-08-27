@@ -325,8 +325,7 @@ public class UI {
     }
 	
     public void wdgmsg(Widget sender, String msg, Object... args) {
-    if (!msg.contentEquals("click")
-            && !msg.contentEquals("focus")) {
+    if (!msg.contentEquals("focus")) {
         System.out.println("[UI::wdgmsg()] {\"sender\": \"" + sender.getClass().getName() + "\", \"command\": \"" + msg + "\"}");
         for (Object object : args) { lmi.Debug.describeField(object); }
     }

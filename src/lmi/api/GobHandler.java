@@ -9,6 +9,7 @@ public class GobHandler {
 //      }
     public static java.util.Iterator<haven.Gob> iterator() { return ObjectShadow.objectCache().iterator(); }
     public static haven.Coord2d location(haven.Gob gob) { return gob.rc; }
+    public static haven.Coord locationInCoord(haven.Gob gob) { return CoordinateHandler.convertCoord2dToCoord(gob.rc); }
     public static boolean isStop(haven.Gob gob) { return velocity(gob) == 0.0; }
     public static boolean isMoving(haven.Gob gob) { return velocity(gob) != 0.0; }
 
