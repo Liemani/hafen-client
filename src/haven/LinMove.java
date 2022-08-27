@@ -102,7 +102,7 @@ public class LinMove extends Moving {
 	    if(t < 0)
         {
 		g.delattr(Moving.class);
-        lmi.Delegate.linMoveDidDelete(g);
+        lmi.Delegate.linMoveDidDeleted(g);
         }
 	    else
 		lm.sett(t);
