@@ -15,7 +15,7 @@ public class Connect implements Runnable {
         haven.Coord logInButtonLocation = centerOfLogInButton();
         lmi.api.AWTEventGenerator.generateMouseClickGeneral(logInButtonLocation, java.awt.event.MouseEvent.BUTTON1);
         waitLoadingCharacterList();
-        lmi.api.WidgetMessageHandler.selectCharacter(lmi.ObjectShadow.characterList(), characterName);
+        lmi.api.WidgetMessageHandler.sendSelectCharacterMessage(lmi.ObjectShadow.characterList(), characterName);
     }
 
     private void waitLoadingCharacterList() throws InterruptedException {
