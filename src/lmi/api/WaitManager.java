@@ -7,11 +7,22 @@ public class WaitManager {
     private static String command_;
 
     public static boolean wait(String command, long timeOut) {
-        return wait_(command, timeOut);
+        final long startTime = System.currentTimeMillis();
+
+        setCommand_(command);
+        startTimer_(timeOut);
+
+        if (!wait_())
+            return false;
+
+        final long endTime = System.currentTimeMillis();
+
+        return endTime <= startTime + timeOut;
     }
 
-    public static boolean waitMessage(String command) {
-        return wait_(command, Constant.TimeOut.GENERAL);
+    public static boolean wait(String command) {
+        setCommand_(command);
+        return wait_();
     }
 
     public static void notifyIfCommandEquals(String command) {
@@ -39,26 +50,17 @@ public class WaitManager {
         return command.contentEquals(command_);
     }
 
-    private static boolean wait_(String command, long timeOut) {
-        final long startTime = System.currentTimeMillis();
-
-        setCommand_(command);
-        startTimer_(timeOut);
-        wait_();
-
-        final long endTime = System.currentTimeMillis();
-
-        return endTime <= startTime + timeOut;
-    }
-
-    private static void wait_() {
+    private static boolean wait_() {
         try {
             synchronized (monitor_) {
                 monitor_.wait();
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            return false;
         }
+
+        return true;
     }
 
     private static void notify_() {

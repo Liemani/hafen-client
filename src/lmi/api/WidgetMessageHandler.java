@@ -5,9 +5,9 @@ import lmi.*;
 // TODO change all methods to get sender as argument
 public class WidgetMessageHandler {
     // act
-    public static void act(haven.MenuGrid widget, String action) {
+    public static boolean act(haven.MenuGrid widget, String action) {
         // look lmi.Constant.Action for available String value
-        WidgetMessageHandler.wdgmsg(widget, lmi.Constant.Command.ACT);
+        return WidgetMessageHandler.wdgmsg(widget, lmi.Constant.Command.ACT);
     }
 
     // TODO implement behavior or this could locate on lmi.api.Self if didn't use wdgmsg()
@@ -15,13 +15,13 @@ public class WidgetMessageHandler {
     }
 
     // click
-    public static void click(
+    public static boolean click(
             haven.MapView widget,
             haven.Coord clickedMapViewPoint,
             haven.Coord clickedMapPoint,
             int mouseButton,
             int modifiers) {
-        WidgetMessageHandler.wdgmsg(
+        return WidgetMessageHandler.wdgmsg(
                 widget,
                 lmi.Constant.Command.CLICK,
                 clickedMapViewPoint,
@@ -30,7 +30,7 @@ public class WidgetMessageHandler {
                 modifiers);
     }
 
-    public static void clickObject(
+    public static boolean clickObject(
             haven.MapView widget,
             haven.Coord clickedMapViewPoint,
             haven.Coord clickedMapPoint,
@@ -41,7 +41,7 @@ public class WidgetMessageHandler {
             haven.Coord gobLocation,
             int overlayId,
             int meshId) {
-        WidgetMessageHandler.wdgmsg(
+        return WidgetMessageHandler.wdgmsg(
                 widget,
                 lmi.Constant.Command.CLICK,
                 clickedMapViewPoint,
@@ -55,13 +55,13 @@ public class WidgetMessageHandler {
                 meshId);
     }
 
-    public static void wdgmsg(haven.Widget widget, String command, Object... args) {
+    public static boolean wdgmsg(haven.Widget widget, String command, Object... args) {
         widget.wdgmsg(command, args);
-        WaitManager.waitMessage(command);
+        return WaitManager.wait(command);
     }
 
     @Deprecated
-    public static void openFlowerMenuByClickData(haven.MapView widget, haven.ClickData clickData) {
+    public static boolean openFlowerMenuByClickData(haven.MapView widget, haven.ClickData clickData) {
         final haven.Gob gob = Util.gobFromClickData(clickData);
         Object[] args = {
             Util.mapViewCenter(),
@@ -70,42 +70,46 @@ public class WidgetMessageHandler {
             0};
         if(clickData != null)
             args = haven.Utils.extend(args, clickData.clickargs());
-        WidgetMessageHandler.wdgmsg(widget, lmi.Constant.Command.CLICK, args);
+        return WidgetMessageHandler.wdgmsg(widget, lmi.Constant.Command.CLICK, args);
     }
 
-    public static void choosePetalByIndex(haven.FlowerMenu widget, int index) throws IndexOutOfBoundsException {
+    public static boolean choose(haven.FlowerMenu widget, int index) {
+        boolean success = true;
+
         if (widget == null)
-            return;
+            return false;
 
         final int petalCount = widget.opts.length;
         if (0 <= index && index < petalCount) {
-            WidgetMessageHandler.wdgmsg(
+            success = WidgetMessageHandler.wdgmsg(
                     widget,
                     lmi.Constant.Command.FLOWER_MENU_CLOSE,
                     index,
                     0);
         } else {
-            throw new IndexOutOfBoundsException();
+            return false;
         }
+
+        return success;
     }
 
-    public static void closeFlowerMenu(haven.FlowerMenu widget) {
-        WidgetMessageHandler.wdgmsg(
+    public static boolean closeFlowerMenu(haven.FlowerMenu widget) {
+        return WidgetMessageHandler.wdgmsg(
                 widget,
                 lmi.Constant.Command.FLOWER_MENU_CLOSE,
                 -1);
     }
 
     // characterList
-    public static void selectCharacter(haven.Charlist widget, String name) {
-        WidgetMessageHandler.wdgmsg(widget, lmi.Constant.Command.SELECT_CHARACTER, name);
+    public static boolean selectCharacter(haven.Charlist widget, String name) {
+        return WidgetMessageHandler.wdgmsg(widget, lmi.Constant.Command.SELECT_CHARACTER, name);
     }
 
     // convenient
-    public static void interact(haven.Gob gob, int meshId) {
+    public static boolean interact(haven.Gob gob, int meshId) {
         haven.Coord2d gobLocation = GobHandler.location(gob);
         haven.Coord gobLocationInCoord = CoordinateHandler.convertCoord2dToCoord(gobLocation);
-        WidgetMessageHandler.clickObject(
+        return WidgetMessageHandler.clickObject(
                 ObjectShadow.mapView(),
                 lmi.api.Util.mapViewCenter(),
                 gobLocationInCoord,
@@ -118,11 +122,11 @@ public class WidgetMessageHandler {
                 meshId);
     }
 
-    public static void lift(haven.Gob gob) {
+    public static boolean lift(haven.Gob gob) {
         Self.carry();
         haven.Coord2d gobLocation = GobHandler.location(gob);
         haven.Coord gobLocationInCoord = CoordinateHandler.convertCoord2dToCoord(gobLocation);
-        WidgetMessageHandler.clickObject(
+        return WidgetMessageHandler.clickObject(
                 ObjectShadow.mapView(),
                 lmi.api.Util.mapViewCenter(),
                 gobLocationInCoord,
@@ -135,8 +139,8 @@ public class WidgetMessageHandler {
                 Constant.MeshId.NONE);
     }
 
-    public static void put(haven.Coord location) {
-        click(
+    public static boolean put(haven.Coord location) {
+        return WidgetMessageHandler.click(
             ObjectShadow.mapView(),
             lmi.api.Util.mapViewCenter(),
             location,

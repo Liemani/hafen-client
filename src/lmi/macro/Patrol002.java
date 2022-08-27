@@ -28,9 +28,9 @@ public class Patrol002 implements Runnable {
     private void main() throws InterruptedException {
         haven.Coord firstPoint = lmi.api.CoordinateHandler.convertCoord2dToCoord(lmi.api.Self.location().add(0.0, -11.0));
         haven.Coord secondPoint = lmi.api.CoordinateHandler.convertCoord2dToCoord(lmi.api.Self.location()).add(1, 0);
-        lmi.api.Self.moveByIntCoordinate(firstPoint);
+        lmi.api.Self.move(firstPoint);
         Thread.sleep(2000);
-        lmi.api.Self.moveByIntCoordinate(secondPoint);
+        lmi.api.Self.move(secondPoint);
         Thread.sleep(2000);
     }
 }
