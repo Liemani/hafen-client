@@ -12,29 +12,31 @@ public class Delegate {
         notifySelfIfArrived(gob);
     }
 
+    // flowerMenu
     public static void flowerMenuWillAdded(haven.FlowerMenu widget) {
         // FlowerMenu::$_::create()
         FlowerMenuHandler.setWidget(widget);
     }
 
-    public static void flowerMenuDidAdded() {
+    public static void newWidgetDidAdded() {
         // UI::newwidget()
-        FlowerMenuHandler.notifyOpen();
+        WaitManager.notifyIfCommandEquals(Constant.Command.Custom.NEW_WIDGET_DID_ADDED);
     }
 
-    public static void didCloseFlowerMenu() {
-        // FlowerMenu::uimsg()
-        FlowerMenuHandler.notifyClose();
+    public static void flowerMenuDidClosed() {
+        // FlowerMenu::Cancel::ntick()
+        WaitManager.notifyIfCommandEquals(Constant.Command.Custom.FLOWER_MENU_CLOSED);
     }
 
-    public static void didChoosePetal() {
-        // FlowerMenu::uimsg()
-        FlowerMenuHandler.notifyClose();
+    public static void flowerMenuDidChoosed() {
+        // FlowerMenu::Chosen::ntick()
+        WaitManager.notifyIfCommandEquals(Constant.Command.Custom.FLOWER_MENU_CHOOSED);
     }
 
     public static void didGetACK(haven.RMessage message) {
         // Session::RWorker::gotack()
         String command = MessageHandler.getCommand(message);
+        System.out.println("[Session::RWorker::gotack() command] \"" + command + "\"");
         WaitManager.notifyIfCommandEquals(command);
     }
 

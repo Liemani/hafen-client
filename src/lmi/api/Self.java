@@ -62,6 +62,17 @@ public class Self {
 
         move_(point);
         if (!Self.coordinateEquals(moveDestination_))
+            result = WaitManager.wait(Constant.Command.Custom.MOVE, Constant.TimeOut.NONE);
+        moveDestination_ = null;
+
+        return result;
+    }
+
+    public static boolean move(haven.Coord point) {
+        boolean result = true;
+
+        move_(point);
+        if (!Self.coordinateEquals(moveDestination_))
             result = WaitManager.wait(Constant.Command.Custom.MOVE, -1);
         moveDestination_ = null;
 
@@ -82,32 +93,6 @@ public class Self {
                 point,
                 lmi.Constant.Input.Mouse.LEFT,
                 lmi.Constant.Input.Modifier.NONE);
-    }
-
-    @Deprecated
-    public static boolean moveAnotherWay(haven.Coord2d mapPoint) {
-        move_(mapPoint);
-        return Self.waitArriving(mapPoint);
-    }
-
-    @Deprecated
-    public static boolean waitArriving(haven.Coord2d destination) throws InterruptedException {
-        long currentTime = System.currentTimeMillis();
-        long timeoutLimit = currentTime + Constant.TimeOut.GENERAL;
-        while (!Self.isArrived(destination)) {
-            currentTime = System.currentTimeMillis();
-            if (currentTime > timeoutLimit
-                    && Self.velocity() == 0.0)
-                return false;
-            if (Self.velocity() != 0.0)
-                timeoutLimit = currentTime + Constant.TimeOut.GENERAL;
-            Thread.sleep(Constant.TimeOut.FREQUENT);
-        }
-        return true;
-    }
-
-    public static boolean isArrived(haven.Coord2d destination) {
-        return Self.coordinateEquals(destination);
     }
 
     // do action
@@ -159,8 +144,8 @@ public class Self {
         act(lmi.Constant.Action.SHOOT);
     }
 
-    public static void act(String action) {
-        WidgetMessageHandler.act(lmi.ObjectShadow.gameUI().menu, action);
+    public static boolean act(String action) {
+        return WidgetMessageHandler.act(lmi.ObjectShadow.gameUI().menu, action);
     }
 
     // etc
@@ -200,13 +185,23 @@ public class Self {
     }
 
     // private methods
-    private static void move_(haven.Coord2d point) {
+    private static boolean move_(haven.Coord2d point) {
         final haven.Coord pointInIntCoordinate = CoordinateHandler.convertCoord2dToCoord(point);
         moveDestination_ = point;
-        WidgetMessageHandler.click(
+        return WidgetMessageHandler.click(
                 lmi.ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 pointInIntCoordinate,
+                lmi.Constant.Input.Mouse.LEFT,
+                lmi.Constant.Input.Modifier.NONE);
+    }
+
+    private static boolean move_(haven.Coord point) {
+        moveDestination_ = CoordinateHandler.convertCoordToCoord2d(point);
+        return WidgetMessageHandler.click(
+                lmi.ObjectShadow.mapView(),
+                Util.mapViewCenter(),
+                point,
                 lmi.Constant.Input.Mouse.LEFT,
                 lmi.Constant.Input.Modifier.NONE);
     }
