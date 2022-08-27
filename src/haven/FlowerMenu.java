@@ -146,7 +146,10 @@ public class FlowerMenu extends Widget {
 		}
 	    }
 	    if(s == 1.0)
+        {
 		ui.destroy(FlowerMenu.this);
+        lmi.Delegate.flowerMenuDidChoosed();
+        }
 	}
     }
 
@@ -164,7 +167,10 @@ public class FlowerMenu extends Widget {
 		p.a = 1 - a;
 	    }
 	    if(s == 1.0)
+        {
 		ui.destroy(FlowerMenu.this);
+        lmi.Delegate.flowerMenuDidClosed();
+        }
 	}
     }
 
@@ -233,12 +239,12 @@ public class FlowerMenu extends Widget {
 	    new Cancel();
 	    mg.remove();
 	    kg.remove();
-        lmi.Delegate.didCloseFlowerMenu();
+        lmi.Delegate.flowerMenuDidClosed();
 	} else if(msg == "act") {
 	    new Chosen(opts[(Integer)args[0]]);
 	    mg.remove();
 	    kg.remove();
-        lmi.Delegate.didChoosePetal();
+        lmi.Delegate.flowerMenuDidChoosed();
 	}
     }
 

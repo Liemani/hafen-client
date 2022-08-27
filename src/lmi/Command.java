@@ -229,12 +229,9 @@ class Command {
 
     static Void moveEastSouth() {
         haven.Coord2d targetLocation = CoordinateHandler.newCoordinateByOffset(Self.location(), 33.0, 33.0);
-        try {
-            if (Self.moveAnotherWay(targetLocation))
-                System.out.println("[moveAnotherWay() success]");
-            else
-                System.out.println("[moveAnotherWay() failed]");
-        } catch (Exception e) { System.out.println("[interrupted]"); }
+        final boolean success = Self.move(targetLocation);
+        if (!success)
+            System.out.println("[moveAnotherWay() failed]");
         return null;
     }
 
@@ -321,10 +318,12 @@ class Command {
     }
 
     static Void move() {
+        boolean success;
+
         haven.Coord2d destination = CoordinateHandler.newCoordinateByOffset(Self.location(), 33.0, 33.0);
-        try {
-            Self.move(destination);
-        } catch (InterruptedException e) {}
+        success = Self.move(destination);
+        if (!success)
+            System.out.println("[Command::move() failed]");
         System.out.println("[character stopped]");
         return null;
     }
@@ -394,11 +393,15 @@ class Command {
         return null;
     }
 
-    static Void interactClosestGob() {
+    static Void chooseClosestGob() {
         haven.Gob closestGob = GobHandler.closestGob();
-        try {
-            FlowerMenuHandler.open(closestGob, Constant.MeshId.DEFAULT);
-        } catch (InterruptedException e) { e.printStackTrace(); }
+
+        if (!FlowerMenuHandler.choose(
+                closestGob,
+                Constant.MeshId.DEFAULT,
+                Constant.Interaction.TAKE_BRANCH)) {
+            System.out.println("[Command::chooseClosestGob() FlowerMenuHandler.choose() failed]");
+        }
         return null;
     }
 }

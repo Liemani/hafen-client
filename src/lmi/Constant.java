@@ -12,6 +12,9 @@ public class Constant {
 
         public static class Custom {
             public static final String MOVE = "move";
+            public static final String NEW_WIDGET_DID_ADDED = "new widget did added";
+            public static final String FLOWER_MENU_CLOSED = "flower menu closed";
+            public static final String FLOWER_MENU_CHOOSED = "flower menu choosed";
         }
     }
 
