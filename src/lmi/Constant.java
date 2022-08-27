@@ -7,14 +7,12 @@ public class Constant {
         public static final String FOCUS = "focus";
         public static final String SELECT_CHARACTER = "play";   // args = { haven.widget <haven.Charlist>, String <character name> }
         public static final String CLICK = "click";
-        public static final String FLOWER_MENU_CLOSE = "cl";
+        public static final String CLOSE_FLOWER_MENU = "cl";
         public static final String AFK = "afk";
+        public static final String CHANGE_CURSOR = "curs";
 
         public static class Custom {
             public static final String MOVE = "move";
-            public static final String NEW_WIDGET_DID_ADDED = "new widget did added";
-            public static final String FLOWER_MENU_CLOSED = "flower menu closed";
-            public static final String FLOWER_MENU_CHOOSED = "flower menu choosed";
         }
     }
 
@@ -97,9 +95,11 @@ public class Constant {
     public static final double COORD2D_PER_COORD = TILE_WIDTH_IN_COORD2D / TILE_WIDTH_IN_COORD;
 
     public static class TimeOut {
-        public static final long NONE = -1;
+        public static final long MAX = Long.MAX_VALUE;
+        public static final long FAIL = 2000;
         public static final long GENERAL = 1000;
-        public static final long FREQUENT = 500;
+        public static final long TEMPORARY = 500;
+        public static final long NONE = 0;
     }
 
     public static class MeshId {

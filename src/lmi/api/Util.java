@@ -43,17 +43,18 @@ public class Util {
 
     public static void describeClickedGob() { lmi.Debug.describeField(clickedGob()); }
 
+    // TODO re-implement
     public static void waitHourGlassFailable() throws InterruptedException {
         final long startTime = System.currentTimeMillis();
         final long timeoutLimit = startTime + Constant.TimeOut.GENERAL;
         while (lmi.ObjectShadow.gameUI().prog == null) {
-            Thread.sleep(Constant.TimeOut.FREQUENT);
+            Thread.sleep(Constant.TimeOut.TEMPORARY);
             long currentTime = System.currentTimeMillis();
             if (currentTime > timeoutLimit)
                 break;
         }
         while (lmi.ObjectShadow.gameUI().prog != null)
-            Thread.sleep(Constant.TimeOut.FREQUENT);
+            Thread.sleep(Constant.TimeOut.TEMPORARY);
     }
 
     public static void newWidget(haven.Widget widget) {

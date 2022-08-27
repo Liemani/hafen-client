@@ -1,5 +1,7 @@
 package lmi.macro;
 
+import lmi.api.*;
+
 public class Connect implements Runnable {
     public void run() {
         try {
@@ -15,7 +17,7 @@ public class Connect implements Runnable {
         haven.Coord logInButtonLocation = centerOfLogInButton();
         lmi.api.AWTEventGenerator.generateMouseClickGeneral(logInButtonLocation, java.awt.event.MouseEvent.BUTTON1);
         waitLoadingCharacterList();
-        lmi.api.WidgetMessageHandler.sendSelectCharacterMessage(lmi.ObjectShadow.characterList(), characterName);
+        WidgetMessageHandler.selectCharacter(lmi.ObjectShadow.characterList(), characterName);
     }
 
     private void waitLoadingCharacterList() throws InterruptedException {

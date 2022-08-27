@@ -672,6 +672,7 @@ public class Widget {
 		cursor = null;
 	    else
 		cursor = Resource.remote().load((String)args[0], (Integer)args[1]);
+        lmi.Delegate.cursorDidChanged();
 	} else if(msg == "tip") {
 	    int a = 0;
 	    Object tt = args[a++];

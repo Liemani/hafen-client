@@ -242,7 +242,7 @@ public class UI {
 		pwdg.addchild(wdg, pargs);
 	    }
 	    bind(wdg, id);
-        lmi.Delegate.newWidgetDidAdded();
+        lmi.Delegate.newWidgetDidAdded(wdg);
 	}
     }
 

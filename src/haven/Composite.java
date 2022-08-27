@@ -317,7 +317,7 @@ public class Composite extends Drawable {
 
     private void poseDidChange(Collection<ResData> poseResourceDataCollection) {
         setPoseNameArray(poseResourceDataCollection);
-        lmi.Delegate.poseDidChange(gob);
+        lmi.Delegate.poseDidChanged(gob);
     }
 
     private void setPoseNameArray(Collection<ResData> poseResourceDataCollection) {

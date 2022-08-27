@@ -4,56 +4,59 @@ import lmi.*;
 
 public class WaitManager {
     private static Object monitor_ = new Object();
-    private static String command_;
+    private static String command_ = null;
+    private static boolean isApplied_ = false;
 
-    public static boolean wait(String command, long timeOut) {
-        final long startTime = System.currentTimeMillis();
-
-        setCommand_(command);
-        startTimer_(timeOut);
-
-        if (!wait_())
-            return false;
-
-        final long endTime = System.currentTimeMillis();
-
-        return endTime <= startTime + timeOut;
+    // wait
+    public static boolean waitTimeOut(String command, long timeOut) {
+        init(command);
+        return wait_(timeOut);
     }
 
-    public static boolean wait(String command) {
-        setCommand_(command);
-        return wait_();
+    // wiat command
+    public static boolean waitCommand(String command) {
+        init(command);
+        if (!wait_()) return false;
+        if (!isApplied_) {
+            if (!wait_(Constant.TimeOut.TEMPORARY)) return false;
+            final boolean isApplied = isApplied_;
+            return isApplied;
+        }
+        return true;
     }
 
-    public static void notifyIfCommandEquals(String command) {
-        if (!commandEquals_(command))
-            return;
+    public static void checkCommandApply(String command) {
+        if (!command.contentEquals(command_)) return;
+        isApplied_ = true;
+        notify_();
+        System.out.println("[WaitManager::checkCommandApply() command] " + command);
+    }
 
-        clear_();
-        removeTimer_();
+    public static void checkACKCommand(String command) {
+        if (command_ == null || command == null) return;
+        if (!commandEquals_(command)) return;
         notify_();
     }
 
     // private methods
     private static void clear_() {
-        setCommand_(null);
+        command_ = null;
+        isApplied_ = false;
     }
 
-    private static void setCommand_(String command) {
+    private static void init(String command) {
+        clear_();
         command_ = command;
     }
 
     private static boolean commandEquals_(String command) {
-        if (command_ == null || command == null)
-            return false;
-
         return command.contentEquals(command_);
     }
 
-    private static boolean wait_() {
+    private static boolean wait_(long timeOut) {
         try {
             synchronized (monitor_) {
-                monitor_.wait();
+                monitor_.wait(timeOut);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -63,38 +66,11 @@ public class WaitManager {
         return true;
     }
 
+    private static boolean wait_() { return wait_(lmi.Constant.TimeOut.NONE); }
+
     private static void notify_() {
         synchronized (monitor_) {
             monitor_.notify();
         }
-    }
-
-    // timer
-    static Thread timerThread_ = null;
-    private static void startTimer_(long timeOut) {
-        if (timeOut == Constant.TimeOut.NONE)
-            return;
-
-        timerThread_ = new Thread(
-            () -> {
-                try {
-                    Thread.sleep(timeOut);
-                } catch (InterruptedException e) {
-                    timerThread_ = null;
-                    return;
-                }
-
-                notify_();
-                timerThread_ = null;
-            }
-        );
-        timerThread_.start();
-    }
-
-    private static void removeTimer_() {
-        if (timerThread_ == null)
-            return;
-
-        timerThread_.interrupt();
     }
 }
