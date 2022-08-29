@@ -135,4 +135,15 @@ public class Util {
             ++endOfString;
         return endOfString - startOfString;
     }
+
+    // etc
+    public static String currentMethod() {
+        return new Throwable()
+            .getStackTrace()[1]
+            .getMethodName();
+    }
+
+    public static void debugPrint(Class classObject, String description) {
+        System.out.println("[" + classObject.getName() + "::" + currentMethod() + "()] " + description);
+    }
 }

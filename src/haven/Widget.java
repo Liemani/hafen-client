@@ -533,7 +533,7 @@ public class Widget {
     public void destroy() {
 	remove();
 	rdispose();
-    System.out.println("[Widget::destroy() this parent] " + this + parent);
+    System.out.println("[Widget::destroy()] this: " + this + ", parent: " + parent);
     }
 
     /* XXX: Should be renamed to cremove at this point. */

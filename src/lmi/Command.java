@@ -219,19 +219,14 @@ class Command {
     }
 
     static Void moveNorthTile() {
-        try {
-            Self.moveNorthTile();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Self.moveNorthTile();
         return null;
     }
 
     static Void moveEastSouth() {
         haven.Coord2d targetLocation = CoordinateHandler.newCoordinateByOffset(Self.location(), 33.0, 33.0);
-        final boolean success = Self.move(targetLocation);
-        if (!success)
-            System.out.println("[moveAnotherWay() failed]");
+        final Constant.StatusCode result = Self.move(targetLocation);
+        Util.debugPrint(Command.class, "result: " + result);
         return null;
     }
 
@@ -248,9 +243,7 @@ class Command {
     }
 
     static Void moveCenter() {
-        try {
-            Self.moveCenter();
-        } catch (Exception e) { System.out.println("[moveCenter() is interrupted]"); }
+        Self.moveCenter();
         return null;
     }
 
@@ -318,22 +311,17 @@ class Command {
     }
 
     static Void move() {
-        boolean success;
 
         haven.Coord2d destination = CoordinateHandler.newCoordinateByOffset(Self.location(), 33.0, 33.0);
-        success = Self.move(destination);
-        if (!success)
-            System.out.println("[Command::move() failed]");
-        System.out.println("[character stopped]");
+        final Constant.StatusCode result = Self.move(destination);
+        Util.debugPrint(Command.class, "result: " + result);
         return null;
     }
 
     static Void moveNorthTileTenTimes() {
-        try {
-            Self.moveCenter();
-            for (int count = 0; count < 10; ++count)
-                Self.moveNorthTile();
-        } catch (InterruptedException e) {}
+        Self.moveCenter();
+        for (int count = 0; count < 10; ++count)
+            Self.moveNorthTile();
         return null;
     }
 
@@ -393,15 +381,19 @@ class Command {
         return null;
     }
 
-    static Void chooseClosestGob() {
+    static Void chopIntoBlocksClosestGob() {
         haven.Gob closestGob = GobHandler.closestGob();
 
-        if (!FlowerMenuHandler.choose(
-                closestGob,
-                Constant.MeshId.DEFAULT,
-                Constant.Interaction.TAKE_BRANCH)) {
-            System.out.println("[Command::chooseClosestGob() FlowerMenuHandler.choose() failed]");
-        }
+        FlowerMenuHandler.choose(closestGob, Constant.MeshId.DEFAULT, Constant.Interaction.CHOP_INTO_BLOCKS);
+        return null;
+    }
+
+    static Void gatherClosestGob() {
+        String action = lmi.Scanner.nextLineWithPrompt("enter action");
+        haven.Gob closestGob = GobHandler.closestGob();
+        final Constant.StatusCode result = FlowerMenuHandler.choose(closestGob, Constant.MeshId.DEFAULT, action);
+        System.out.println("[Command.gatherClosestGob() FlowerMenuHandler.choose()] " + result);
+        Self.moveNorthTile();
         return null;
     }
 }

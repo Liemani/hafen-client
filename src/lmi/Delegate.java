@@ -4,7 +4,7 @@ import lmi.api.*;
 
 public class Delegate {
     // flowerMenu
-    public static void flowerMenuWillAdded(haven.FlowerMenu widget) {
+    public static void flowerMenuDidCreated(haven.FlowerMenu widget) {
         // FlowerMenu::$_::create()
         FlowerMenuHandler.setWidget(widget);
     }
@@ -19,8 +19,10 @@ public class Delegate {
     // WaitManager::checkCommandApply()
     public static void didMove(haven.Gob gob) {
         // OCache::$move::apply()
-        if (gob == lmi.api.Self.gob())
+        if (gob == lmi.api.Self.gob()) {
+            WaitManager.checkCommandApply(Constant.Command.CLICK);
             WaitManager.checkCommandApply(Constant.Command.Custom.MOVE);
+        }
     }
 
     public static void linMoveDidDeleted(haven.Gob gob) {
@@ -35,7 +37,7 @@ public class Delegate {
             WaitManager.checkCommandApply(Constant.Command.CLICK);
     }
 
-    public static void flowerMenuDidClosed() {
+    public static void flowerMenuDidCanceled() {
         // FlowerMenu::Cancel::ntick()
         WaitManager.checkCommandApply(Constant.Command.CLOSE_FLOWER_MENU);
     }
@@ -48,6 +50,17 @@ public class Delegate {
     public static void cursorDidChanged() {
         // Widget.uimsg()
         WaitManager.checkCommandApply(Constant.Command.CHANGE_CURSOR);
+    }
+
+    // progress
+    public static void progressDidAdded() {
+        // Progress.Progress()
+        WaitManager.checkCommandApply(Constant.Command.Custom.PROGRESS_DID_ADDED);
+    }
+
+    public static void progressDidDestroyed() {
+        // GameUI.uimsg()
+        WaitManager.checkCommandApply(Constant.Command.Custom.PROGRESS_DID_DESTROYED);
     }
 
     // etc

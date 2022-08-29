@@ -242,7 +242,6 @@ public class UI {
 		pwdg.addchild(wdg, pargs);
 	    }
 	    bind(wdg, id);
-        lmi.Delegate.newWidgetDidAdded(wdg);
 	}
     }
 
@@ -255,6 +254,7 @@ public class UI {
 	    if(pwdg == null)
 		throw(new UIException("Null parent widget " + parent + " for " + id, null, pargs));
 	    pwdg.addchild(wdg, pargs);
+        lmi.Delegate.newWidgetDidAdded(wdg);
 	}
     }
 
@@ -348,8 +348,11 @@ public class UI {
             && !msg.contentEquals("tip")
             && !msg.contentEquals("auth")
             && !msg.contentEquals("ppower")
-            && !msg.contentEquals("max"))
-        System.out.println("[RemoteUI::run() ui.uimsg()] {\"command\": \"" + msg + "\", \"widgetClass\": \"" + wdg.getClass().getName() + "\"}");
+            && !msg.contentEquals("max")) {
+        System.out.println("[RemoteUI::run() ui.uimsg()] {\"command\": \"" + msg + "\", \"widgetClass\": \"" + wdg.getClass().getName() + "\", \"args.length\": " + args.length + "}");
+        for (Object object : args)
+            lmi.Debug.describeField(object);
+    }
 	if(wdg != null) {
 	    synchronized(this) {
 		wdg.uimsg(msg.intern(), args);
