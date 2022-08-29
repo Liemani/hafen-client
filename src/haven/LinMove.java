@@ -76,6 +76,7 @@ public class LinMove extends Moving {
 	    LinMove lm = g.getattr(LinMove.class);
 	    if((lm == null) || !lm.s.equals(s) || !lm.v.equals(v)) {
 		g.setattr(new LinMove(g, s, v));
+        lmi.Delegate.linMoveDidAdded(g);
 	    }
 	}
     }

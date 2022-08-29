@@ -1,17 +1,20 @@
 package lmi.api;
 
 import lmi.*;
+import lmi.Constant.StatusCode;
+import lmi.Constant.Command;
+import lmi.Constant.TimeOut;
 
 public class FlowerMenuHandler {
     // status code shadow
-    private static final Constant.StatusCode SC_SUCCEEDED = Constant.StatusCode.SUCCEEDED;
-    private static final Constant.StatusCode SC_INTERRUPTED = Constant.StatusCode.INTERRUPTED;
-    private static final Constant.StatusCode SC_INVALID_ARGUMENT = Constant.StatusCode.INVALID_ARGUMENT;
-    private static final Constant.StatusCode SC_NO_MATCHING = Constant.StatusCode.NO_MATCHING;
+    private static final StatusCode SC_SUCCEEDED = StatusCode.SUCCEEDED;
+    private static final StatusCode SC_INTERRUPTED = StatusCode.INTERRUPTED;
+    private static final StatusCode SC_INVALID_ARGUMENT = StatusCode.INVALID_ARGUMENT;
+    private static final StatusCode SC_NO_MATCHING = StatusCode.NO_MATCHING;
 
     // command shadow
-    private static final String C_PROGRESS_DID_ADDED = Constant.Command.Custom.PROGRESS_DID_ADDED;
-    private static final String C_PROGRESS_DID_DESTROYED = Constant.Command.Custom.PROGRESS_DID_DESTROYED;
+    private static final Command.Custom C_PROGRESS_DID_ADDED = Command.Custom.PROGRESS_DID_ADDED;
+    private static final Command.Custom C_PROGRESS_DID_DESTROYED = Command.Custom.PROGRESS_DID_DESTROYED;
 
     // assume widget_ never collision
     private static haven.FlowerMenu widget_;
@@ -26,16 +29,16 @@ public class FlowerMenuHandler {
     ///     - SC_INTERRUPTED
     ///     - SC_INVALID_ARGUMENT
     ///     - SC_NO_MATCHING
-    public static Constant.StatusCode choose(haven.Gob gob, int meshId, String name) {
+    public static StatusCode choose(haven.Gob gob, int meshId, String name) {
         if (gob == null || name == null)
             return SC_INVALID_ARGUMENT;
 
         {
-            final Constant.StatusCode result = open_(gob, meshId);
+            final StatusCode result = open_(gob, meshId);
             if (result != SC_SUCCEEDED) return result;
         }
         {
-            final Constant.StatusCode result = choose_(name);
+            final StatusCode result = choose_(name);
             if (result != SC_SUCCEEDED) {
                 close_();
                 return result;
@@ -50,15 +53,15 @@ public class FlowerMenuHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode open_(haven.Gob gob, int meshId) {
+    private static StatusCode open_(haven.Gob gob, int meshId) {
         return sendInteractMessage_(gob, meshId);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode close_() {
-        final Constant.StatusCode result = sendCloseMessage_();
+    private static StatusCode close_() {
+        final StatusCode result = sendCloseMessage_();
         if (result == SC_SUCCEEDED)
             clear_();
         return result;
@@ -68,7 +71,7 @@ public class FlowerMenuHandler {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_NO_MATCHING
-    private static Constant.StatusCode choose_(String name) {
+    private static StatusCode choose_(String name) {
         for (haven.FlowerMenu.Petal petal : widget_.opts)
             if (petal.name.contentEquals(name))
                 return sendChoosePetalMessage_(petal.num);
@@ -79,14 +82,14 @@ public class FlowerMenuHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode waitEnd_() {
+    private static StatusCode waitEnd_() {
         while (true) {
             {
-                final Constant.StatusCode result = WaitManager.waitCommand(C_PROGRESS_DID_DESTROYED);
+                final StatusCode result = WaitManager.waitCommand(C_PROGRESS_DID_DESTROYED);
                 if (result != SC_SUCCEEDED) return result;
             }
             {
-                final Constant.StatusCode result = WaitManager.waitTimeOut(C_PROGRESS_DID_ADDED, Constant.TimeOut.TEMPORARY);
+                final StatusCode result = WaitManager.waitTimeOut(C_PROGRESS_DID_ADDED, TimeOut.TEMPORARY);
                 switch (result) {
                     case SUCCEEDED:
                         break;
@@ -106,7 +109,7 @@ public class FlowerMenuHandler {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_NO_MATCHING
-    private static Constant.StatusCode sendChoosePetalMessage_(int index) {
+    private static StatusCode sendChoosePetalMessage_(int index) {
         final int petalCount = widget_.opts.length;
         if (0 <= index && index < petalCount) {
             return WidgetMessageHandler.sendChoosePetalMessage(widget_, index);
@@ -119,14 +122,14 @@ public class FlowerMenuHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode sendInteractMessage_(haven.Gob gob, int meshId) {
+    private static StatusCode sendInteractMessage_(haven.Gob gob, int meshId) {
         return WidgetMessageHandler.interact(gob, meshId);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode sendCloseMessage_() {
+    private static StatusCode sendCloseMessage_() {
         return WidgetMessageHandler.sendCloseFlowerMenuMessage(widget_);
     }
 }

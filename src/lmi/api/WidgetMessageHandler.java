@@ -1,21 +1,22 @@
 package lmi.api;
 
 import lmi.*;
+import lmi.Constant.*;
 
 public class WidgetMessageHandler {
     // public method
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    public static Constant.StatusCode interact(haven.Gob gob, int meshId) {
+    public static StatusCode interact(haven.Gob gob, int meshId) {
         haven.Coord gobLocationInCoord = GobHandler.locationInCoord(gob);
         return sendObjectClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 gobLocationInCoord,
-                Constant.Input.Mouse.RIGHT,
-                Constant.Input.Modifier.NONE,
-                Constant.InteractionType.DEFAULT,
+                Input.Mouse.RIGHT,
+                Input.Modifier.NONE,
+                InteractionType.DEFAULT,
                 GobHandler.id(gob),
                 gobLocationInCoord,
                 0,
@@ -25,19 +26,19 @@ public class WidgetMessageHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    public static Constant.StatusCode put(haven.Coord location) {
+    public static StatusCode put(haven.Coord location) {
         return sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 location,
-                Constant.Input.Mouse.RIGHT,
-                Constant.Input.Modifier.NONE);
+                Input.Mouse.RIGHT,
+                Input.Modifier.NONE);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    public static Constant.StatusCode selectCharacter(haven.Charlist widget, String name) {
+    public static StatusCode selectCharacter(haven.Charlist widget, String name) {
         return sendSelectCharacterMessage(widget, name);
     }
 
@@ -45,7 +46,7 @@ public class WidgetMessageHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    static Constant.StatusCode sendClickMessage(
+    static StatusCode sendClickMessage(
             haven.MapView widget,
             haven.Coord clickedMapViewPoint,
             haven.Coord clickedMapPoint,
@@ -53,7 +54,7 @@ public class WidgetMessageHandler {
             int modifiers) {
         return wdgmsg_(
                 widget,
-                lmi.Constant.Command.CLICK,
+                Command.CLICK,
                 clickedMapViewPoint,
                 clickedMapPoint,
                 mouseButton,
@@ -63,7 +64,7 @@ public class WidgetMessageHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    static Constant.StatusCode sendObjectClickMessage(
+    static StatusCode sendObjectClickMessage(
             haven.MapView widget,
             haven.Coord clickedMapViewPoint,
             haven.Coord clickedMapPoint,
@@ -76,7 +77,7 @@ public class WidgetMessageHandler {
             int meshId) {
         return wdgmsg_(
                 widget,
-                lmi.Constant.Command.CLICK,
+                Command.CLICK,
                 clickedMapViewPoint,
                 clickedMapPoint,
                 mouseButton,
@@ -91,29 +92,29 @@ public class WidgetMessageHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    static Constant.StatusCode sendActMessage(haven.MenuGrid widget, String action) {
-        return wdgmsg_(widget, lmi.Constant.Command.ACT, action, 0);
+    static StatusCode sendActMessage(haven.MenuGrid widget, String action) {
+        return wdgmsg_(widget, Command.ACT, action, 0);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    static Constant.StatusCode sendCancelActMessage() {
+    static StatusCode sendCancelActMessage() {
         return sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 Self.locationInCoord(),
-                Constant.Input.Mouse.RIGHT,
-                Constant.Input.Modifier.NONE);
+                Input.Mouse.RIGHT,
+                Input.Modifier.NONE);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    static Constant.StatusCode sendChoosePetalMessage(haven.FlowerMenu widget, int index) {
+    static StatusCode sendChoosePetalMessage(haven.FlowerMenu widget, int index) {
         return wdgmsg_(
                 widget,
-                lmi.Constant.Command.CLOSE_FLOWER_MENU,
+                Command.CLOSE_FLOWER_MENU,
                 index,
                 0);
     }
@@ -121,40 +122,40 @@ public class WidgetMessageHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    static Constant.StatusCode sendCloseFlowerMenuMessage(haven.FlowerMenu widget) {
+    static StatusCode sendCloseFlowerMenuMessage(haven.FlowerMenu widget) {
         return wdgmsg_(
                 widget,
-                lmi.Constant.Command.CLOSE_FLOWER_MENU,
+                Command.CLOSE_FLOWER_MENU,
                 -1);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    static Constant.StatusCode sendSelectCharacterMessage(haven.Charlist widget, String name) {
-        return wdgmsg_(widget, lmi.Constant.Command.SELECT_CHARACTER, name);
+    static StatusCode sendSelectCharacterMessage(haven.Charlist widget, String name) {
+        return wdgmsg_(widget, Command.SELECT_CHARACTER, name);
     }
 
     // private method
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode wdgmsg_(haven.Widget widget, String command, Object... args) {
+    private static StatusCode wdgmsg_(haven.Widget widget, String command, Object... args) {
         widget.wdgmsg(command, args);
         return WaitManager.waitCommand(command);
     }
 
     // deprecated method
     @Deprecated
-    public static Constant.StatusCode openFlowerMenuByClickData(haven.MapView widget, haven.ClickData clickData) {
+    public static StatusCode openFlowerMenuByClickData(haven.MapView widget, haven.ClickData clickData) {
         final haven.Gob gob = Util.gobFromClickData(clickData);
         Object[] args = {
             Util.mapViewCenter(),
             CoordinateHandler.convertCoord2dToCoord(gob.rc),
-            Constant.Input.Mouse.RIGHT,
-            Constant.Input.Modifier.NONE};
+            Input.Mouse.RIGHT,
+            Input.Modifier.NONE};
         if(clickData != null)
             args = haven.Utils.extend(args, clickData.clickargs());
-        return wdgmsg_(widget, lmi.Constant.Command.CLICK, args);
+        return wdgmsg_(widget, Command.CLICK, args);
     }
 }

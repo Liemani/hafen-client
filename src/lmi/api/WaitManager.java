@@ -1,30 +1,48 @@
 package lmi.api;
 
 import lmi.*;
+import lmi.Constant.StatusCode;
+import lmi.Constant.Command;
+import lmi.Constant.TimeOut;
 
 public class WaitManager {
     // status code shadow
-    private static final Constant.StatusCode SC_SUCCEEDED = Constant.StatusCode.SUCCEEDED;
-    private static final Constant.StatusCode SC_INTERRUPTED = Constant.StatusCode.INTERRUPTED;
-    private static final Constant.StatusCode SC_FAILED = Constant.StatusCode.FAILED;
-    private static final Constant.StatusCode SC_TIME_OUT = Constant.StatusCode.TIME_OUT;
+    private static final StatusCode SC_SUCCEEDED = StatusCode.SUCCEEDED;
+    private static final StatusCode SC_INTERRUPTED = StatusCode.INTERRUPTED;
+    private static final StatusCode SC_FAILED = StatusCode.FAILED;
+    private static final StatusCode SC_TIME_OUT = StatusCode.TIME_OUT;
 
+    // property
     private static Object monitor_ = new Object();
     private static String command_ = null;
-    private static boolean isApplied_ = false;
+    private static Command.Custom customCommand_ = Command.Custom.NONE;
 
     // wait
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_TIME_OUT
-    public static Constant.StatusCode waitTimeOut(String command, long timeOut) {
-        init(command);
+    public static StatusCode waitTimeOut(String command, long timeOut) {
+        init_(command);
+        return waitTimeOut_(timeOut);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_TIME_OUT
+    public static StatusCode waitTimeOut(Command.Custom customCommand, long timeOut) {
+        init_(customCommand);
+        return waitTimeOut_(timeOut);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_TIME_OUT
+    private static StatusCode waitTimeOut_(long timeOut) {
         final long startTime = System.currentTimeMillis();
-        {
-            final Constant.StatusCode result = wait_();
-            if (result != SC_SUCCEEDED) return result;
-        }
+        if (wait_(timeOut) == SC_INTERRUPTED) return SC_INTERRUPTED;
         final long endTime = System.currentTimeMillis();
         if (startTime + timeOut >= endTime)
             return SC_SUCCEEDED;
@@ -32,64 +50,63 @@ public class WaitManager {
             return SC_TIME_OUT;
     }
 
-    // wiat command
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    ///     - SC_FAILED
-    public static Constant.StatusCode waitCommand(String command) {
-        init(command);
-        {
-            final Constant.StatusCode result = wait_();
-            if (result != SC_SUCCEEDED) return result;
-        }
-        if (!isApplied_) {
-            {
-                final Constant.StatusCode result = wait_(Constant.TimeOut.TEMPORARY);
-                if (result != SC_SUCCEEDED) return result;
-            }
-            lmi.Util.debugPrint(WaitManager.class, "isApplied_: " + isApplied_);
-            if (isApplied_)
-                return SC_SUCCEEDED;
-            else
-                return SC_FAILED;
-        }
-        return SC_SUCCEEDED;
+    public static StatusCode waitCommand(String command) {
+        init_(command);
+        return wait_();
     }
 
-    public static void checkCommandApply(String command) {
-        if (!command.contentEquals(command_)) return;
-        isApplied_ = true;
-        notify_();
-        lmi.Util.debugPrint(WaitManager.class, "command: " + command);
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    public static StatusCode waitCommand(Command.Custom customCommand) {
+        init_(customCommand);
+        return wait_();
     }
 
-    public static void checkACKCommand(String command) {
+    public static void notifyCommand(String command) {
         if (command_ == null || command == null) return;
+
         if (!commandEquals_(command)) return;
+        notify_();
+    }
+
+    public static void notifyCommand(Command.Custom customCommand) {
+        if (!commandEquals_(customCommand)) return;
         notify_();
     }
 
     // private methods
     private static void clear_() {
         command_ = null;
-        isApplied_ = false;
+        customCommand_ = Command.Custom.NONE;
     }
 
-    private static void init(String command) {
+    private static void init_(String command) {
         clear_();
         command_ = command;
+    }
+
+    private static void init_(Command.Custom customCommand) {
+        clear_();
+        customCommand_ = customCommand;
     }
 
     private static boolean commandEquals_(String command) {
         return command.contentEquals(command_);
     }
 
+    private static boolean commandEquals_(Command.Custom customCommand) {
+        return customCommand == customCommand_;
+    }
+
     // wrap wait
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode wait_(long timeOut) {
+    private static StatusCode wait_(long timeOut) {
         try {
             synchronized (monitor_) {
                 monitor_.wait(timeOut);
@@ -104,7 +121,7 @@ public class WaitManager {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode wait_() { return wait_(lmi.Constant.TimeOut.NONE); }
+    private static StatusCode wait_() { return wait_(TimeOut.NONE); }
 
     // wrap notify
     private static void notify_() {
