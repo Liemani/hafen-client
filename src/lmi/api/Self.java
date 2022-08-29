@@ -3,6 +3,28 @@ package lmi.api;
 import lmi.*;
 
 public class Self {
+    // status code shadow
+    private static final Constant.StatusCode SC_SUCCEEDED = Constant.StatusCode.SUCCEEDED;
+    private static final Constant.StatusCode SC_INTERRUPTED = Constant.StatusCode.INTERRUPTED;
+    private static final Constant.StatusCode SC_FAILED = Constant.StatusCode.FAILED;
+    private static final Constant.StatusCode SC_TIME_OUT = Constant.StatusCode.TIME_OUT;
+
+    // command shadow
+    private static final String C_MOVE = Constant.Command.Custom.MOVE;
+
+    private static final String A_DIG = Constant.Action.DIG;
+    private static final String A_MINE = Constant.Action.MINE;
+    private static final String A_CARRY = Constant.Action.CARRY;
+    private static final String A_DESTROY = Constant.Action.DESTROY;
+    private static final String A_FISH = Constant.Action.FISH;
+    private static final String A_INSPECT = Constant.Action.INSPECT;
+    private static final String A_REPAIR = Constant.Action.REPAIR;
+    private static final String A_CRIME = Constant.Action.CRIME;
+    private static final String A_SWIM = Constant.Action.SWIM;
+    private static final String A_TRACKING = Constant.Action.TRACKING;
+    private static final String A_AGGRO = Constant.Action.AGGRO;
+    private static final String A_SHOOT = Constant.Action.SHOOT;
+
     // access properties
     public static haven.Gob gob() {
         if (lmi.ObjectShadow.mapView() == null)
@@ -45,42 +67,46 @@ public class Self {
     }
 
     // move
-    private static haven.Coord2d moveDestination_ = null;
     // TODO apply predicted time out value when wait
-    public static boolean move(haven.Coord2d point) {
-        moveDestination_ = point;
-        if (!move_(point)) return false;
-        while (!Self.coordinateEquals(moveDestination_))
-            if (!WaitManager.waitTimeOut(Constant.Command.Custom.MOVE, Constant.TimeOut.FAIL))
-                return false;
-        moveDestination_ = null;
-        return true;
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_FAILED
+    public static Constant.StatusCode move(haven.Coord2d point) {
+        {
+            final Constant.StatusCode result = sendClickMessage_(point);
+            lmi.Util.debugPrint(Self.class, "result: " + result);
+            if (result != SC_SUCCEEDED) return result;
+        }
+        return waitEnd_(point);
     }
 
     // TODO apply predicted time out value when wait
-    public static boolean move(haven.Coord point) {
-        moveDestination_ = CoordinateHandler.convertCoordToCoord2d(point);
-        if (!move_(point)) return false;
-        while (!Self.coordinateEquals(moveDestination_))
-            if (!WaitManager.waitTimeOut(Constant.Command.Custom.MOVE, Constant.TimeOut.FAIL))
-                return false;
-        moveDestination_ = null;
-        return true;
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_FAILED
+    public static Constant.StatusCode move(haven.Coord point) {
+        {
+            final Constant.StatusCode result = sendClickMessage_(point);
+            if (result != SC_SUCCEEDED) return result;
+        }
+        return waitEnd_(point);
     }
 
     // etc
-    public static void moveNorthTile() throws InterruptedException {
+    public static Constant.StatusCode moveNorthTile() {
         haven.Coord2d northTile = CoordinateHandler.northTile(Self.location());
-        move(northTile);
+        return move(northTile);
     }
 
     public static double distance(haven.Gob gob) {
         return Self.location().dist(GobHandler.location(gob));
     }
 
-    public static void moveCenter() throws InterruptedException {
+    public static Constant.StatusCode moveCenter() {
         haven.Coord2d center = CoordinateHandler.tileCenter(Self.location());
-        move(center);
+        return move(center);
     }
 
     public static boolean coordinateEquals(haven.Gob gob) {
@@ -104,41 +130,64 @@ public class Self {
         return CoordinateHandler.equals(Self.locationInCoord(), point);
     }
 
-    public static boolean lift(haven.Gob gob) {
-        if (!carry_()) return false;
-        final boolean succeeded = actClick_(gob);
-        if (!succeeded)
-            sendCancelActMessage_();
-        return succeeded;
+    // TODO implement wait lift
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    public static Constant.StatusCode lift(haven.Gob gob) {
+        {
+            final Constant.StatusCode result = carry_();
+            if (result != SC_SUCCEEDED) return result;
+        }
+        {
+            final Constant.StatusCode result = actClick_(gob);
+            if (result != SC_SUCCEEDED) return result;
+        }
+        return SC_SUCCEEDED;
     }
 
     // private methods
-    private static boolean move_(haven.Coord2d point) {
-        return sendClickMessage_(point);
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_FAILED
+    private static Constant.StatusCode waitEnd_(haven.Coord2d destination) {
+        while (!Self.coordinateEquals(destination)) {
+            {
+                final Constant.StatusCode result = WaitManager.waitTimeOut(C_MOVE, Constant.TimeOut.FAIL);
+                switch (result) {
+                    case SUCCEEDED:
+                        break;
+                    case INTERRUPTED:
+                        return SC_INTERRUPTED;
+                    case TIME_OUT:
+                        lmi.Util.debugPrint(Self.class, "time_out");
+                        if (Self.coordinateEquals(destination))
+                            return SC_SUCCEEDED;
+                        else
+                            return SC_FAILED;
+                    default:
+                        new Exception().printStackTrace();
+                        return SC_INTERRUPTED;
+                }
+            }
+        }
+        return SC_SUCCEEDED;
     }
 
-    private static boolean move_(haven.Coord point) {
-        return sendClickMessage_(point);
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_FAILED
+    private static Constant.StatusCode waitEnd_(haven.Coord point) {
+        final haven.Coord2d destination = CoordinateHandler.convertCoordToCoord2d(point);
+        return waitEnd_(destination);
     }
 
-    private static boolean sendClickMessage_(haven.Coord2d point) {
-        return sendClickMessage_(CoordinateHandler.convertCoord2dToCoord(point));
-    }
-
-    private static boolean sendClickMessage_(haven.Coord point) {
-        return WidgetMessageHandler.sendClickMessage(
-                ObjectShadow.mapView(),
-                Util.mapViewCenter(),
-                point,
-                lmi.Constant.Input.Mouse.LEFT,
-                lmi.Constant.Input.Modifier.NONE);
-    }
-
-    private static boolean sendActMessage_(String action) {
-        return WidgetMessageHandler.sendActMessage(ObjectShadow.gameUI().menu, action);
-    }
-
-    private static boolean actClick_(haven.Gob gob) {
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode actClick_(haven.Gob gob) {
         haven.Coord gobLocationInCoord = GobHandler.locationInCoord(gob);
         return WidgetMessageHandler.sendObjectClickMessage(
                 ObjectShadow.mapView(),
@@ -153,55 +202,121 @@ public class Self {
                 Constant.MeshId.NONE);
     }
 
-    private static boolean sendCancelActMessage_() {
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode dig_() {
+        return sendActMessage_(A_DIG);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode mine_() {
+        return sendActMessage_(A_MINE);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode carry_() {
+        return sendActMessage_(A_CARRY);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode destroy_() {
+        return sendActMessage_(A_DESTROY);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode fish_() {
+        return sendActMessage_(A_FISH);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode inspect_() {
+        return sendActMessage_(A_INSPECT);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode repair_() {
+        return sendActMessage_(A_REPAIR);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode crime_() {
+        return sendActMessage_(A_CRIME);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode swim_() {
+        return sendActMessage_(A_SWIM);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode tracking_() {
+        return sendActMessage_(A_TRACKING);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode aggro_() {
+        return sendActMessage_(A_AGGRO);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode shoot_() {
+        return sendActMessage_(A_SHOOT);
+    }
+
+    // send message shadow
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode sendClickMessage_(haven.Coord2d point) {
+        return sendClickMessage_(CoordinateHandler.convertCoord2dToCoord(point));
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode sendClickMessage_(haven.Coord point) {
+        return WidgetMessageHandler.sendClickMessage(
+                ObjectShadow.mapView(),
+                Util.mapViewCenter(),
+                point,
+                lmi.Constant.Input.Mouse.LEFT,
+                lmi.Constant.Input.Modifier.NONE);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode sendActMessage_(String action) {
+        return WidgetMessageHandler.sendActMessage(ObjectShadow.gameUI().menu, action);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode sendCancelActMessage_() {
         return WidgetMessageHandler.sendCancelActMessage();
-    }
-
-    private static boolean dig_() {
-        return sendActMessage_(lmi.Constant.Action.DIG);
-    }
-
-    private static boolean mine_() {
-        return sendActMessage_(lmi.Constant.Action.MINE);
-    }
-
-    private static boolean carry_() {
-        return sendActMessage_(lmi.Constant.Action.CARRY);
-    }
-
-    private static boolean destroy_() {
-        return sendActMessage_(lmi.Constant.Action.DESTROY);
-    }
-
-    private static boolean fish_() {
-        return sendActMessage_(lmi.Constant.Action.FISH);
-    }
-
-    private static boolean inspect_() {
-        return sendActMessage_(lmi.Constant.Action.INSPECT);
-    }
-
-    private static boolean repair_() {
-        return sendActMessage_(lmi.Constant.Action.REPAIR);
-    }
-
-    private static boolean crime_() {
-        return sendActMessage_(lmi.Constant.Action.CRIME);
-    }
-
-    private static boolean swim_() {
-        return sendActMessage_(lmi.Constant.Action.SWIM);
-    }
-
-    private static boolean tracking_() {
-        return sendActMessage_(lmi.Constant.Action.TRACKING);
-    }
-
-    private static boolean aggro_() {
-        return sendActMessage_(lmi.Constant.Action.AGGRO);
-    }
-
-    private static boolean shoot_() {
-        return sendActMessage_(lmi.Constant.Action.SHOOT);
     }
 }

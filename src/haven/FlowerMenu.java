@@ -47,7 +47,7 @@ public class FlowerMenu extends Widget {
 	    for(int i = 0; i < args.length; i++)
 		opts[i] = (String)args[i];
         FlowerMenu flowerMenu = new FlowerMenu(opts);
-        lmi.Delegate.flowerMenuWillAdded(flowerMenu);
+        lmi.Delegate.flowerMenuDidCreated(flowerMenu);
 	    return(flowerMenu);
 	}
     }
@@ -146,10 +146,7 @@ public class FlowerMenu extends Widget {
 		}
 	    }
 	    if(s == 1.0)
-        {
 		ui.destroy(FlowerMenu.this);
-        lmi.Delegate.flowerMenuDidChosen();
-        }
 	}
     }
 
@@ -167,10 +164,7 @@ public class FlowerMenu extends Widget {
 		p.a = 1 - a;
 	    }
 	    if(s == 1.0)
-        {
 		ui.destroy(FlowerMenu.this);
-        lmi.Delegate.flowerMenuDidClosed();
-        }
 	}
     }
 
@@ -239,10 +233,12 @@ public class FlowerMenu extends Widget {
 	    new Cancel();
 	    mg.remove();
 	    kg.remove();
+        lmi.Delegate.flowerMenuDidCanceled();
 	} else if(msg == "act") {
 	    new Chosen(opts[(Integer)args[0]]);
 	    mg.remove();
 	    kg.remove();
+        lmi.Delegate.flowerMenuDidChosen();
 	}
     }
 

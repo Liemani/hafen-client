@@ -13,6 +13,8 @@ public class Constant {
 
         public static class Custom {
             public static final String MOVE = "move";
+            public static final String PROGRESS_DID_DESTROYED = "progress did destroyed";
+            public static final String PROGRESS_DID_ADDED = "progress did added";
         }
     }
 
@@ -74,6 +76,8 @@ public class Constant {
     public static class Interaction {
         public static final String CHIP_STONE = "Chip stone";
         public static final String PICK = "Pick";
+        public static final String CHOP_INTO_BLOCKS = "Chop into blocks";
+        public static final String MAKE_BOARDS = "Make boards";
         public static final String PICK_ALMOND = "Pick almond";
         public static final String PICK_BERRIES = "Pick berries";
         public static final String PICK_CATKIN = "Pick catkin";
@@ -243,5 +247,16 @@ public class Constant {
             public static final String SURVOBJ = "survobj";
             public static final String TROUGH = "trough";
         }
+    }
+
+    public static enum StatusCode {
+        SUCCEEDED,
+        INTERRUPTED,
+        INVALID_ARGUMENT,
+        FAILED,
+        TIME_OUT,
+        NO_MATCHING,
+        FAILED_OPEN,
+        FAILED_CHOOSE,
     }
 }

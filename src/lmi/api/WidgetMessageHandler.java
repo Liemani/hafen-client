@@ -3,8 +3,11 @@ package lmi.api;
 import lmi.*;
 
 public class WidgetMessageHandler {
-    // public methods
-    public static boolean interact(haven.Gob gob, int meshId) {
+    // public method
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    public static Constant.StatusCode interact(haven.Gob gob, int meshId) {
         haven.Coord gobLocationInCoord = GobHandler.locationInCoord(gob);
         return sendObjectClickMessage(
                 ObjectShadow.mapView(),
@@ -19,7 +22,10 @@ public class WidgetMessageHandler {
                 meshId);
     }
 
-    public static boolean put(haven.Coord location) {
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    public static Constant.StatusCode put(haven.Coord location) {
         return sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
@@ -28,12 +34,18 @@ public class WidgetMessageHandler {
                 Constant.Input.Modifier.NONE);
     }
 
-    public static boolean selectCharacter(haven.Charlist widget, String name) {
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    public static Constant.StatusCode selectCharacter(haven.Charlist widget, String name) {
         return sendSelectCharacterMessage(widget, name);
     }
 
-    // package methods
-     static boolean sendClickMessage(
+    // package method
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    static Constant.StatusCode sendClickMessage(
             haven.MapView widget,
             haven.Coord clickedMapViewPoint,
             haven.Coord clickedMapPoint,
@@ -48,7 +60,10 @@ public class WidgetMessageHandler {
                 modifiers);
     }
 
-     static boolean sendObjectClickMessage(
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    static Constant.StatusCode sendObjectClickMessage(
             haven.MapView widget,
             haven.Coord clickedMapViewPoint,
             haven.Coord clickedMapPoint,
@@ -73,11 +88,17 @@ public class WidgetMessageHandler {
                 meshId);
     }
 
-     static boolean sendActMessage(haven.MenuGrid widget, String action) {
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    static Constant.StatusCode sendActMessage(haven.MenuGrid widget, String action) {
         return wdgmsg_(widget, lmi.Constant.Command.ACT, action, 0);
     }
 
-    static boolean sendCancelActMessage() {
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    static Constant.StatusCode sendCancelActMessage() {
         return sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
@@ -86,7 +107,10 @@ public class WidgetMessageHandler {
                 Constant.Input.Modifier.NONE);
     }
 
-     static boolean sendChoosePetalMessage(haven.FlowerMenu widget, int index) {
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    static Constant.StatusCode sendChoosePetalMessage(haven.FlowerMenu widget, int index) {
         return wdgmsg_(
                 widget,
                 lmi.Constant.Command.CLOSE_FLOWER_MENU,
@@ -94,25 +118,35 @@ public class WidgetMessageHandler {
                 0);
     }
 
-     static boolean sendCloseFlowerMenuMessage(haven.FlowerMenu widget) {
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    static Constant.StatusCode sendCloseFlowerMenuMessage(haven.FlowerMenu widget) {
         return wdgmsg_(
                 widget,
                 lmi.Constant.Command.CLOSE_FLOWER_MENU,
                 -1);
     }
 
-     static boolean sendSelectCharacterMessage(haven.Charlist widget, String name) {
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    static Constant.StatusCode sendSelectCharacterMessage(haven.Charlist widget, String name) {
         return wdgmsg_(widget, lmi.Constant.Command.SELECT_CHARACTER, name);
     }
 
-    // private methods
-    private static boolean wdgmsg_(haven.Widget widget, String command, Object... args) {
+    // private method
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static Constant.StatusCode wdgmsg_(haven.Widget widget, String command, Object... args) {
         widget.wdgmsg(command, args);
         return WaitManager.waitCommand(command);
     }
 
+    // deprecated method
     @Deprecated
-    public static boolean openFlowerMenuByClickData(haven.MapView widget, haven.ClickData clickData) {
+    public static Constant.StatusCode openFlowerMenuByClickData(haven.MapView widget, haven.ClickData clickData) {
         final haven.Gob gob = Util.gobFromClickData(clickData);
         Object[] args = {
             Util.mapViewCenter(),
