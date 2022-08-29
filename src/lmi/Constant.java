@@ -11,10 +11,12 @@ public class Constant {
         public static final String AFK = "afk";
         public static final String CHANGE_CURSOR = "curs";
 
-        public static class Custom {
-            public static final String MOVE = "move";
-            public static final String PROGRESS_DID_DESTROYED = "progress did destroyed";
-            public static final String PROGRESS_DID_ADDED = "progress did added";
+        public static enum Custom {
+            NONE,
+            SELF_MOVE_DID_STARTED,
+            SELF_MOVE_DID_ENDED,
+            PROGRESS_DID_DESTROYED,
+            PROGRESS_DID_ADDED,
         }
     }
 

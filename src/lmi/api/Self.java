@@ -1,36 +1,38 @@
 package lmi.api;
 
 import lmi.*;
+import lmi.Constant.*;
 
 public class Self {
     // status code shadow
-    private static final Constant.StatusCode SC_SUCCEEDED = Constant.StatusCode.SUCCEEDED;
-    private static final Constant.StatusCode SC_INTERRUPTED = Constant.StatusCode.INTERRUPTED;
-    private static final Constant.StatusCode SC_FAILED = Constant.StatusCode.FAILED;
-    private static final Constant.StatusCode SC_TIME_OUT = Constant.StatusCode.TIME_OUT;
+    private static final StatusCode SC_SUCCEEDED = StatusCode.SUCCEEDED;
+    private static final StatusCode SC_INTERRUPTED = StatusCode.INTERRUPTED;
+    private static final StatusCode SC_FAILED = StatusCode.FAILED;
+    private static final StatusCode SC_TIME_OUT = StatusCode.TIME_OUT;
 
-    // command shadow
-    private static final String C_MOVE = Constant.Command.Custom.MOVE;
+    // custom command shadow
+    private static final Command.Custom C_SELF_MOVE_DID_STARTED = Command.Custom.SELF_MOVE_DID_STARTED;
+    private static final Command.Custom C_SELF_MOVE_DID_ENDED = Command.Custom.SELF_MOVE_DID_ENDED;
 
-    private static final String A_DIG = Constant.Action.DIG;
-    private static final String A_MINE = Constant.Action.MINE;
-    private static final String A_CARRY = Constant.Action.CARRY;
-    private static final String A_DESTROY = Constant.Action.DESTROY;
-    private static final String A_FISH = Constant.Action.FISH;
-    private static final String A_INSPECT = Constant.Action.INSPECT;
-    private static final String A_REPAIR = Constant.Action.REPAIR;
-    private static final String A_CRIME = Constant.Action.CRIME;
-    private static final String A_SWIM = Constant.Action.SWIM;
-    private static final String A_TRACKING = Constant.Action.TRACKING;
-    private static final String A_AGGRO = Constant.Action.AGGRO;
-    private static final String A_SHOOT = Constant.Action.SHOOT;
+    private static final String A_DIG = Action.DIG;
+    private static final String A_MINE = Action.MINE;
+    private static final String A_CARRY = Action.CARRY;
+    private static final String A_DESTROY = Action.DESTROY;
+    private static final String A_FISH = Action.FISH;
+    private static final String A_INSPECT = Action.INSPECT;
+    private static final String A_REPAIR = Action.REPAIR;
+    private static final String A_CRIME = Action.CRIME;
+    private static final String A_SWIM = Action.SWIM;
+    private static final String A_TRACKING = Action.TRACKING;
+    private static final String A_AGGRO = Action.AGGRO;
+    private static final String A_SHOOT = Action.SHOOT;
 
     // access properties
     public static haven.Gob gob() {
-        if (lmi.ObjectShadow.mapView() == null)
+        if (ObjectShadow.mapView() == null)
             return null;
 
-        return lmi.ObjectShadow.mapView().player();
+        return ObjectShadow.mapView().player();
     }
 
     public static haven.Coord2d location() { return gob().rc; }
@@ -43,59 +45,56 @@ public class Self {
     }
 
     public static double hardHitPoint() {
-        return haven.LMI.gaugeWidgetGaugeArray(lmi.ObjectShadow.gaugeWidgetArray()[lmi.Constant.Gauge.Index.HIT_POINT])
-            .get(lmi.Constant.Gauge.HitPointIndex.HARD)
+        return haven.LMI.gaugeWidgetGaugeArray(ObjectShadow.gaugeWidgetArray()[Gauge.Index.HIT_POINT])
+            .get(Gauge.HitPointIndex.HARD)
             .a;
     }
 
     public static double softHitPoint() {
-        return haven.LMI.gaugeWidgetGaugeArray(lmi.ObjectShadow.gaugeWidgetArray()[lmi.Constant.Gauge.Index.HIT_POINT])
-            .get(lmi.Constant.Gauge.HitPointIndex.SOFT)
+        return haven.LMI.gaugeWidgetGaugeArray(ObjectShadow.gaugeWidgetArray()[Gauge.Index.HIT_POINT])
+            .get(Gauge.HitPointIndex.SOFT)
             .a;
     }
 
     public static double stamina() {
-        return haven.LMI.gaugeWidgetGaugeArray(lmi.ObjectShadow.gaugeWidgetArray()[lmi.Constant.Gauge.Index.STAMINA])
+        return haven.LMI.gaugeWidgetGaugeArray(ObjectShadow.gaugeWidgetArray()[Gauge.Index.STAMINA])
             .get(0)
             .a;
     }
 
     public static double energy() {
-        return haven.LMI.gaugeWidgetGaugeArray(lmi.ObjectShadow.gaugeWidgetArray()[lmi.Constant.Gauge.Index.ENERGY])
+        return haven.LMI.gaugeWidgetGaugeArray(ObjectShadow.gaugeWidgetArray()[Gauge.Index.ENERGY])
             .get(0)
             .a;
     }
 
     // move
-    // TODO apply predicted time out value when wait
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED
-    public static Constant.StatusCode move(haven.Coord2d point) {
+    public static StatusCode move(haven.Coord2d point) {
         {
-            final Constant.StatusCode result = sendClickMessage_(point);
-            lmi.Util.debugPrint(Self.class, "result: " + result);
+            final StatusCode result = sendClickMessage_(point);
             if (result != SC_SUCCEEDED) return result;
         }
-        return waitEnd_(point);
+        return waitMove_(point);
     }
 
-    // TODO apply predicted time out value when wait
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED
-    public static Constant.StatusCode move(haven.Coord point) {
+    public static StatusCode move(haven.Coord point) {
         {
-            final Constant.StatusCode result = sendClickMessage_(point);
+            final StatusCode result = sendClickMessage_(point);
             if (result != SC_SUCCEEDED) return result;
         }
-        return waitEnd_(point);
+        return waitMove_(point);
     }
 
     // etc
-    public static Constant.StatusCode moveNorthTile() {
+    public static StatusCode moveNorthTile() {
         haven.Coord2d northTile = CoordinateHandler.northTile(Self.location());
         return move(northTile);
     }
@@ -104,26 +103,19 @@ public class Self {
         return Self.location().dist(GobHandler.location(gob));
     }
 
-    public static Constant.StatusCode moveCenter() {
+    public static StatusCode moveCenter() {
         haven.Coord2d center = CoordinateHandler.tileCenter(Self.location());
         return move(center);
     }
 
-    public static boolean coordinateEquals(haven.Gob gob) {
-        if (gob == null)
-            return false;
-
-        return CoordinateHandler.equals(Self.location(), GobHandler.location(gob));
-    }
-
-    public static boolean coordinateEquals(haven.Coord2d point) {
+    public static boolean isAt(haven.Coord2d point) {
         if (point == null)
             return false;
 
         return CoordinateHandler.equals(Self.location(), point);
     }
 
-    public static boolean coordinateEquals(haven.Coord point) {
+    public static boolean isAt(haven.Coord point) {
         if (point == null)
             return false;
 
@@ -134,13 +126,13 @@ public class Self {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    public static Constant.StatusCode lift(haven.Gob gob) {
+    public static StatusCode lift(haven.Gob gob) {
         {
-            final Constant.StatusCode result = carry_();
+            final StatusCode result = carry_();
             if (result != SC_SUCCEEDED) return result;
         }
         {
-            final Constant.StatusCode result = actClick_(gob);
+            final StatusCode result = actClick_(gob);
             if (result != SC_SUCCEEDED) return result;
         }
         return SC_SUCCEEDED;
@@ -151,26 +143,32 @@ public class Self {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED
-    private static Constant.StatusCode waitEnd_(haven.Coord2d destination) {
-        while (!Self.coordinateEquals(destination)) {
-            {
-                final Constant.StatusCode result = WaitManager.waitTimeOut(C_MOVE, Constant.TimeOut.FAIL);
-                switch (result) {
-                    case SUCCEEDED:
-                        break;
-                    case INTERRUPTED:
-                        return SC_INTERRUPTED;
-                    case TIME_OUT:
-                        lmi.Util.debugPrint(Self.class, "time_out");
-                        if (Self.coordinateEquals(destination))
-                            return SC_SUCCEEDED;
-                        else
-                            return SC_FAILED;
-                    default:
-                        new Exception().printStackTrace();
-                        return SC_INTERRUPTED;
-                }
+    private static StatusCode waitMove_(haven.Coord2d destination) {
+        if (Self.isAt(destination))
+            return SC_SUCCEEDED;
+        if (!isMoving_()) {
+            final StatusCode result = waitMoveStarting_();
+            if (result != SC_SUCCEEDED) return result;
+        }
+        if (waitMoveEnding_() == SC_INTERRUPTED) return SC_INTERRUPTED;
+        if (Self.isAt(destination))
+            return SC_SUCCEEDED;
+        else
+            return SC_FAILED;
+    }
+
+    // private methods
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_FAILED
+    private static StatusCode waitMove_(haven.Coord destination) {
+        while (!Self.isAt(destination)) {
+            if (!isMoving_()) {
+                final StatusCode result = waitMoveStarting_();
+                if (result != SC_SUCCEEDED) return result;
             }
+            if (waitMoveEnding_() == SC_INTERRUPTED) return SC_INTERRUPTED;
         }
         return SC_SUCCEEDED;
     }
@@ -179,110 +177,145 @@ public class Self {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED
-    private static Constant.StatusCode waitEnd_(haven.Coord point) {
-        final haven.Coord2d destination = CoordinateHandler.convertCoordToCoord2d(point);
-        return waitEnd_(destination);
+    private static StatusCode waitMoveStarting_() {
+        if (isMoving_()) return SC_SUCCEEDED;
+        final StatusCode result = WaitManager.waitTimeOut(C_SELF_MOVE_DID_STARTED, TimeOut.TEMPORARY);
+        switch (result) {
+            case SUCCEEDED: return SC_SUCCEEDED;
+            case INTERRUPTED: return SC_INTERRUPTED;
+            case TIME_OUT: return isMoving_() ? SC_SUCCEEDED : SC_FAILED;
+            default:
+                new Exception().printStackTrace();
+                return SC_INTERRUPTED;
+        }
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode actClick_(haven.Gob gob) {
+    private static StatusCode waitMoveEnding_() {
+        while (true) {
+            if (!isMoving_()) return SC_SUCCEEDED;
+            final StatusCode result = WaitManager.waitTimeOut(C_SELF_MOVE_DID_ENDED, TimeOut.GENERAL);
+            switch (result) {
+                case SUCCEEDED: return SC_SUCCEEDED;
+                case INTERRUPTED: return SC_INTERRUPTED;
+                case TIME_OUT:
+                    if (isMoving_())
+                        break;
+                    else
+                        return SC_SUCCEEDED;
+                default:
+                    new Exception().printStackTrace();
+                    return SC_INTERRUPTED;
+            }
+        }
+    }
+
+    private static boolean isMoving_() {
+        haven.GAttrib attribute = Self.gob().getattr(haven.Moving.class);
+        return attribute != null;
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static StatusCode actClick_(haven.Gob gob) {
         haven.Coord gobLocationInCoord = GobHandler.locationInCoord(gob);
         return WidgetMessageHandler.sendObjectClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 gobLocationInCoord,
-                Constant.Input.Mouse.LEFT,
-                Constant.Input.Modifier.NONE,
-                Constant.InteractionType.DEFAULT,
+                Input.Mouse.LEFT,
+                Input.Modifier.NONE,
+                InteractionType.DEFAULT,
                 GobHandler.id(gob),
                 gobLocationInCoord,
                 0,
-                Constant.MeshId.NONE);
+                MeshId.NONE);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode dig_() {
+    private static StatusCode dig_() {
         return sendActMessage_(A_DIG);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode mine_() {
+    private static StatusCode mine_() {
         return sendActMessage_(A_MINE);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode carry_() {
+    private static StatusCode carry_() {
         return sendActMessage_(A_CARRY);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode destroy_() {
+    private static StatusCode destroy_() {
         return sendActMessage_(A_DESTROY);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode fish_() {
+    private static StatusCode fish_() {
         return sendActMessage_(A_FISH);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode inspect_() {
+    private static StatusCode inspect_() {
         return sendActMessage_(A_INSPECT);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode repair_() {
+    private static StatusCode repair_() {
         return sendActMessage_(A_REPAIR);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode crime_() {
+    private static StatusCode crime_() {
         return sendActMessage_(A_CRIME);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode swim_() {
+    private static StatusCode swim_() {
         return sendActMessage_(A_SWIM);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode tracking_() {
+    private static StatusCode tracking_() {
         return sendActMessage_(A_TRACKING);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode aggro_() {
+    private static StatusCode aggro_() {
         return sendActMessage_(A_AGGRO);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode shoot_() {
+    private static StatusCode shoot_() {
         return sendActMessage_(A_SHOOT);
     }
 
@@ -290,33 +323,33 @@ public class Self {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode sendClickMessage_(haven.Coord2d point) {
+    private static StatusCode sendClickMessage_(haven.Coord2d point) {
         return sendClickMessage_(CoordinateHandler.convertCoord2dToCoord(point));
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode sendClickMessage_(haven.Coord point) {
+    private static StatusCode sendClickMessage_(haven.Coord point) {
         return WidgetMessageHandler.sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 point,
-                lmi.Constant.Input.Mouse.LEFT,
-                lmi.Constant.Input.Modifier.NONE);
+                Input.Mouse.LEFT,
+                Input.Modifier.NONE);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode sendActMessage_(String action) {
+    private static StatusCode sendActMessage_(String action) {
         return WidgetMessageHandler.sendActMessage(ObjectShadow.gameUI().menu, action);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static Constant.StatusCode sendCancelActMessage_() {
+    private static StatusCode sendCancelActMessage_() {
         return WidgetMessageHandler.sendCancelActMessage();
     }
 }
