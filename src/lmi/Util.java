@@ -139,7 +139,7 @@ public class Util {
     // etc
     public static String currentMethod() {
         return new Throwable()
-            .getStackTrace()[1]
+            .getStackTrace()[2]
             .getMethodName();
     }
 
