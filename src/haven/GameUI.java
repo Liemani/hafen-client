@@ -1164,7 +1164,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    String text = (String)args[0];
 	    msg(text);
 	} else if(msg == "prog") {
-        System.out.println("[GameUI::uimsg() args.length] " + args.length);
         System.out.println("[GameUI::uimsg() prog == null] " + (prog == null));
 	    if(args.length > 0) {
 		double p = ((Number)args[0]).doubleValue() / 100.0;
@@ -1176,6 +1175,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		if(prog != null) {
 		    prog.reqdestroy();
 		    prog = null;
+            lmi.Delegate.progressDidDestroyed();
 		}
 	    }
 	} else if(msg == "setbelt") {
