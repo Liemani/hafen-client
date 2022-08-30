@@ -200,11 +200,7 @@ public class Self {
             switch (result) {
                 case SUCCEEDED: return SC_SUCCEEDED;
                 case INTERRUPTED: return SC_INTERRUPTED;
-                case TIME_OUT:
-                    if (isMoving_())
-                        break;
-                    else
-                        return SC_SUCCEEDED;
+                case TIME_OUT: break;
                 default:
                     new Exception().printStackTrace();
                     return SC_INTERRUPTED;

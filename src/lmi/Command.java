@@ -392,7 +392,7 @@ class Command {
         String action = lmi.Scanner.nextLineWithPrompt("enter action");
         haven.Gob closestGob = GobHandler.closestGob();
         final Constant.StatusCode result = FlowerMenuHandler.choose(closestGob, Constant.MeshId.DEFAULT, action);
-        System.out.println("[Command.gatherClosestGob() FlowerMenuHandler.choose()] " + result);
+        Util.debugPrint(Command.class, "FlowerMenuHandler.choose() result " + result);
         Self.moveNorthTile();
         return null;
     }
