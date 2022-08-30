@@ -37,7 +37,7 @@ public class ProgressManager {
             switch (result) {
                 case SC_SUCCEEDED: continue;
                 case SC_INTERRUPTED: return SC_INTERRUPTED;
-                case SC_FAILED: return SC_SUCCEEDED;
+                case SC_FAILED_OPEN: return SC_SUCCEEDED;
                 default:
                     new Exception().printStackTrace();
                     return SC_INTERRUPTED;
@@ -56,7 +56,7 @@ public class ProgressManager {
     ///     - SC_FAILED_OPEN
     private static StatusCode waitProgressStarting_() {
         if (isProgressing_()) return SC_SUCCEEDED;
-        final StatusCode result = WaitManager.waitTimeOut(CC_PROGRESS_DID_STARTED, TO_TEMPORARY);
+        final StatusCode result = WaitManager.waitTimeOut(CC_PROGRESS_DID_BEGIN, TO_TEMPORARY);
         switch (result) {
             case SC_SUCCEEDED: return SC_SUCCEEDED;
             case SC_INTERRUPTED: return SC_INTERRUPTED;
@@ -73,7 +73,7 @@ public class ProgressManager {
     private static StatusCode waitProgressEnding_() {
         while (true) {
             if (!isProgressing_()) return SC_SUCCEEDED;
-            final StatusCode result = WaitManager.waitTimeOut(CC_PROGRESS_DID_ENDED, TO_GENERAL);
+            final StatusCode result = WaitManager.waitTimeOut(CC_PROGRESS_DID_END, TO_GENERAL);
             switch (result) {
                 case SC_SUCCEEDED: return SC_SUCCEEDED;
                 case SC_INTERRUPTED: return SC_INTERRUPTED;

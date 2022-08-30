@@ -1,10 +1,12 @@
 package lmi.api;
 
 import lmi.*;
+
+// constant
 import lmi.Constant.*;
 import lmi.Constant.StatusCode;
-import static lmi.Constant.StatusCode.*;
 import lmi.Constant.Command;
+import static lmi.Constant.StatusCode.*;
 import static lmi.Constant.Command.Custom.*;
 import static lmi.Constant.Action.*;
 import static lmi.Constant.Input.Mouse.*;
@@ -59,7 +61,7 @@ public class Self {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    ///     - SC_FAILED
+    ///     - SC_FAILED_MOVE
     public static StatusCode move(haven.Coord2d point) {
         {
             final StatusCode result = sendClickMessage_(point);
@@ -71,7 +73,7 @@ public class Self {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    ///     - SC_FAILED
+    ///     - SC_FAILED_MOVE
     public static StatusCode move(haven.Coord point) {
         {
             final StatusCode result = sendClickMessage_(point);
@@ -129,31 +131,17 @@ public class Self {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    ///     - SC_FAILED
+    ///     - SC_FAILED_MOVE
     private static StatusCode waitMove_(haven.Coord2d destination) {
-        if (Self.isAt(destination))
-            return SC_SUCCEEDED;
-        if (!isMoving_()) {
-            final StatusCode result = waitMoveStarting_();
-            if (result != SC_SUCCEEDED) return result;
-        }
-        if (waitMoveEnding_() == SC_INTERRUPTED) return SC_INTERRUPTED;
-        if (Self.isAt(destination))
-            return SC_SUCCEEDED;
-        else
-            return SC_FAILED;
-    }
-
-    // private methods
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED
-    private static StatusCode waitMove_(haven.Coord destination) {
         while (!Self.isAt(destination)) {
-            if (!isMoving_()) {
-                final StatusCode result = waitMoveStarting_();
-                if (result != SC_SUCCEEDED) return result;
+            final StatusCode result = waitMoveBeginning_();
+            switch (result) {
+                case SC_SUCCEEDED: break;
+                case SC_INTERRUPTED: return SC_INTERRUPTED;
+                case SC_FAILED_MOVE: return Self.isAt(destination) ? SC_SUCCEEDED : SC_FAILED_MOVE;
+                default:
+                    new Exception().printStackTrace();
+                    return SC_INTERRUPTED;
             }
             if (waitMoveEnding_() == SC_INTERRUPTED) return SC_INTERRUPTED;
         }
@@ -163,14 +151,34 @@ public class Self {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    ///     - SC_FAILED
-    private static StatusCode waitMoveStarting_() {
+    ///     - SC_FAILED_MOVE
+    private static StatusCode waitMove_(haven.Coord destination) {
+        while (!Self.isAt(destination)) {
+            final StatusCode result = waitMoveBeginning_();
+            switch (result) {
+                case SC_SUCCEEDED: break;
+                case SC_INTERRUPTED: return SC_INTERRUPTED;
+                case SC_FAILED_MOVE: return Self.isAt(destination) ? SC_SUCCEEDED : SC_FAILED_MOVE;
+                default:
+                    new Exception().printStackTrace();
+                    return SC_INTERRUPTED;
+            }
+            if (waitMoveEnding_() == SC_INTERRUPTED) return SC_INTERRUPTED;
+        }
+        return SC_SUCCEEDED;
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_FAILED_MOVE
+    private static StatusCode waitMoveBeginning_() {
         if (isMoving_()) return SC_SUCCEEDED;
-        final StatusCode result = WaitManager.waitTimeOut(CC_SELF_MOVE_DID_STARTED, TO_TEMPORARY);
+        final StatusCode result = WaitManager.waitTimeOut(CC_SELF_MOVE_DID_BEGIN, TO_TEMPORARY);
         switch (result) {
             case SC_SUCCEEDED: return SC_SUCCEEDED;
             case SC_INTERRUPTED: return SC_INTERRUPTED;
-            case SC_TIME_OUT: return isMoving_() ? SC_SUCCEEDED : SC_FAILED;
+            case SC_TIME_OUT: return isMoving_() ? SC_SUCCEEDED : SC_FAILED_MOVE;
             default:
                 new Exception().printStackTrace();
                 return SC_INTERRUPTED;
@@ -183,7 +191,7 @@ public class Self {
     private static StatusCode waitMoveEnding_() {
         while (true) {
             if (!isMoving_()) return SC_SUCCEEDED;
-            final StatusCode result = WaitManager.waitTimeOut(CC_SELF_MOVE_DID_ENDED, TO_GENERAL);
+            final StatusCode result = WaitManager.waitTimeOut(CC_SELF_MOVE_DID_END, TO_GENERAL);
             switch (result) {
                 case SC_SUCCEEDED: return SC_SUCCEEDED;
                 case SC_INTERRUPTED: return SC_INTERRUPTED;
