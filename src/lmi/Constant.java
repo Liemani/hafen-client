@@ -10,13 +10,15 @@ public class Constant {
         public static final String C_CLOSE_FLOWER_MENU = "cl";
         public static final String C_AFK = "afk";
         public static final String C_CHANGE_CURSOR = "curs";
+        public static final String C_GET = "click";
+        public static final String C_PUT = "drop";
 
         public static enum Custom {
             CC_NONE,
-            CC_SELF_MOVE_DID_STARTED,
-            CC_SELF_MOVE_DID_ENDED,
-            CC_PROGRESS_DID_STARTED,
-            CC_PROGRESS_DID_ENDED,
+            CC_SELF_MOVE_DID_BEGIN,
+            CC_SELF_MOVE_DID_END,
+            CC_PROGRESS_DID_BEGIN,
+            CC_PROGRESS_DID_END,
             CC_FLOWER_MENU_DID_ADDED,
             CC_PROGRESS_DID_DESTROYED,
             CC_PROGRESS_DID_ADDED,
@@ -258,10 +260,10 @@ public class Constant {
         SC_SUCCEEDED,
         SC_INTERRUPTED,
         SC_TIME_OUT,
-        SC_FAILED,
         SC_FAILED_INVALID_ARGUMENT,
         SC_FAILED_MATCH,
         SC_FAILED_OPEN,
         SC_FAILED_CHOOSE,
+        SC_FAILED_MOVE,
     }
 }

@@ -3,12 +3,12 @@ package lmi;
 import lmi.api.*;
 import lmi.Constant.Command;
 
+// constant
+import static lmi.Constant.Command.*;
+import static lmi.Constant.Command.Custom.*;
+
 public class Delegate {
     // custom command shadow
-    private static final Command.Custom C_SELF_MOVE_DID_STARTED = Command.Custom.CC_SELF_MOVE_DID_STARTED;
-    private static final Command.Custom C_SELF_MOVE_DID_ENDED = Command.Custom.CC_SELF_MOVE_DID_ENDED;
-    private static final Command.Custom C_FLOWER_MENU_DID_ADDED = Command.Custom.CC_FLOWER_MENU_DID_ADDED;
-
     // flowerMenu
     public static void flowerMenuDidCreated(haven.FlowerMenu widget) {
         // FlowerMenu::$_::create()
@@ -17,23 +17,23 @@ public class Delegate {
 
     public static void flowerMenuDidCanceled() {
         // FlowerMenu::Cancel::ntick()
-        WaitManager.notifyCommand(Command.C_CLOSE_FLOWER_MENU);
+        WaitManager.notifyCommand(C_CLOSE_FLOWER_MENU);
     }
 
     public static void flowerMenuDidChosen() {
         // FlowerMenu::Chosen::ntick()
-        WaitManager.notifyCommand(Command.C_CLOSE_FLOWER_MENU);
+        WaitManager.notifyCommand(C_CLOSE_FLOWER_MENU);
     }
 
     // linMove
     public static void linMoveDidAdded(haven.Gob gob) {
         // LinMove::$linbeg::apply()
-        notifyCommandIfGobIsSelf_(gob, C_SELF_MOVE_DID_STARTED);
+        notifyCommandIfGobIsSelf_(gob, CC_SELF_MOVE_DID_BEGIN);
     }
 
     public static void linMoveDidDeleted(haven.Gob gob) {
         // LinMove::$linstep::apply()
-        notifyCommandIfGobIsSelf_(gob, C_SELF_MOVE_DID_ENDED);
+        notifyCommandIfGobIsSelf_(gob, CC_SELF_MOVE_DID_END);
     }
 
     // progress
@@ -57,13 +57,13 @@ public class Delegate {
 
     public static void cursorDidChanged() {
         // Widget.uimsg()
-        WaitManager.notifyCommand(Command.C_CHANGE_CURSOR);
+        WaitManager.notifyCommand(C_CHANGE_CURSOR);
     }
 
     public static void newWidgetDidAdded(haven.Widget widget) {
         // UI::addwidget()
         if (widget.getClass() == haven.FlowerMenu.class)
-            WaitManager.notifyCommand(C_FLOWER_MENU_DID_ADDED);
+            WaitManager.notifyCommand(CC_FLOWER_MENU_DID_ADDED);
         lmi.Debug.describeClassNameHashCodeWithTag("widget: ", widget);
     }
 

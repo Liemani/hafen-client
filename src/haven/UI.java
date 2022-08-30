@@ -313,9 +313,9 @@ public class UI {
     }
 
     public void destroy(Widget wdg) {
+    lmi.Util.debugPrint(this.getClass(), "wdg: " + wdg + ", wdg.parent: " + wdg.parent);
 	removeid(wdg);
 	wdg.reqdestroy();
-    lmi.Util.debugPrint(this.getClass(), "wdg: " + wdg + ", wdg.parent: " + wdg.parent);
     }
     
     public void destroy(int id) {
