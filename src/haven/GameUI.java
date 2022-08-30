@@ -1164,11 +1164,14 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    String text = (String)args[0];
 	    msg(text);
 	} else if(msg == "prog") {
-        System.out.println("[GameUI::uimsg() prog == null] " + (prog == null));
 	    if(args.length > 0) {
 		double p = ((Number)args[0]).doubleValue() / 100.0;
 		if(prog == null)
-		    prog = adda(new Progress(p), 0.5, 0.35);
+        {
+            final Progress progressWidget = new Progress(p);
+		    prog = adda(progressWidget, 0.5, 0.35);
+            lmi.Delegate.progressDidAdded(progressWidget);
+        }
 		else
 		    prog.set(p);
 	    } else {

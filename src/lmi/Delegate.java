@@ -7,39 +7,12 @@ public class Delegate {
     // custom command shadow
     private static final Command.Custom C_SELF_MOVE_DID_STARTED = Command.Custom.SELF_MOVE_DID_STARTED;
     private static final Command.Custom C_SELF_MOVE_DID_ENDED = Command.Custom.SELF_MOVE_DID_ENDED;
+    private static final Command.Custom C_FLOWER_MENU_DID_ADDED = Command.Custom.FLOWER_MENU_DID_ADDED;
 
     // flowerMenu
     public static void flowerMenuDidCreated(haven.FlowerMenu widget) {
         // FlowerMenu::$_::create()
         FlowerMenuHandler.setWidget(widget);
-    }
-
-    // check command
-    public static void didGetACK(haven.RMessage message) {
-        // Session::RWorker::gotack()
-        final String command = MessageHandler.getCommand(message);
-        WaitManager.notifyCommand(command);
-    }
-
-    public static void linMoveDidAdded(haven.Gob gob) {
-        // LinMove::$linbeg::apply()
-        notifyCommandIfGobIsSelf_(gob, C_SELF_MOVE_DID_STARTED);
-    }
-
-    public static void linMoveDidDeleted(haven.Gob gob) {
-        // LinMove::$linstep::apply()
-        notifyCommandIfGobIsSelf_(gob, C_SELF_MOVE_DID_ENDED);
-    }
-
-    private static void notifyCommandIfGobIsSelf_(haven.Gob gob, Command.Custom customCommand) {
-        if (gob == lmi.api.Self.gob())
-            WaitManager.notifyCommand(customCommand);
-    }
-
-    public static void newWidgetDidAdded(haven.Widget widget) {
-        // UI::newwidget()
-        if (widget.getClass() == haven.FlowerMenu.class)
-            WaitManager.notifyCommand(Command.CLICK);
     }
 
     public static void flowerMenuDidCanceled() {
@@ -52,19 +25,27 @@ public class Delegate {
         WaitManager.notifyCommand(Command.CLOSE_FLOWER_MENU);
     }
 
-    public static void cursorDidChanged() {
-        // Widget.uimsg()
-        WaitManager.notifyCommand(Command.CHANGE_CURSOR);
+    // linMove
+    public static void linMoveDidAdded(haven.Gob gob) {
+        // LinMove::$linbeg::apply()
+        notifyCommandIfGobIsSelf_(gob, C_SELF_MOVE_DID_STARTED);
+    }
+
+    public static void linMoveDidDeleted(haven.Gob gob) {
+        // LinMove::$linstep::apply()
+        notifyCommandIfGobIsSelf_(gob, C_SELF_MOVE_DID_ENDED);
     }
 
     // progress
-    public static void progressDidAdded() {
-        // Progress.Progress()
+    public static void progressDidAdded(haven.GameUI.Progress widget) {
+        // GameUI.uimsg()
+        ProgressManager.setWidget(widget);
         WaitManager.notifyCommand(Command.Custom.PROGRESS_DID_ADDED);
     }
 
     public static void progressDidDestroyed() {
         // GameUI.uimsg()
+        ProgressManager.setWidget(null);
         WaitManager.notifyCommand(Command.Custom.PROGRESS_DID_DESTROYED);
     }
 
@@ -72,5 +53,28 @@ public class Delegate {
     // TODO
     public static void poseDidChanged(haven.Gob gob) {
         // Composite::poseDidChange()
+    }
+
+    public static void cursorDidChanged() {
+        // Widget.uimsg()
+        WaitManager.notifyCommand(Command.CHANGE_CURSOR);
+    }
+
+    public static void newWidgetDidAdded(haven.Widget widget) {
+        // UI::addwidget()
+        if (widget.getClass() == haven.FlowerMenu.class)
+            WaitManager.notifyCommand(C_FLOWER_MENU_DID_ADDED);
+    }
+
+    public static void didGetACK(haven.RMessage message) {
+        // Session::RWorker::gotack()
+        final String command = MessageHandler.getCommand(message);
+        WaitManager.notifyCommand(command);
+    }
+
+    // private method
+    private static void notifyCommandIfGobIsSelf_(haven.Gob gob, Command.Custom customCommand) {
+        if (gob == lmi.api.Self.gob())
+            WaitManager.notifyCommand(customCommand);
     }
 }

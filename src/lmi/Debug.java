@@ -235,6 +235,8 @@ public class Debug {
 
     // describeField
     public static void describeClassNameHashCodeWithTag(String tag, Object object) {
+        if (!isPrint_) return;
+
         System.out.print(tag);
         describeClassNameHashCode(object);
     }

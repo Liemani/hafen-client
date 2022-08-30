@@ -72,7 +72,7 @@ public class GobHandler {
             gob = iterator.next();
             if (gob.getClass() != haven.Gob.class)
                 continue;
-            if (Self.coordinateEquals(gob))
+            if (GobHandler.coordinateEquals(Self.gob(), gob))
                 continue;
             distance = Self.distance(gob);
             if (distance < closestDistance) {
@@ -86,6 +86,12 @@ public class GobHandler {
 
     public static double distance(haven.Gob lhs, haven.Gob rhs) {
         return GobHandler.location(lhs).dist(GobHandler.location(rhs));
+    }
+
+    public static boolean coordinateEquals(haven.Gob lhs, haven.Gob rhs) {
+        haven.Coord2d lhsLocation = GobHandler.location(lhs);
+        haven.Coord2d rhsLocation = GobHandler.location(rhs);
+        return CoordinateHandler.equals(lhsLocation, rhsLocation);
     }
 
     // etc

@@ -345,10 +345,7 @@ public class OCache implements Iterable<Gob> {
 			    break;
 		    }
 		    synchronized(gob) {
-            if (d.type != 1
-                    && d.type !=3
-                    && d.type !=4
-                    && d.type != 16)
+            if (d.type != 16)
             System.out.println("[OCache::GobInfo::apply() d.type] " + d.type);
 			deltas.get(d.type).apply(gob, d.clone());
 		    }

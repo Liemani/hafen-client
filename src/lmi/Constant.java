@@ -15,6 +15,9 @@ public class Constant {
             NONE,
             SELF_MOVE_DID_STARTED,
             SELF_MOVE_DID_ENDED,
+            PROGRESS_DID_STARTED,
+            PROGRESS_DID_ENDED,
+            FLOWER_MENU_DID_ADDED,
             PROGRESS_DID_DESTROYED,
             PROGRESS_DID_ADDED,
         }
@@ -254,10 +257,10 @@ public class Constant {
     public static enum StatusCode {
         SUCCEEDED,
         INTERRUPTED,
-        INVALID_ARGUMENT,
-        FAILED,
         TIME_OUT,
-        NO_MATCHING,
+        FAILED,
+        FAILED_INVALID_ARGUMENT,
+        FAILED_MATCH,
         FAILED_OPEN,
         FAILED_CHOOSE,
     }

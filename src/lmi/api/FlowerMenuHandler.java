@@ -1,22 +1,26 @@
 package lmi.api;
 
 import lmi.*;
-import lmi.Constant.StatusCode;
-import lmi.Constant.Command;
-import lmi.Constant.TimeOut;
+import lmi.Constant.*;
 
 public class FlowerMenuHandler {
     // status code shadow
     private static final StatusCode SC_SUCCEEDED = StatusCode.SUCCEEDED;
     private static final StatusCode SC_INTERRUPTED = StatusCode.INTERRUPTED;
-    private static final StatusCode SC_INVALID_ARGUMENT = StatusCode.INVALID_ARGUMENT;
-    private static final StatusCode SC_NO_MATCHING = StatusCode.NO_MATCHING;
+    private static final StatusCode SC_FAILED_INVALID_ARGUMENT = StatusCode.FAILED_INVALID_ARGUMENT;
+    private static final StatusCode SC_FAILED = StatusCode.FAILED;
+    private static final StatusCode SC_TIME_OUT = StatusCode.TIME_OUT;
+    private static final StatusCode SC_FAILED_MATCH = StatusCode.FAILED_MATCH;
+    private static final StatusCode SC_FAILED_OPEN = StatusCode.FAILED_OPEN;
+
+    // command shadow
+    private static final Command.Custom C_FLOWER_MENU_DID_ADDED = Command.Custom.FLOWER_MENU_DID_ADDED;
 
     // command shadow
     private static final Command.Custom C_PROGRESS_DID_ADDED = Command.Custom.PROGRESS_DID_ADDED;
     private static final Command.Custom C_PROGRESS_DID_DESTROYED = Command.Custom.PROGRESS_DID_DESTROYED;
 
-    // assume widget_ never collision
+    // field
     private static haven.FlowerMenu widget_;
 
     // set widget
@@ -27,11 +31,12 @@ public class FlowerMenuHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    ///     - SC_INVALID_ARGUMENT
-    ///     - SC_NO_MATCHING
+    ///     - SC_FAILED_INVALID_ARGUMENT
+    ///     - SC_FAILED_OPEN
+    ///     - SC_FAILED_MATCH
     public static StatusCode choose(haven.Gob gob, int meshId, String name) {
         if (gob == null || name == null)
-            return SC_INVALID_ARGUMENT;
+            return SC_FAILED_INVALID_ARGUMENT;
 
         {
             final StatusCode result = open_(gob, meshId);
@@ -53,8 +58,27 @@ public class FlowerMenuHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
+    ///     - SC_FAILED_OPEN
     private static StatusCode open_(haven.Gob gob, int meshId) {
-        return sendInteractMessage_(gob, meshId);
+        if (sendInteractMessage_(gob, meshId) == SC_INTERRUPTED) return SC_INTERRUPTED;
+        return waitFlowerMenuOpening();
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_FAILED_OPEN
+    private static StatusCode waitFlowerMenuOpening() {
+        final StatusCode result = WaitManager.waitTimeOut(C_FLOWER_MENU_DID_ADDED, TimeOut.TEMPORARY);
+        if (result != SC_TIME_OUT) return result;
+        if (isAdded_())
+            return SC_SUCCEEDED;
+        else
+            return SC_FAILED_OPEN;
+    }
+
+    private static boolean isAdded_() {
+        return widget_ != null;
     }
 
     /// - Returns:
@@ -70,12 +94,12 @@ public class FlowerMenuHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    ///     - SC_NO_MATCHING
+    ///     - SC_FAILED_MATCH
     private static StatusCode choose_(String name) {
         for (haven.FlowerMenu.Petal petal : widget_.opts)
             if (petal.name.contentEquals(name))
                 return sendChoosePetalMessage_(petal.num);
-        return SC_NO_MATCHING;
+        return SC_FAILED_MATCH;
     }
 
     // TODO progress can added before wait it
@@ -108,13 +132,13 @@ public class FlowerMenuHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    ///     - SC_NO_MATCHING
+    ///     - SC_FAILED_MATCH
     private static StatusCode sendChoosePetalMessage_(int index) {
         final int petalCount = widget_.opts.length;
         if (0 <= index && index < petalCount) {
             return WidgetMessageHandler.sendChoosePetalMessage(widget_, index);
         } else {
-            return SC_NO_MATCHING;
+            return SC_FAILED_MATCH;
         }
     }
 
