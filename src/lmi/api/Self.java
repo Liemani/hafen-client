@@ -2,31 +2,18 @@ package lmi.api;
 
 import lmi.*;
 import lmi.Constant.*;
+import lmi.Constant.StatusCode;
+import static lmi.Constant.StatusCode.*;
+import lmi.Constant.Command;
+import static lmi.Constant.Command.Custom.*;
+import static lmi.Constant.Action.*;
+import static lmi.Constant.Input.Mouse.*;
+import static lmi.Constant.Input.Modifier.*;
+import static lmi.Constant.InteractionType.*;
+import static lmi.Constant.MeshId.*;
+import static lmi.Constant.TimeOut.*;
 
 public class Self {
-    // status code shadow
-    private static final StatusCode SC_SUCCEEDED = StatusCode.SUCCEEDED;
-    private static final StatusCode SC_INTERRUPTED = StatusCode.INTERRUPTED;
-    private static final StatusCode SC_FAILED = StatusCode.FAILED;
-    private static final StatusCode SC_TIME_OUT = StatusCode.TIME_OUT;
-
-    // custom command shadow
-    private static final Command.Custom C_SELF_MOVE_DID_STARTED = Command.Custom.SELF_MOVE_DID_STARTED;
-    private static final Command.Custom C_SELF_MOVE_DID_ENDED = Command.Custom.SELF_MOVE_DID_ENDED;
-
-    private static final String A_DIG = Action.DIG;
-    private static final String A_MINE = Action.MINE;
-    private static final String A_CARRY = Action.CARRY;
-    private static final String A_DESTROY = Action.DESTROY;
-    private static final String A_FISH = Action.FISH;
-    private static final String A_INSPECT = Action.INSPECT;
-    private static final String A_REPAIR = Action.REPAIR;
-    private static final String A_CRIME = Action.CRIME;
-    private static final String A_SWIM = Action.SWIM;
-    private static final String A_TRACKING = Action.TRACKING;
-    private static final String A_AGGRO = Action.AGGRO;
-    private static final String A_SHOOT = Action.SHOOT;
-
     // access properties
     public static haven.Gob gob() {
         if (ObjectShadow.mapView() == null)
@@ -179,11 +166,11 @@ public class Self {
     ///     - SC_FAILED
     private static StatusCode waitMoveStarting_() {
         if (isMoving_()) return SC_SUCCEEDED;
-        final StatusCode result = WaitManager.waitTimeOut(C_SELF_MOVE_DID_STARTED, TimeOut.TEMPORARY);
+        final StatusCode result = WaitManager.waitTimeOut(CC_SELF_MOVE_DID_STARTED, TO_TEMPORARY);
         switch (result) {
-            case SUCCEEDED: return SC_SUCCEEDED;
-            case INTERRUPTED: return SC_INTERRUPTED;
-            case TIME_OUT: return isMoving_() ? SC_SUCCEEDED : SC_FAILED;
+            case SC_SUCCEEDED: return SC_SUCCEEDED;
+            case SC_INTERRUPTED: return SC_INTERRUPTED;
+            case SC_TIME_OUT: return isMoving_() ? SC_SUCCEEDED : SC_FAILED;
             default:
                 new Exception().printStackTrace();
                 return SC_INTERRUPTED;
@@ -196,11 +183,11 @@ public class Self {
     private static StatusCode waitMoveEnding_() {
         while (true) {
             if (!isMoving_()) return SC_SUCCEEDED;
-            final StatusCode result = WaitManager.waitTimeOut(C_SELF_MOVE_DID_ENDED, TimeOut.GENERAL);
+            final StatusCode result = WaitManager.waitTimeOut(CC_SELF_MOVE_DID_ENDED, TO_GENERAL);
             switch (result) {
-                case SUCCEEDED: return SC_SUCCEEDED;
-                case INTERRUPTED: return SC_INTERRUPTED;
-                case TIME_OUT: break;
+                case SC_SUCCEEDED: return SC_SUCCEEDED;
+                case SC_INTERRUPTED: return SC_INTERRUPTED;
+                case SC_TIME_OUT: break;
                 default:
                     new Exception().printStackTrace();
                     return SC_INTERRUPTED;
@@ -222,13 +209,13 @@ public class Self {
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 gobLocationInCoord,
-                Input.Mouse.LEFT,
-                Input.Modifier.NONE,
-                InteractionType.DEFAULT,
+                IM_LEFT,
+                IM_NONE,
+                IT_DEFAULT,
                 GobHandler.id(gob),
                 gobLocationInCoord,
                 0,
-                MeshId.NONE);
+                MI_NONE);
     }
 
     /// - Returns:
@@ -331,8 +318,8 @@ public class Self {
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 point,
-                Input.Mouse.LEFT,
-                Input.Modifier.NONE);
+                IM_LEFT,
+                IM_NONE);
     }
 
     /// - Returns:

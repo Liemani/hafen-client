@@ -2,59 +2,59 @@ package lmi;
 
 public class Constant {
     public static class Command {
-        public static final String ACT = "act";
-        public static final String LOGIN = "login";
-        public static final String FOCUS = "focus";
-        public static final String SELECT_CHARACTER = "play";   // args = { haven.widget <haven.Charlist>, String <character name> }
-        public static final String CLICK = "click";
-        public static final String CLOSE_FLOWER_MENU = "cl";
-        public static final String AFK = "afk";
-        public static final String CHANGE_CURSOR = "curs";
+        public static final String C_ACT = "act";
+        public static final String C_LOGIN = "login";
+        public static final String C_FOCUS = "focus";
+        public static final String C_SELECT_CHARACTER = "play";   // args = { haven.widget <haven.Charlist>, String <character name> }
+        public static final String C_CLICK = "click";
+        public static final String C_CLOSE_FLOWER_MENU = "cl";
+        public static final String C_AFK = "afk";
+        public static final String C_CHANGE_CURSOR = "curs";
 
         public static enum Custom {
-            NONE,
-            SELF_MOVE_DID_STARTED,
-            SELF_MOVE_DID_ENDED,
-            PROGRESS_DID_STARTED,
-            PROGRESS_DID_ENDED,
-            FLOWER_MENU_DID_ADDED,
-            PROGRESS_DID_DESTROYED,
-            PROGRESS_DID_ADDED,
+            CC_NONE,
+            CC_SELF_MOVE_DID_STARTED,
+            CC_SELF_MOVE_DID_ENDED,
+            CC_PROGRESS_DID_STARTED,
+            CC_PROGRESS_DID_ENDED,
+            CC_FLOWER_MENU_DID_ADDED,
+            CC_PROGRESS_DID_DESTROYED,
+            CC_PROGRESS_DID_ADDED,
         }
     }
 
     public static class Action {
-        public static final String DIG = "dig";
-        public static final String MINE = "mine";
-        public static final String CARRY = "carry";
-        public static final String DESTROY = "destroy";
-        public static final String FISH = "fish";
-        public static final String INSPECT = "inspect";
-        public static final String REPAIR = "repair";
-        public static final String CRIME = "crime";
-        public static final String SWIM = "swim";
-        public static final String TRACKING = "tracking";
-        public static final String AGGRO = "aggro";
-        public static final String SHOOT = "shoot";
+        public static final String A_DIG = "dig";
+        public static final String A_MINE = "mine";
+        public static final String A_CARRY = "carry";
+        public static final String A_DESTROY = "destroy";
+        public static final String A_FISH = "fish";
+        public static final String A_INSPECT = "inspect";
+        public static final String A_REPAIR = "repair";
+        public static final String A_CRIME = "crime";
+        public static final String A_SWIM = "swim";
+        public static final String A_TRACKING = "tracking";
+        public static final String A_AGGRO = "aggro";
+        public static final String A_SHOOT = "shoot";
     }
 
     public static class InteractionType {
-        public static final int DEFAULT = 0;
-        public static final int HAS_OVERLAY = 1;
+        public static final int IT_DEFAULT = 0;
+        public static final int IT_HAS_OVERLAY = 1;
     }
 
     public static class Input {
         public static class Mouse {
-            public static final int LEFT = 1;
-            public static final int MIDDLE = 2;
-            public static final int RIGHT = 3;
+            public static final int IM_LEFT = 1;
+            public static final int IM_MIDDLE = 2;
+            public static final int IM_RIGHT = 3;
         }
 
         public static class Modifier {
-            public static final int NONE = 0;
-            public static final int SHIFT = 1;
-            public static final int CONTROL = 2;
-            public static final int META = 4;
+            public static final int IM_NONE = 0;
+            public static final int IM_SHIFT = 1;
+            public static final int IM_CONTROL = 2;
+            public static final int IM_META = 4;
         }
     }
 
@@ -104,16 +104,16 @@ public class Constant {
     public static final double COORD2D_PER_COORD = TILE_WIDTH_IN_COORD2D / TILE_WIDTH_IN_COORD;
 
     public static class TimeOut {
-        public static final long MAX = Long.MAX_VALUE;
-        public static final long FAIL = 2000;
-        public static final long GENERAL = 1000;
-        public static final long TEMPORARY = 500;
-        public static final long NONE = 0;
+        public static final long TO_MAX = Long.MAX_VALUE;
+        public static final long TO_FAIL = 2000;
+        public static final long TO_GENERAL = 1000;
+        public static final long TO_TEMPORARY = 500;
+        public static final long TO_NONE = 0;
     }
 
     public static class MeshId {
-        public static final int NONE = -1;
-        public static final int DEFAULT = 0;
+        public static final int MI_NONE = -1;
+        public static final int MI_DEFAULT = 0;
     }
 
     public static class HitBoxSize {
@@ -131,137 +131,137 @@ public class Constant {
 
         public static class terobjs {
             public static class arch {
-                public static final String PALISADEBIGGATE = "palisadebiggate";
-                public static final String PALISADECP = "palisadecp";
-                public static final String PALISADESEG = "palisadeseg";
-                public static final String POLEBIGGATE = "polebiggate";
-                public static final String POLECP = "polecp";
-                public static final String POLESEG = "poleseg";
+                public static final String RN_PALISADEBIGGATE = "palisadebiggate";
+                public static final String RN_PALISADECP = "palisadecp";
+                public static final String RN_PALISADESEG = "palisadeseg";
+                public static final String RN_POLEBIGGATE = "polebiggate";
+                public static final String RN_POLECP = "polecp";
+                public static final String RN_POLESEG = "poleseg";
             }
 
             // gfx/terobjs/bumlings/basalt0
             // 0 ~ 3
             public static class bumlings {
-                public static final String BASALT = "basalt";
-                public static final String DOLOMITE = "dolomite";
-                public static final String FLINT = "flint";
-                public static final String GRANITE = "granite";
-                public static final String LIMESTONE = "limestone";
-                public static final String QUARTZ = "quartz";
-                public static final String SCHIST = "schist";
+                public static final String RN_BASALT = "basalt";
+                public static final String RN_DOLOMITE = "dolomite";
+                public static final String RN_FLINT = "flint";
+                public static final String RN_GRANITE = "granite";
+                public static final String RN_LIMESTONE = "limestone";
+                public static final String RN_QUARTZ = "quartz";
+                public static final String RN_SCHIST = "schist";
             }
 
             public static class bushes {
-                public static final String ARROWWOOD = "arrowwood";
-                public static final String BLACKCURRANT = "blackcurrant";
-                public static final String ELDERBERRYBUSH = "elderberrybush";
-                public static final String GORSE = "gorse";
-                public static final String HOLLY = "holly";
-                public static final String REDCURRANT = "redcurrant";
-                public static final String SPINDLEBUSH = "spindlebush";
+                public static final String RN_ARROWWOOD = "arrowwood";
+                public static final String RN_BLACKCURRANT = "blackcurrant";
+                public static final String RN_ELDERBERRYBUSH = "elderberrybush";
+                public static final String RN_GORSE = "gorse";
+                public static final String RN_HOLLY = "holly";
+                public static final String RN_REDCURRANT = "redcurrant";
+                public static final String RN_SPINDLEBUSH = "spindlebush";
             }
 
             public static class furn {
-                public static final String BOUGHBED = "boughbed";
+                public static final String RN_BOUGHBED = "boughbed";
             }
 
             public static class items {
-                public static final String BLACKCURRANTBERRY = "blackcurrantberry";
-                public static final String BRANCH = "branch";
-                public static final String CLOGS = "clogs";
-                public static final String LIMESTONE = "limestone";
-                public static final String QUARTZ = "quartz";
-                public static final String SQUIRRELTAIL_BLOOD = "squirreltail-blood";
+                public static final String RN_BLACKCURRANTBERRY = "blackcurrantberry";
+                public static final String RN_BRANCH = "branch";
+                public static final String RN_CLOGS = "clogs";
+                public static final String RN_LIMESTONE = "limestone";
+                public static final String RN_QUARTZ = "quartz";
+                public static final String RN_SQUIRRELTAIL_BLOOD = "squirreltail-blood";
             }
 
             public static class plants {
-                public static final String BARLEY = "barley";
-                public static final String BEET = "beet";
-                public static final String CARROT = "carrot";
-                public static final String FLAX = "flax";
-                public static final String HEMP = "hemp";
-                public static final String LEEK = "leek";
-                public static final String LETTUCE = "lettuce";
-                public static final String PIPEWEED = "pipeweed";
-                public static final String POPPY = "poppy";
-                public static final String PUMPKIN = "pumpkin";
-                public static final String REDONION = "redonion";
-                public static final String TURNIP = "turnip";
-                public static final String WHEAT = "wheat";
-                public static final String YELLOWONION = "yellowonion";
+                public static final String RN_BARLEY = "barley";
+                public static final String RN_BEET = "beet";
+                public static final String RN_CARROT = "carrot";
+                public static final String RN_FLAX = "flax";
+                public static final String RN_HEMP = "hemp";
+                public static final String RN_LEEK = "leek";
+                public static final String RN_LETTUCE = "lettuce";
+                public static final String RN_PIPEWEED = "pipeweed";
+                public static final String RN_POPPY = "poppy";
+                public static final String RN_PUMPKIN = "pumpkin";
+                public static final String RN_REDONION = "redonion";
+                public static final String RN_TURNIP = "turnip";
+                public static final String RN_WHEAT = "wheat";
+                public static final String RN_YELLOWONION = "yellowonion";
             }
 
             // gfx/terobjs/stockpile-anyleather
             public static class stockpile {
-                public static final String ANYLEATHER = "anyleather";
-                public static final String BOARD = "board";
-                public static final String BRANCH = "branch";
-                public static final String BRICK = "brick";
-                public static final String METAL = "metal";
-                public static final String NUGGET_METAL = "nugget-metal";
-                public static final String ORE = "ore";
-                public static final String SOIL = "soil";
-                public static final String STONE = "stone";
-                public static final String WBLOCK = "wblock";
+                public static final String RN_ANYLEATHER = "anyleather";
+                public static final String RN_BOARD = "board";
+                public static final String RN_BRANCH = "branch";
+                public static final String RN_BRICK = "brick";
+                public static final String RN_METAL = "metal";
+                public static final String RN_NUGGET_METAL = "nugget-metal";
+                public static final String RN_ORE = "ore";
+                public static final String RN_SOIL = "soil";
+                public static final String RN_STONE = "stone";
+                public static final String RN_WBLOCK = "wblock";
             }
 
             //  almondtree
             //  almondtreelog
             //  almondtreestump
             public static class trees {
-                public static final String ALMONDTREE = "almondtree";
-                public static final String APPLETREE = "appletree";
-                public static final String BAYWILLOW = "baywillow";
-                public static final String BEECH = "beech";
-                public static final String BIRCH = "birch";
-                public static final String BLACKPINE = "blackpine";
-                public static final String CHECKERTREE = "checkertree";
-                public static final String CHESTNUTTREE = "chestnuttree";
-                public static final String CRABAPPLETREE = "crabappletree";
-                public static final String DOGWOODLOG = "dogwoodlog";
-                public static final String GRAYALDER = "grayalder";
-                public static final String HAZEL = "hazel";
-                public static final String PLUMTREE = "plumtree";
-                public static final String POPLAR = "poplar";
-                public static final String ROWAN = "rowan";
-                public static final String SALLOW = "sallow";
-                public static final String TEREBINTH = "terebinth";
-                public static final String WILLOW = "willow";
+                public static final String RN_ALMONDTREE = "almondtree";
+                public static final String RN_APPLETREE = "appletree";
+                public static final String RN_BAYWILLOW = "baywillow";
+                public static final String RN_BEECH = "beech";
+                public static final String RN_BIRCH = "birch";
+                public static final String RN_BLACKPINE = "blackpine";
+                public static final String RN_CHECKERTREE = "checkertree";
+                public static final String RN_CHESTNUTTREE = "chestnuttree";
+                public static final String RN_CRABAPPLETREE = "crabappletree";
+                public static final String RN_DOGWOODLOG = "dogwoodlog";
+                public static final String RN_GRAYALDER = "grayalder";
+                public static final String RN_HAZEL = "hazel";
+                public static final String RN_PLUMTREE = "plumtree";
+                public static final String RN_POPLAR = "poplar";
+                public static final String RN_ROWAN = "rowan";
+                public static final String RN_SALLOW = "sallow";
+                public static final String RN_TEREBINTH = "terebinth";
+                public static final String RN_WILLOW = "willow";
             }
 
             public static class treesException {
-                public static final String OLDSTUMP = "oldstump";
-                public static final String OLDTRUNK = "oldtrunk";
+                public static final String RN_OLDSTUMP = "oldstump";
+                public static final String RN_OLDTRUNK = "oldtrunk";
             }
 
             public static class vehicle {
-                public static final String CART = "cart";
-                public static final String DUGOUT = "dugout";
-                public static final String PLOW = "plow";
-                public static final String ROWBOAT = "rowboat";
+                public static final String RN_CART = "cart";
+                public static final String RN_DUGOUT = "dugout";
+                public static final String RN_PLOW = "plow";
+                public static final String RN_ROWBOAT = "rowboat";
             }
 
-            public static final String BARREL = "barrel";
-            public static final String BEEHIVE = "beehive";
-            public static final String CASTINGMOLD_SMALL = "castingmold-small";
-            public static final String CHEST = "chest";
-            public static final String CRATE = "crate";
-            public static final String CRUCIBLE = "crucible";
-            public static final String HEARTH_FIRE = "pow";
-            public static final String PRIMSMELTER = "primsmelter";
-            public static final String SURVOBJ = "survobj";
-            public static final String TROUGH = "trough";
+            public static final String RN_BARREL = "barrel";
+            public static final String RN_BEEHIVE = "beehive";
+            public static final String RN_CASTINGMOLD_SMALL = "castingmold-small";
+            public static final String RN_CHEST = "chest";
+            public static final String RN_CRATE = "crate";
+            public static final String RN_CRUCIBLE = "crucible";
+            public static final String RN_HEARTH_FIRE = "pow";
+            public static final String RN_PRIMSMELTER = "primsmelter";
+            public static final String RN_SURVOBJ = "survobj";
+            public static final String RN_TROUGH = "trough";
         }
     }
 
     public static enum StatusCode {
-        SUCCEEDED,
-        INTERRUPTED,
-        TIME_OUT,
-        FAILED,
-        FAILED_INVALID_ARGUMENT,
-        FAILED_MATCH,
-        FAILED_OPEN,
-        FAILED_CHOOSE,
+        SC_SUCCEEDED,
+        SC_INTERRUPTED,
+        SC_TIME_OUT,
+        SC_FAILED,
+        SC_FAILED_INVALID_ARGUMENT,
+        SC_FAILED_MATCH,
+        SC_FAILED_OPEN,
+        SC_FAILED_CHOOSE,
     }
 }

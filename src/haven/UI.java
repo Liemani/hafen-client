@@ -229,6 +229,7 @@ public class UI {
     }
 	
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
+    lmi.Util.debugPrint(this.getClass(), "type: " + type);
 	Widget.Factory f = Widget.gettype2(type);
 	if(f == null)
 	    throw(new UIException("Bad widget name", type, cargs));
@@ -314,6 +315,7 @@ public class UI {
     public void destroy(Widget wdg) {
 	removeid(wdg);
 	wdg.reqdestroy();
+    lmi.Util.debugPrint(this.getClass(), "wdg: " + wdg + ", wdg.parent: " + wdg.parent);
     }
     
     public void destroy(int id) {

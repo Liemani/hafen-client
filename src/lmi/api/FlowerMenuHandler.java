@@ -1,25 +1,13 @@
 package lmi.api;
 
 import lmi.*;
-import lmi.Constant.*;
+import lmi.Constant.StatusCode;
+import static lmi.Constant.StatusCode.*;
+import lmi.Constant.Command;
+import static lmi.Constant.Command.Custom.*;
+import static lmi.Constant.TimeOut.*;
 
 public class FlowerMenuHandler {
-    // status code shadow
-    private static final StatusCode SC_SUCCEEDED = StatusCode.SUCCEEDED;
-    private static final StatusCode SC_INTERRUPTED = StatusCode.INTERRUPTED;
-    private static final StatusCode SC_FAILED_INVALID_ARGUMENT = StatusCode.FAILED_INVALID_ARGUMENT;
-    private static final StatusCode SC_FAILED = StatusCode.FAILED;
-    private static final StatusCode SC_TIME_OUT = StatusCode.TIME_OUT;
-    private static final StatusCode SC_FAILED_MATCH = StatusCode.FAILED_MATCH;
-    private static final StatusCode SC_FAILED_OPEN = StatusCode.FAILED_OPEN;
-
-    // command shadow
-    private static final Command.Custom C_FLOWER_MENU_DID_ADDED = Command.Custom.FLOWER_MENU_DID_ADDED;
-
-    // command shadow
-    private static final Command.Custom C_PROGRESS_DID_ADDED = Command.Custom.PROGRESS_DID_ADDED;
-    private static final Command.Custom C_PROGRESS_DID_DESTROYED = Command.Custom.PROGRESS_DID_DESTROYED;
-
     // field
     private static haven.FlowerMenu widget_;
 
@@ -69,7 +57,7 @@ public class FlowerMenuHandler {
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED_OPEN
     private static StatusCode waitFlowerMenuOpening() {
-        final StatusCode result = WaitManager.waitTimeOut(C_FLOWER_MENU_DID_ADDED, TimeOut.TEMPORARY);
+        final StatusCode result = WaitManager.waitTimeOut(CC_FLOWER_MENU_DID_ADDED, TO_TEMPORARY);
         if (result != SC_TIME_OUT) return result;
         if (isAdded_())
             return SC_SUCCEEDED;
@@ -109,17 +97,17 @@ public class FlowerMenuHandler {
     private static StatusCode waitEnd_() {
         while (true) {
             {
-                final StatusCode result = WaitManager.waitCommand(C_PROGRESS_DID_DESTROYED);
+                final StatusCode result = WaitManager.waitCommand(CC_PROGRESS_DID_DESTROYED);
                 if (result != SC_SUCCEEDED) return result;
             }
             {
-                final StatusCode result = WaitManager.waitTimeOut(C_PROGRESS_DID_ADDED, TimeOut.TEMPORARY);
+                final StatusCode result = WaitManager.waitTimeOut(CC_PROGRESS_DID_ADDED, TO_TEMPORARY);
                 switch (result) {
-                    case SUCCEEDED:
+                    case SC_SUCCEEDED:
                         break;
-                    case INTERRUPTED:
+                    case SC_INTERRUPTED:
                         return SC_INTERRUPTED;
-                    case TIME_OUT:
+                    case SC_TIME_OUT:
                         return SC_SUCCEEDED;
                     default:
                         new Exception().printStackTrace();

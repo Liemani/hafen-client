@@ -2,6 +2,10 @@ package lmi.api;
 
 import lmi.*;
 import lmi.Constant.*;
+import static lmi.Constant.Command.*;
+import static lmi.Constant.Input.Mouse.*;
+import static lmi.Constant.Input.Modifier.*;
+import static lmi.Constant.InteractionType.*;
 
 public class WidgetMessageHandler {
     // public method
@@ -14,9 +18,9 @@ public class WidgetMessageHandler {
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 gobLocationInCoord,
-                Input.Mouse.RIGHT,
-                Input.Modifier.NONE,
-                InteractionType.DEFAULT,
+                IM_RIGHT,
+                IM_NONE,
+                IT_DEFAULT,
                 GobHandler.id(gob),
                 gobLocationInCoord,
                 0,
@@ -31,8 +35,8 @@ public class WidgetMessageHandler {
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 location,
-                Input.Mouse.RIGHT,
-                Input.Modifier.NONE);
+                IM_RIGHT,
+                IM_NONE);
     }
 
     /// - Returns:
@@ -54,7 +58,7 @@ public class WidgetMessageHandler {
             int modifiers) {
         return wdgmsg_(
                 widget,
-                Command.CLICK,
+                Command.C_CLICK,
                 clickedMapViewPoint,
                 clickedMapPoint,
                 mouseButton,
@@ -77,7 +81,7 @@ public class WidgetMessageHandler {
             int meshId) {
         return wdgmsg_(
                 widget,
-                Command.CLICK,
+                Command.C_CLICK,
                 clickedMapViewPoint,
                 clickedMapPoint,
                 mouseButton,
@@ -93,7 +97,7 @@ public class WidgetMessageHandler {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     static StatusCode sendActMessage(haven.MenuGrid widget, String action) {
-        return wdgmsg_(widget, Command.ACT, action, 0);
+        return wdgmsg_(widget, C_ACT, action, 0);
     }
 
     /// - Returns:
@@ -104,8 +108,8 @@ public class WidgetMessageHandler {
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 Self.locationInCoord(),
-                Input.Mouse.RIGHT,
-                Input.Modifier.NONE);
+                IM_RIGHT,
+                IM_NONE);
     }
 
     /// - Returns:
@@ -114,7 +118,7 @@ public class WidgetMessageHandler {
     static StatusCode sendChoosePetalMessage(haven.FlowerMenu widget, int index) {
         return wdgmsg_(
                 widget,
-                Command.CLOSE_FLOWER_MENU,
+                Command.C_CLOSE_FLOWER_MENU,
                 index,
                 0);
     }
@@ -125,7 +129,7 @@ public class WidgetMessageHandler {
     static StatusCode sendCloseFlowerMenuMessage(haven.FlowerMenu widget) {
         return wdgmsg_(
                 widget,
-                Command.CLOSE_FLOWER_MENU,
+                Command.C_CLOSE_FLOWER_MENU,
                 -1);
     }
 
@@ -133,7 +137,7 @@ public class WidgetMessageHandler {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     static StatusCode sendSelectCharacterMessage(haven.Charlist widget, String name) {
-        return wdgmsg_(widget, Command.SELECT_CHARACTER, name);
+        return wdgmsg_(widget, Command.C_SELECT_CHARACTER, name);
     }
 
     // private method
@@ -152,10 +156,10 @@ public class WidgetMessageHandler {
         Object[] args = {
             Util.mapViewCenter(),
             CoordinateHandler.convertCoord2dToCoord(gob.rc),
-            Input.Mouse.RIGHT,
-            Input.Modifier.NONE};
+            IM_RIGHT,
+            IM_NONE};
         if(clickData != null)
             args = haven.Utils.extend(args, clickData.clickargs());
-        return wdgmsg_(widget, Command.CLICK, args);
+        return wdgmsg_(widget, Command.C_CLICK, args);
     }
 }
