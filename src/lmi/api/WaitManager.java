@@ -2,20 +2,17 @@ package lmi.api;
 
 import lmi.*;
 import lmi.Constant.StatusCode;
+import static lmi.Constant.StatusCode.*;
 import lmi.Constant.Command;
 import lmi.Constant.TimeOut;
+import static lmi.Constant.Command.Custom.*;
+import static lmi.Constant.TimeOut.*;
 
 public class WaitManager {
-    // status code shadow
-    private static final StatusCode SC_SUCCEEDED = StatusCode.SUCCEEDED;
-    private static final StatusCode SC_INTERRUPTED = StatusCode.INTERRUPTED;
-    private static final StatusCode SC_FAILED = StatusCode.FAILED;
-    private static final StatusCode SC_TIME_OUT = StatusCode.TIME_OUT;
-
     // property
     private static Object monitor_ = new Object();
     private static String command_ = null;
-    private static Command.Custom customCommand_ = Command.Custom.NONE;
+    private static Command.Custom customCommand_ = CC_NONE;
 
     // wait
     /// - Returns:
@@ -71,17 +68,19 @@ public class WaitManager {
 
         if (!commandEquals_(command)) return;
         notify_();
+        lmi.Util.debugPrint(WaitManager.class, "command: " + command);
     }
 
     public static void notifyCommand(Command.Custom customCommand) {
         if (!commandEquals_(customCommand)) return;
         notify_();
+        lmi.Util.debugPrint(WaitManager.class, "custom command: " + customCommand);
     }
 
     // private methods
     private static void clear_() {
         command_ = null;
-        customCommand_ = Command.Custom.NONE;
+        customCommand_ = CC_NONE;
     }
 
     private static void init_(String command) {
@@ -121,7 +120,7 @@ public class WaitManager {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static StatusCode wait_() { return wait_(TimeOut.NONE); }
+    private static StatusCode wait_() { return wait_(TO_NONE); }
 
     // wrap notify
     private static void notify_() {

@@ -23,7 +23,7 @@
 //              public action() { return action_; }
 //          }
 //  
-//          public static final String CLICK = "click";
+//          public static final String C_CLICK = "click";
 //  
 //          private String command_;
 //          public Command(String command) { command_ = command; }
