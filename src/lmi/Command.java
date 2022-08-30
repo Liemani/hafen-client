@@ -9,6 +9,10 @@ import java.lang.reflect.Modifier;
 
 import lmi.api.*;
 import lmi.collection.*;
+
+// constant
+import lmi.Constant.StatusCode;
+import static lmi.Constant.StatusCode.*;
 import static lmi.Constant.MeshId.*;
 
 class Command {
@@ -244,7 +248,8 @@ class Command {
     }
 
     static Void moveCenter() {
-        Self.moveCenter();
+        final StatusCode result = Self.moveCenter();
+        lmi.Util.debugPrint(Command.class, "result: " + result);
         return null;
     }
 
@@ -319,9 +324,14 @@ class Command {
     }
 
     static Void moveNorthTileTenTimes() {
-        Self.moveCenter();
-        for (int count = 0; count < 10; ++count)
-            Self.moveNorthTile();
+        {
+            final StatusCode result = Self.moveCenter();
+            Util.debugPrint(Command.class, "result: " + result);
+        }
+        for (int count = 0; count < 10; ++count) {
+            final StatusCode result = Self.moveNorthTile();
+            Util.debugPrint(Command.class, "result: " + result);
+        }
         return null;
     }
 

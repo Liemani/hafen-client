@@ -129,11 +129,11 @@ public class Util {
         return new String(array, offset, stringLength);
     }
 
-    public static int strlen(byte[] array, int startOfString) {
-        int endOfString = startOfString;
-        while (endOfString < array.length && array[endOfString] != 0)
-            ++endOfString;
-        return endOfString - startOfString;
+    public static int strlen(byte[] array, int stringOffset) {
+        int stringEndOffset = stringOffset;
+        while (stringEndOffset < array.length && array[stringEndOffset] != 0)
+            ++stringEndOffset;
+        return stringEndOffset - stringOffset;
     }
 
     // etc
@@ -144,6 +144,9 @@ public class Util {
     }
 
     public static void debugPrint(Class classObject, String description) {
-        System.out.println("[" + classObject.getName() + "::" + currentMethod() + "()] " + description);
+        System.out.print("[" + classObject.getName() + "::" + currentMethod() + "()]");
+        if (description != null)
+            System.out.print(" { " + description + " }");
+        System.out.println();
     }
 }
