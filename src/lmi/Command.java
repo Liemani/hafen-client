@@ -9,6 +9,7 @@ import java.lang.reflect.Modifier;
 
 import lmi.api.*;
 import lmi.collection.*;
+import static lmi.Constant.MeshId.*;
 
 class Command {
     // type define
@@ -311,7 +312,6 @@ class Command {
     }
 
     static Void move() {
-
         haven.Coord2d destination = CoordinateHandler.newCoordinateByOffset(Self.location(), 33.0, 33.0);
         final Constant.StatusCode result = Self.move(destination);
         Util.debugPrint(Command.class, "result: " + result);
@@ -384,14 +384,14 @@ class Command {
     static Void chopIntoBlocksClosestGob() {
         haven.Gob closestGob = GobHandler.closestGob();
 
-        FlowerMenuHandler.choose(closestGob, Constant.MeshId.DEFAULT, Constant.Interaction.CHOP_INTO_BLOCKS);
+        FlowerMenuHandler.choose(closestGob, Constant.MeshId.MI_DEFAULT, Constant.Interaction.CHOP_INTO_BLOCKS);
         return null;
     }
 
     static Void gatherClosestGob() {
         String action = lmi.Scanner.nextLineWithPrompt("enter action");
         haven.Gob closestGob = GobHandler.closestGob();
-        final Constant.StatusCode result = FlowerMenuHandler.choose(closestGob, Constant.MeshId.DEFAULT, action);
+        final Constant.StatusCode result = FlowerMenuHandler.choose(closestGob, MI_DEFAULT, action);
         Util.debugPrint(Command.class, "FlowerMenuHandler.choose() result " + result);
         Self.moveNorthTile();
         return null;

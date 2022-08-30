@@ -1,19 +1,13 @@
 package lmi.api;
 
 import lmi.*;
-import lmi.Constant.*;
+import lmi.Constant.StatusCode;
+import static lmi.Constant.StatusCode.*;
+import lmi.Constant.Command;
+import static lmi.Constant.Command.Custom.*;
+import static lmi.Constant.TimeOut.*;
 
 public class ProgressManager {
-    // status code shadow
-    private static final StatusCode SC_SUCCEEDED = StatusCode.SUCCEEDED;
-    private static final StatusCode SC_INTERRUPTED = StatusCode.INTERRUPTED;
-    private static final StatusCode SC_FAILED = StatusCode.FAILED;
-    private static final StatusCode SC_FAILED_OPEN = StatusCode.FAILED_OPEN;
-
-    // command shadow
-    private static final Command.Custom C_PROGRESS_DID_STARTED = Command.Custom.PROGRESS_DID_STARTED;
-    private static final Command.Custom C_PROGRESS_DID_ENDED = Command.Custom.PROGRESS_DID_ENDED;
-
     // field
     private static haven.GameUI.Progress widget_ = null;
 
@@ -29,9 +23,9 @@ public class ProgressManager {
         {
             final StatusCode result =  waitProgressStarting_();
             switch (result) {
-                case SUCCEEDED: break;
-                case INTERRUPTED: return SC_INTERRUPTED;
-                case FAILED_OPEN: return SC_FAILED_OPEN;
+                case SC_SUCCEEDED: break;
+                case SC_INTERRUPTED: return SC_INTERRUPTED;
+                case SC_FAILED_OPEN: return SC_FAILED_OPEN;
                 default:
                     new Exception().printStackTrace();
                     return SC_INTERRUPTED;
@@ -41,9 +35,9 @@ public class ProgressManager {
             if (waitProgressEnding_() == SC_INTERRUPTED) return SC_INTERRUPTED;
             final StatusCode result = waitProgressStarting_();
             switch (result) {
-                case SUCCEEDED: continue;
-                case INTERRUPTED: return SC_INTERRUPTED;
-                case FAILED: return SC_SUCCEEDED;
+                case SC_SUCCEEDED: continue;
+                case SC_INTERRUPTED: return SC_INTERRUPTED;
+                case SC_FAILED: return SC_SUCCEEDED;
                 default:
                     new Exception().printStackTrace();
                     return SC_INTERRUPTED;
@@ -62,11 +56,11 @@ public class ProgressManager {
     ///     - SC_FAILED_OPEN
     private static StatusCode waitProgressStarting_() {
         if (isProgressing_()) return SC_SUCCEEDED;
-        final StatusCode result = WaitManager.waitTimeOut(C_PROGRESS_DID_STARTED, TimeOut.TEMPORARY);
+        final StatusCode result = WaitManager.waitTimeOut(CC_PROGRESS_DID_STARTED, TO_TEMPORARY);
         switch (result) {
-            case SUCCEEDED: return SC_SUCCEEDED;
-            case INTERRUPTED: return SC_INTERRUPTED;
-            case TIME_OUT: return isProgressing_() ? SC_SUCCEEDED : SC_FAILED_OPEN;
+            case SC_SUCCEEDED: return SC_SUCCEEDED;
+            case SC_INTERRUPTED: return SC_INTERRUPTED;
+            case SC_TIME_OUT: return isProgressing_() ? SC_SUCCEEDED : SC_FAILED_OPEN;
             default:
                 new Exception().printStackTrace();
                 return SC_INTERRUPTED;
@@ -79,11 +73,11 @@ public class ProgressManager {
     private static StatusCode waitProgressEnding_() {
         while (true) {
             if (!isProgressing_()) return SC_SUCCEEDED;
-            final StatusCode result = WaitManager.waitTimeOut(C_PROGRESS_DID_ENDED, TimeOut.GENERAL);
+            final StatusCode result = WaitManager.waitTimeOut(CC_PROGRESS_DID_ENDED, TO_GENERAL);
             switch (result) {
-                case SUCCEEDED: return SC_SUCCEEDED;
-                case INTERRUPTED: return SC_INTERRUPTED;
-                case TIME_OUT: break;
+                case SC_SUCCEEDED: return SC_SUCCEEDED;
+                case SC_INTERRUPTED: return SC_INTERRUPTED;
+                case SC_TIME_OUT: break;
                 default:
                     new Exception().printStackTrace();
                     return SC_INTERRUPTED;
