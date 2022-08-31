@@ -351,7 +351,7 @@ public class UI {
             && !msg.contentEquals("auth")
             && !msg.contentEquals("ppower")
             && !msg.contentEquals("max")) {
-        System.out.println("[RemoteUI::run() ui.uimsg()] {\"command\": \"" + msg + "\", \"widgetClass\": \"" + wdg.getClass().getName() + "\", \"args.length\": " + args.length + "}");
+        lmi.Util.debugPrint(this.getClass(), "commannd: " + msg + ", widgetClass: " + wdg.getClass().getName() + ", args.length: " + args.length);
         for (Object object : args)
             lmi.Debug.describeField(object);
     }

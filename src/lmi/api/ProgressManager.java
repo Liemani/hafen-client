@@ -21,7 +21,7 @@ public class ProgressManager {
     ///     - SC_FAILED_OPEN
     public static StatusCode waitProgress() {
         {
-            final StatusCode result =  waitProgressStarting_();
+            final StatusCode result =  waitProgressBeginning_();
             switch (result) {
                 case SC_SUCCEEDED: break;
                 case SC_INTERRUPTED: return SC_INTERRUPTED;
@@ -33,7 +33,7 @@ public class ProgressManager {
         }
         while (true) {
             if (waitProgressEnding_() == SC_INTERRUPTED) return SC_INTERRUPTED;
-            final StatusCode result = waitProgressStarting_();
+            final StatusCode result = waitProgressBeginning_();
             switch (result) {
                 case SC_SUCCEEDED: continue;
                 case SC_INTERRUPTED: return SC_INTERRUPTED;
@@ -54,7 +54,7 @@ public class ProgressManager {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED_OPEN
-    private static StatusCode waitProgressStarting_() {
+    private static StatusCode waitProgressBeginning_() {
         if (isProgressing_()) return SC_SUCCEEDED;
         final StatusCode result = WaitManager.waitTimeOut(CC_PROGRESS_DID_BEGIN, TO_TEMPORARY);
         switch (result) {

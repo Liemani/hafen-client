@@ -1,5 +1,7 @@
 package lmi;
 
+import static lmi.Constant.TimeOut.*;
+
 class MacroThread {
     static Thread thread_;
 
@@ -8,7 +10,7 @@ class MacroThread {
             thread_.interrupt();
         try {
             while (thread_ != null);
-                Thread.sleep(Constant.TimeOut.TEMPORARY);
+                Thread.sleep(TO_TEMPORARY);
         } catch (InterruptedException e) { System.out.println("thread interrupted before run"); }
         thread_ = new Thread(() -> {
                 runnable.run();
