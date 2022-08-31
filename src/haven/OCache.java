@@ -345,7 +345,7 @@ public class OCache implements Iterable<Gob> {
 			    break;
 		    }
 		    synchronized(gob) {
-            System.out.println("[OCache::GobInfo::apply() d.type] " + d.type);
+            lmi.Util.debugPrint(this.getClass(), "d.type: " + d.type);
 			deltas.get(d.type).apply(gob, d.clone());
 		    }
 		    synchronized(this) {

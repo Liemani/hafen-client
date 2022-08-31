@@ -63,11 +63,8 @@ public class Self {
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED_MOVE
     public static StatusCode move(haven.Coord2d point) {
-        {
-            final StatusCode result = sendClickMessage_(point);
-            if (result != SC_SUCCEEDED) return result;
-        }
-        return waitMove_(point);
+        if (sendClickMessage_(point) == SC_INTERRUPTED) return SC_INTERRUPTED;
+        return new MoveManager(Self.gob()).waitMove(point);
     }
 
     /// - Returns:
@@ -75,11 +72,8 @@ public class Self {
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED_MOVE
     public static StatusCode move(haven.Coord point) {
-        {
-            final StatusCode result = sendClickMessage_(point);
-            if (result != SC_SUCCEEDED) return result;
-        }
-        return waitMove_(point);
+        if (sendClickMessage_(point) == SC_INTERRUPTED) return SC_INTERRUPTED;
+        return new MoveManager(Self.gob()).waitMove(point);
     }
 
     // etc
@@ -97,22 +91,7 @@ public class Self {
         return move(center);
     }
 
-    public static boolean isAt(haven.Coord2d point) {
-        if (point == null)
-            return false;
-
-        return CoordinateHandler.equals(Self.location(), point);
-    }
-
-    public static boolean isAt(haven.Coord point) {
-        if (point == null)
-            return false;
-
-        return CoordinateHandler.equals(Self.locationInCoord(), point);
-    }
-
-    // TODO implement wait lift
-    /// - Returns:
+    // TODO implement wait lift /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     public static StatusCode lift(haven.Gob gob) {
@@ -126,89 +105,7 @@ public class Self {
         }
         return SC_SUCCEEDED;
     }
-
-    // private methods
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_MOVE
-    private static StatusCode waitMove_(haven.Coord2d destination) {
-        while (!Self.isAt(destination)) {
-            final StatusCode result = waitMoveBeginning_();
-            switch (result) {
-                case SC_SUCCEEDED: break;
-                case SC_INTERRUPTED: return SC_INTERRUPTED;
-                case SC_FAILED_MOVE: return Self.isAt(destination) ? SC_SUCCEEDED : SC_FAILED_MOVE;
-                default:
-                    new Exception().printStackTrace();
-                    return SC_INTERRUPTED;
-            }
-            if (waitMoveEnding_() == SC_INTERRUPTED) return SC_INTERRUPTED;
-        }
-        return SC_SUCCEEDED;
-    }
-
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_MOVE
-    private static StatusCode waitMove_(haven.Coord destination) {
-        while (!Self.isAt(destination)) {
-            final StatusCode result = waitMoveBeginning_();
-            switch (result) {
-                case SC_SUCCEEDED: break;
-                case SC_INTERRUPTED: return SC_INTERRUPTED;
-                case SC_FAILED_MOVE: return Self.isAt(destination) ? SC_SUCCEEDED : SC_FAILED_MOVE;
-                default:
-                    new Exception().printStackTrace();
-                    return SC_INTERRUPTED;
-            }
-            if (waitMoveEnding_() == SC_INTERRUPTED) return SC_INTERRUPTED;
-        }
-        return SC_SUCCEEDED;
-    }
-
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_MOVE
-    private static StatusCode waitMoveBeginning_() {
-        if (isMoving_()) return SC_SUCCEEDED;
-        final StatusCode result = WaitManager.waitTimeOut(CC_SELF_MOVE_DID_BEGIN, TO_TEMPORARY);
-        switch (result) {
-            case SC_SUCCEEDED: return SC_SUCCEEDED;
-            case SC_INTERRUPTED: return SC_INTERRUPTED;
-            case SC_TIME_OUT: return isMoving_() ? SC_SUCCEEDED : SC_FAILED_MOVE;
-            default:
-                new Exception().printStackTrace();
-                return SC_INTERRUPTED;
-        }
-    }
-
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode waitMoveEnding_() {
-        while (true) {
-            if (!isMoving_()) return SC_SUCCEEDED;
-            final StatusCode result = WaitManager.waitTimeOut(CC_SELF_MOVE_DID_END, TO_GENERAL);
-            switch (result) {
-                case SC_SUCCEEDED: return SC_SUCCEEDED;
-                case SC_INTERRUPTED: return SC_INTERRUPTED;
-                case SC_TIME_OUT: break;
-                default:
-                    new Exception().printStackTrace();
-                    return SC_INTERRUPTED;
-            }
-        }
-    }
-
-    private static boolean isMoving_() {
-        haven.GAttrib attribute = Self.gob().getattr(haven.Moving.class);
-        return attribute != null;
-    }
-
-    /// - Returns:
+/// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     private static StatusCode actClick_(haven.Gob gob) {

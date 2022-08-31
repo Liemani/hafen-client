@@ -73,7 +73,7 @@ public class GobHandler {
             gob = iterator.next();
             if (gob.getClass() != haven.Gob.class)
                 continue;
-            if (GobHandler.coordinateEquals(Self.gob(), gob))
+            if (GobHandler.isAt(Self.gob(), gob))
                 continue;
             distance = Self.distance(gob);
             if (distance < closestDistance) {
@@ -89,10 +89,21 @@ public class GobHandler {
         return GobHandler.location(lhs).dist(GobHandler.location(rhs));
     }
 
-    public static boolean coordinateEquals(haven.Gob lhs, haven.Gob rhs) {
+    // compare coordiante
+    public static boolean isAt(haven.Gob lhs, haven.Gob rhs) {
         haven.Coord2d lhsLocation = GobHandler.location(lhs);
         haven.Coord2d rhsLocation = GobHandler.location(rhs);
         return CoordinateHandler.equals(lhsLocation, rhsLocation);
+    }
+
+    public static boolean isAt(haven.Gob gob, haven.Coord2d point) {
+        haven.Coord2d gobLocation = GobHandler.location(gob);
+        return CoordinateHandler.equals(gobLocation, point);
+    }
+
+    public static boolean isAt(haven.Gob gob, haven.Coord point) {
+        haven.Coord2d gobLocation = GobHandler.location(gob);
+        return CoordinateHandler.equals(gobLocation, point);
     }
 
     // etc
@@ -105,5 +116,10 @@ public class GobHandler {
         if (composite == null)
             return null;
         return composite.poseArray();
+    }
+
+    public static boolean hasPose(haven.Gob gob, String poseName) {
+        Array<String> poseArray = GobHandler.poseArray(gob);
+        return poseArray.containsWhere(pose -> pose.endsWith(poseName));
     }
 }

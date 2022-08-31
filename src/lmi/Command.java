@@ -14,6 +14,7 @@ import lmi.collection.Array;
 import lmi.Constant.StatusCode;
 import static lmi.Constant.StatusCode.*;
 import static lmi.Constant.MeshId.*;
+import static lmi.Constant.gfx.borka.*;
 
 class Command {
     // type define
@@ -394,6 +395,41 @@ class Command {
         final Constant.StatusCode result = FlowerMenuHandler.choose(closestGob, MI_DEFAULT, action);
         Util.debugPrint(Command.class, "FlowerMenuHandler.choose() result " + result);
         Self.moveNorthTile();
+        return null;
+    }
+
+//      static Void test() {
+//          Array<String> array = new Array<String>();
+//  
+//          array.append("hi");
+//          array.append("there");
+//          array.append("nice");
+//          array.append("to");
+//          array.append("meet");
+//          array.append("you");
+//  
+//          if (array.contains("hello"))
+//              System.out.println("\"hello\" is contains in array");
+//          else
+//              System.out.println("\"hello\" is not contains in array");
+//  
+//          if (array.contains("meet"))
+//              System.out.println("\"meet\" is contains in array");
+//          else
+//              System.out.println("\"meet\" is not contains in array");
+//  
+//          return null;
+//      }
+
+    static Void test() {
+        if (GobHandler.hasPose(Self.gob(), RN_SAWING))
+            System.out.println("Self.gob has pose RN_SAWING");
+        else
+            System.out.println("Self.gob has not pose RN_SAWING");
+        if (GobHandler.hasPose(Self.gob(), RN_THINKAN))
+            System.out.println("Self.gob has pose RN_THINKAN");
+        else
+            System.out.println("Self.gob has not pose RN_THINKAN");
         return null;
     }
 }

@@ -73,6 +73,7 @@ public class CoordinateHandler {
         return point.add(xOffset, yOffset);
     }
 
+    // equals
     public static boolean equals(haven.Coord lhs, haven.Coord rhs) {
         return Math.abs(lhs.x - rhs.x) < Constant.COORD2D_PER_COORD
             && Math.abs(lhs.y - rhs.y) < Constant.COORD2D_PER_COORD;
@@ -81,5 +82,14 @@ public class CoordinateHandler {
     public static boolean equals(haven.Coord2d lhs, haven.Coord2d rhs) {
         return Math.abs(lhs.x - rhs.x) < Constant.COORD2D_PER_COORD
             && Math.abs(lhs.y - rhs.y) < Constant.COORD2D_PER_COORD;
+    }
+
+    public static boolean equals(haven.Coord2d lhs, haven.Coord rhs) {
+        final haven.Coord lhsInCoord = CoordinateHandler.convertCoord2dToCoord(lhs);
+        return CoordinateHandler.equals(lhsInCoord, rhs);
+    }
+
+    public static boolean equals(haven.Coord lhs, haven.Coord2d rhs) {
+        return CoordinateHandler.equals(rhs, lhs);
     }
 }

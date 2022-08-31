@@ -57,6 +57,14 @@ public class Array<Element> extends java.util.ArrayList<Element> {
         return remove(0);
     }
 
+    // Finding Elements
+    public boolean containsWhere(java.util.function.Predicate<Element> predicate) {
+        for (Element element : this)
+            if (predicate.test(element))
+                return true;
+        return false;
+    }
+
     // assume: the collection is not empty
     public Element removeLast() {
         return remove(count() - 1);

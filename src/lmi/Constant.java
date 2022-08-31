@@ -26,6 +26,7 @@ public class Constant {
     }
 
     public static class Action {
+        public static final String A_POSE = "pose";
         public static final String A_DIG = "dig";
         public static final String A_MINE = "mine";
         public static final String A_CARRY = "carry";
@@ -128,7 +129,16 @@ public class Constant {
 
     public static class gfx {
         public static class borka {
-            public static final String BODY = "body";
+            public static final String RN_BODY = "body";
+            public static final String RN_IDLE = "idle";
+            public static final String RN_WALKING = "walking";
+            public static final String RN_BUCKETCARRY = "bucketcarry";
+            public static final String RN_TURN = "turn";
+            public static final String RN_CHOPPAN = "choppan";
+            public static final String RN_SAWING = "sawing";
+            public static final String RN_BUILDAN = "buildan";
+            public static final String RN_THINKAN = "thinkan";
+//              treepickan
         }
 
         public static class terobjs {
