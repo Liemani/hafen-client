@@ -96,23 +96,18 @@ public class FlowerMenuHandler {
     ///     - SC_INTERRUPTED
     private static StatusCode waitEnd_() {
         while (true) {
-            {
-                final StatusCode result = WaitManager.waitCommand(CC_PROGRESS_DID_DESTROYED);
-                if (result != SC_SUCCEEDED) return result;
-            }
-            {
-                final StatusCode result = WaitManager.waitTimeOut(CC_PROGRESS_DID_ADDED, TO_TEMPORARY);
-                switch (result) {
-                    case SC_SUCCEEDED:
-                        break;
-                    case SC_INTERRUPTED:
-                        return SC_INTERRUPTED;
-                    case SC_TIME_OUT:
-                        return SC_SUCCEEDED;
-                    default:
-                        new Exception().printStackTrace();
-                        return SC_INTERRUPTED;
-                }
+            if (WaitManager.waitCommand(CC_PROGRESS_DID_DESTROYED) == SC_INTERRUPTED)
+                return SC_INTERRUPTED;
+            switch (WaitManager.waitTimeOut(CC_PROGRESS_DID_ADDED, TO_TEMPORARY)) {
+                case SC_SUCCEEDED:
+                    break;
+                case SC_INTERRUPTED:
+                    return SC_INTERRUPTED;
+                case SC_TIME_OUT:
+                    return SC_SUCCEEDED;
+                default:
+                    new Exception().printStackTrace();
+                    return SC_INTERRUPTED;
             }
         }
     }

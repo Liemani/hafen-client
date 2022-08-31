@@ -1,6 +1,7 @@
 package lmi.api;
 
 import lmi.*;
+import lmi.collection.Array;
 
 public class GobHandler {
 //      iter = oc.iterator();
@@ -97,5 +98,12 @@ public class GobHandler {
     // etc
     public static int id(haven.Gob gob) {
         return (int)gob.id;
+    }
+
+    public static Array<String> poseArray(haven.Gob gob) {
+        haven.Composite composite = gob.getattr(haven.Composite.class);
+        if (composite == null)
+            return null;
+        return composite.poseArray();
     }
 }

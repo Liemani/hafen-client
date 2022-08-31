@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import lmi.api.*;
-import lmi.collection.*;
+import lmi.collection.Array;
 
 // constant
 import lmi.Constant.StatusCode;
@@ -373,21 +373,11 @@ class Command {
     }
 
     static Void describeSelfPose() {
-        haven.Composite composite = Self.gob().getattr(haven.Composite.class);
-        if (composite == null) {
-            System.out.println("[composite is null]");
-            return null;
-        }
-
-        Array<String> poseNameArray = composite.poseNameArray_;
-        if (poseNameArray == null) {
-            System.out.println("[poseNameArray is null]");
-            return null;
-        }
-
-        for (String poseName : poseNameArray) {
-            System.out.println("[pose name] " + poseName);
-        }
+        Array<String> poseArray = GobHandler.poseArray(Self.gob());
+        if (poseArray == null)
+            Util.debugPrint(Command.class, "no pose");
+        for (String pose : poseArray)
+            System.out.println("[pose name] " + pose);
         return null;
     }
 
