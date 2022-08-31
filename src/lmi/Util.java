@@ -144,9 +144,16 @@ public class Util {
     }
 
     public static void debugPrint(Class classObject, String description) {
-        System.out.print("[" + classObject.getName() + "::" + currentMethod() + "()]");
+        final StringBuilder fullDescription = new StringBuilder();
+
+        fullDescription.append("[" + classObject.getName() + "::" + currentMethod() + "()]");
         if (description != null)
-            System.out.print(" { " + description + " }");
-        System.out.println();
+            fullDescription.append(" { " + description + " }");
+
+        System.out.println(fullDescription.toString());
+    }
+
+    public static void debugPrint(Class classObject) {
+        System.out.println("[" + classObject.getName() + "::" + currentMethod() + "()]");
     }
 }

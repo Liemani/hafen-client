@@ -2,8 +2,8 @@ package lmi.api;
 
 import lmi.*;
 import lmi.Constant.StatusCode;
-import static lmi.Constant.StatusCode.*;
 import lmi.Constant.Command;
+import static lmi.Constant.StatusCode.*;
 import static lmi.Constant.Command.Custom.*;
 import static lmi.Constant.TimeOut.*;
 

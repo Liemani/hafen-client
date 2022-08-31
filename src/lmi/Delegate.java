@@ -2,6 +2,7 @@ package lmi;
 
 import lmi.api.*;
 import lmi.Constant.Command;
+import lmi.collection.Array;
 
 // constant
 import static lmi.Constant.Command.*;
@@ -50,9 +51,12 @@ public class Delegate {
     }
 
     // etc
-    // TODO
     public static void poseDidChanged(haven.Gob gob) {
         // Composite::poseDidChange()
+        Array<String> poseArray = GobHandler.poseArray(gob);
+        Util.debugPrint(Delegate.class, "gob: " + gob);
+        for (String pose : poseArray)
+            System.out.println("  " + pose);
     }
 
     public static void cursorDidChanged() {

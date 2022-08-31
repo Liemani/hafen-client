@@ -105,6 +105,7 @@ public class Composite extends Drawable {
 	    try {
 		Composited.Poses np = comp.new Poses(loadposes(nposes, comp.skel, nposesold));
 		np.set(nposesold?0:ipollen);
+        poseDidChanged_(nposes);
 		nposes = null;
 		updequ();
 	    } catch(Loading e) {}
@@ -143,7 +144,6 @@ public class Composite extends Drawable {
     public void chposes(Collection<ResData> poses, boolean interp) {
 	if(tposes != null)
 	    tposes = null;
-    poseDidChange(poses);
 	nposes = poses;
 	nposesold = !interp;
     }
@@ -201,7 +201,6 @@ public class Composite extends Drawable {
 		poses = new LinkedList<ResData>();
 		while(true) {
 		    int resid = msg.uint16();
-            lmi.Util.debugPrint(this.getClass(), "resid: " + resid);
 		    if(resid == 65535)
 			break;
 		    Message sdt = Message.nil;
@@ -315,16 +314,19 @@ public class Composite extends Drawable {
     }
 
     // lmi custom
+    // field
     private lmi.collection.Array<String> poseArray_ = null;
 
+    // public method
     public lmi.collection.Array<String> poseArray() { return poseArray_; }
 
-    private void poseDidChange(Collection<ResData> poseResourceDataCollection) {
-        setPoseNameArray(poseResourceDataCollection);
-        lmi.Delegate.poseDidChanged(gob);
+    // private meethod
+    private void poseDidChanged_(Collection<ResData> poseResourceDataCollection) {
+        setPoseArray_(poseResourceDataCollection);
+        lmi.Delegate.poseDidChanged(this.gob);
     }
 
-    private void setPoseNameArray(Collection<ResData> poseResourceDataCollection) {
+    private void setPoseArray_(Collection<ResData> poseResourceDataCollection) {
         poseArray_ = new lmi.collection.Array<String>(poseResourceDataCollection.size());
         for (ResData resourceData : poseResourceDataCollection)
             poseArray_.append(resourceData.res.get().name);
