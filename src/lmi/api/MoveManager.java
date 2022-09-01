@@ -56,14 +56,8 @@ class MoveManager {
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED_MOVE
     StatusCode waitMove() {
-        switch (waitMoveBeginning()) {
-            case SC_SUCCEEDED: break;
-            case SC_INTERRUPTED: return SC_INTERRUPTED;
-            case SC_FAILED_MOVE: return SC_FAILED_MOVE;
-            default:
-                new Exception().printStackTrace();
-                return SC_INTERRUPTED;
-        }
+        final StatusCode result = waitMoveBeginning();
+        if (result != SC_SUCCEEDED) return result;
         return waitMoveEnding();
     }
 

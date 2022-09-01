@@ -13,15 +13,16 @@ public class FlowerMenuHandler {
 
     // set widget
     public static void setWidget(haven.FlowerMenu widget) { widget_ = widget; }
+    public static void clearWidget() { widget_ = null; }
 
     // choose
-    // TODO progress can end before wait it
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED_INVALID_ARGUMENT
-    ///     - SC_FAILED_OPEN
+    ///     - SC_FAILED_OPEN_FLOWER_MENU
     ///     - SC_FAILED_MATCH
+    ///     - SC_FAILED_OPEN_PROGRESS
     public static StatusCode choose(haven.Gob gob, int meshId, String name) {
         if (gob == null || name == null)
             return SC_FAILED_INVALID_ARGUMENT;
@@ -37,16 +38,15 @@ public class FlowerMenuHandler {
                 return result;
             }
         }
-        return waitEnd_();
+        new MoveManager(Self.gob()).waitMove();
+        return ProgressManager.waitProgress();
     }
 
     // private methods
-    private static void clear_() { widget_ = null; }
-
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_OPEN
+    ///     - SC_FAILED_OPEN_FLOWER_MENU
     private static StatusCode open_(haven.Gob gob, int meshId) {
         if (sendInteractMessage_(gob, meshId) == SC_INTERRUPTED) return SC_INTERRUPTED;
         return waitFlowerMenuOpening();
@@ -55,15 +55,19 @@ public class FlowerMenuHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_OPEN
+    ///     - SC_FAILED_OPEN_FLOWER_MENU
     private static StatusCode waitFlowerMenuOpening() {
-        final StatusCode result = WaitManager.waitTimeOut(CC_FLOWER_MENU_DID_ADDED, TO_TEMPORARY);
-        if (result != SC_TIME_OUT) return result;
-        if (isAdded_())
-            return SC_SUCCEEDED;
-        else
-            return SC_FAILED_OPEN;
+        if (isAdded_()) return SC_SUCCEEDED;
+        switch (WaitManager.waitTimeOut(CC_FLOWER_MENU_DID_ADDED, TO_TEMPORARY)) {
+            case SC_SUCCEEDED: return SC_SUCCEEDED;
+            case SC_INTERRUPTED: return SC_INTERRUPTED;
+            case SC_TIME_OUT: return isAdded_() ? SC_SUCCEEDED : SC_FAILED_OPEN_FLOWER_MENU;
+            default:
+                new Exception().printStackTrace();
+                return SC_INTERRUPTED;
+        }
     }
+
 
     private static boolean isAdded_() {
         return widget_ != null;
@@ -73,10 +77,7 @@ public class FlowerMenuHandler {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     private static StatusCode close_() {
-        final StatusCode result = sendCloseMessage_();
-        if (result == SC_SUCCEEDED)
-            clear_();
-        return result;
+        return sendCloseMessage_();
     }
 
     /// - Returns:
@@ -88,28 +89,6 @@ public class FlowerMenuHandler {
             if (petal.name.contentEquals(name))
                 return sendChoosePetalMessage_(petal.num);
         return SC_FAILED_MATCH;
-    }
-
-    // TODO progress can added before wait it
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode waitEnd_() {
-        while (true) {
-            if (WaitManager.waitCommand(CC_PROGRESS_DID_DESTROYED) == SC_INTERRUPTED)
-                return SC_INTERRUPTED;
-            switch (WaitManager.waitTimeOut(CC_PROGRESS_DID_ADDED, TO_TEMPORARY)) {
-                case SC_SUCCEEDED:
-                    break;
-                case SC_INTERRUPTED:
-                    return SC_INTERRUPTED;
-                case SC_TIME_OUT:
-                    return SC_SUCCEEDED;
-                default:
-                    new Exception().printStackTrace();
-                    return SC_INTERRUPTED;
-            }
-        }
     }
 
     /// - Returns:
