@@ -272,7 +272,9 @@ public class Constant {
         SC_TIME_OUT,
         SC_FAILED_INVALID_ARGUMENT,
         SC_FAILED_MATCH,
-        SC_FAILED_OPEN,
+        SC_FAILED_OPEN_FLOWER_MENU,
+        SC_FAILED_OPEN_PROGRESS,
+        SC_FAILED_OPEN_WINDOW,
         SC_FAILED_CHOOSE,
         SC_FAILED_MOVE,
     }

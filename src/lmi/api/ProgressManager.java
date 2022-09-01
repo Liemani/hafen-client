@@ -14,18 +14,18 @@ public class ProgressManager {
     // setter
     public static void setWidget(haven.GameUI.Progress widget) { widget_ = widget; }
 
-    // public method
+    // package method
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_OPEN
-    public static StatusCode waitProgress() {
+    ///     - SC_FAILED_OPEN_PROGRESS
+    static StatusCode waitProgress() {
         {
             final StatusCode result =  waitProgressBeginning_();
             switch (result) {
                 case SC_SUCCEEDED: break;
                 case SC_INTERRUPTED: return SC_INTERRUPTED;
-                case SC_FAILED_OPEN: return SC_FAILED_OPEN;
+                case SC_FAILED_OPEN_PROGRESS: return SC_FAILED_OPEN_PROGRESS;
                 default:
                     new Exception().printStackTrace();
                     return SC_INTERRUPTED;
@@ -37,7 +37,7 @@ public class ProgressManager {
             switch (result) {
                 case SC_SUCCEEDED: continue;
                 case SC_INTERRUPTED: return SC_INTERRUPTED;
-                case SC_FAILED_OPEN: return SC_SUCCEEDED;
+                case SC_FAILED_OPEN_PROGRESS: return SC_SUCCEEDED;
                 default:
                     new Exception().printStackTrace();
                     return SC_INTERRUPTED;
@@ -53,14 +53,14 @@ public class ProgressManager {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_OPEN
+    ///     - SC_FAILED_OPEN_PROGRESS
     private static StatusCode waitProgressBeginning_() {
         if (isProgressing_()) return SC_SUCCEEDED;
         final StatusCode result = WaitManager.waitTimeOut(CC_PROGRESS_DID_BEGIN, TO_TEMPORARY);
         switch (result) {
             case SC_SUCCEEDED: return SC_SUCCEEDED;
             case SC_INTERRUPTED: return SC_INTERRUPTED;
-            case SC_TIME_OUT: return isProgressing_() ? SC_SUCCEEDED : SC_FAILED_OPEN;
+            case SC_TIME_OUT: return isProgressing_() ? SC_SUCCEEDED : SC_FAILED_OPEN_PROGRESS;
             default:
                 new Exception().printStackTrace();
                 return SC_INTERRUPTED;

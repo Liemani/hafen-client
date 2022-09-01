@@ -9,7 +9,14 @@ import static lmi.Constant.Command.*;
 import static lmi.Constant.Command.Custom.*;
 
 public class Delegate {
-    // custom command shadow
+    // widget
+    public static void newWidgetDidAdded(haven.Widget widget) {
+        // UI::addwidget()
+        if (widget.getClass() == haven.FlowerMenu.class)
+            WaitManager.notifyCommand(CC_FLOWER_MENU_DID_ADDED);
+        lmi.Debug.describeClassNameHashCodeWithTag("widget: ", widget);
+    }
+
     // flowerMenu
     public static void flowerMenuDidCreated(haven.FlowerMenu widget) {
         // FlowerMenu::$_::create()
@@ -24,6 +31,12 @@ public class Delegate {
     public static void flowerMenuDidChosen() {
         // FlowerMenu::Chosen::ntick()
         WaitManager.notifyCommand(C_CLOSE_FLOWER_MENU);
+    }
+
+    public static void flowerMenuDidDestroyed() {
+        // FlowerMenu::Chosen::ntick()
+        // FlowerMenu::Cancel::ntick()
+        FlowerMenuHandler.clearWidget();
     }
 
     // linMove
@@ -62,13 +75,6 @@ public class Delegate {
     public static void cursorDidChanged() {
         // Widget.uimsg()
         WaitManager.notifyCommand(C_CHANGE_CURSOR);
-    }
-
-    public static void newWidgetDidAdded(haven.Widget widget) {
-        // UI::addwidget()
-        if (widget.getClass() == haven.FlowerMenu.class)
-            WaitManager.notifyCommand(CC_FLOWER_MENU_DID_ADDED);
-        lmi.Debug.describeClassNameHashCodeWithTag("widget: ", widget);
     }
 
     public static void didGetACK(haven.RMessage message) {
