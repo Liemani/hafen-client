@@ -209,10 +209,13 @@ class Command {
 
     // test command
     static Void describeSelf() {
-        System.out.println(Self.hardHitPoint());
-        System.out.println(Self.softHitPoint());
-        System.out.println(Self.stamina());
-        System.out.println(Self.energy());
+        System.out.println("resource name: " + GobHandler.resourceName(Self.gob()));
+        System.out.println("Self.location(): " + Self.location());
+        System.out.println("Self.locationInCoord(): " + Self.locationInCoord());
+        System.out.println("Self.hardHitPoint(): " + Self.hardHitPoint());
+        System.out.println("Self.softHitPoint(): " + Self.softHitPoint());
+        System.out.println("Self.stamina(): " + Self.stamina());
+        System.out.println("Self.energy(): " + Self.energy());
         return null;
     }
 
@@ -356,11 +359,11 @@ class Command {
         return null;
     }
 
-    static Void investigateGobBoundingBoxWidth() {
-        haven.Gob closestGob = GobHandler.closestGob();
-        double start = 1024;
-        return null;
-    }
+//      static Void investigateGobBoundingBoxWidth() {
+//          haven.Gob closestGob = GobHandler.closestGob();
+//          double start = 1024;
+//          return null;
+//      }
 
     static haven.Gob storedGob_ = null;
     static Void storeClosestGob() {
@@ -369,7 +372,9 @@ class Command {
     }
 
     static Void describeStoredGob() {
-        System.out.println("[storedGob_.removed] " + storedGob_.removed);
+        Util.debugPrint(Command.class, "resource name: " + GobHandler.resourceName(storedGob_));
+        Util.debugPrint(Command.class, "removed: " + storedGob_.removed);
+        Util.debugPrint(Command.class, "location(storedGob_): " + GobHandler.location(storedGob_));
         return null;
     }
 
@@ -379,13 +384,6 @@ class Command {
             Util.debugPrint(Command.class, "no pose");
         for (String pose : poseArray)
             System.out.println("[pose name] " + pose);
-        return null;
-    }
-
-    static Void chopIntoBlocksClosestGob() {
-        haven.Gob closestGob = GobHandler.closestGob();
-
-        FlowerMenuHandler.choose(closestGob, Constant.MeshId.MI_DEFAULT, Constant.Interaction.CHOP_INTO_BLOCKS);
         return null;
     }
 

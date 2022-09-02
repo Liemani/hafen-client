@@ -3,8 +3,8 @@ package lmi.api;
 import lmi.*;
 import lmi.Constant.StatusCode;
 import static lmi.Constant.StatusCode.*;
-import lmi.Constant.Command;
-import static lmi.Constant.Command.Custom.*;
+import lmi.Constant.Action;
+import static lmi.Constant.Action.Custom.*;
 import static lmi.Constant.TimeOut.*;
 
 public class ProgressManager {
@@ -21,7 +21,7 @@ public class ProgressManager {
     ///     - SC_FAILED_OPEN_PROGRESS
     static StatusCode waitProgress() {
         {
-            final StatusCode result =  waitProgressBeginning_();
+            final StatusCode result =  waitProgressAdded_();
             switch (result) {
                 case SC_SUCCEEDED: break;
                 case SC_INTERRUPTED: return SC_INTERRUPTED;
@@ -32,8 +32,8 @@ public class ProgressManager {
             }
         }
         while (true) {
-            if (waitProgressEnding_() == SC_INTERRUPTED) return SC_INTERRUPTED;
-            final StatusCode result = waitProgressBeginning_();
+            if (waitProgressDestroyed() == SC_INTERRUPTED) return SC_INTERRUPTED;
+            final StatusCode result = waitProgressAdded_();
             switch (result) {
                 case SC_SUCCEEDED: continue;
                 case SC_INTERRUPTED: return SC_INTERRUPTED;
@@ -54,9 +54,9 @@ public class ProgressManager {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED_OPEN_PROGRESS
-    private static StatusCode waitProgressBeginning_() {
+    private static StatusCode waitProgressAdded_() {
         if (isProgressing_()) return SC_SUCCEEDED;
-        final StatusCode result = WaitManager.waitTimeOut(CC_PROGRESS_DID_BEGIN, TO_TEMPORARY);
+        final StatusCode result = WaitManager.waitTimeOut(AC_PROGRESS_DID_ADDED, TO_TEMPORARY);
         switch (result) {
             case SC_SUCCEEDED: return SC_SUCCEEDED;
             case SC_INTERRUPTED: return SC_INTERRUPTED;
@@ -70,10 +70,10 @@ public class ProgressManager {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static StatusCode waitProgressEnding_() {
+    private static StatusCode waitProgressDestroyed() {
         while (true) {
             if (!isProgressing_()) return SC_SUCCEEDED;
-            final StatusCode result = WaitManager.waitTimeOut(CC_PROGRESS_DID_END, TO_GENERAL);
+            final StatusCode result = WaitManager.waitTimeOut(AC_PROGRESS_DID_DESTROYED, TO_GENERAL);
             switch (result) {
                 case SC_SUCCEEDED: return SC_SUCCEEDED;
                 case SC_INTERRUPTED: return SC_INTERRUPTED;

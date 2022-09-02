@@ -122,4 +122,9 @@ public class GobHandler {
         Array<String> poseArray = GobHandler.poseArray(gob);
         return poseArray.containsWhere(pose -> pose.endsWith(poseName));
     }
+
+    // TODO implement this
+    public static boolean isFollowing(haven.Gob gob, haven.Gob target) {
+        return false;
+    }
 }

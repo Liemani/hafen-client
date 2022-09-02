@@ -195,7 +195,6 @@ public class Composite extends Drawable {
 	    List<ResData> poses = null, tposes = null;
 	    int pfl = msg.uint8();
 	    int pseq = msg.uint8();
-        lmi.Util.debugPrint(this.getClass(), "pfl: " + pfl);
 	    boolean interp = (pfl & 1) != 0;
 	    if((pfl & 2) != 0) {
 		poses = new LinkedList<ResData>();

@@ -108,8 +108,10 @@ public class Following extends Moving {
 		Indir<Resource> xfres = OCache.Delta.getres(g, msg.uint16());
 		String xfname = msg.string();
 		g.setattr(new Following(g, oid, xfres, xfname));
+        lmi.Delegate.followingDidAdded(g);
 	    } else {
 		g.delattr(Following.class);
+        lmi.Delegate.followingDidDeleted(g);
 	    }
 	}
     }
