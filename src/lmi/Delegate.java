@@ -42,24 +42,29 @@ public class Delegate {
     // linMove
     public static void linMoveDidAdded(haven.Gob gob) {
         // LinMove::$linbeg::apply()
-        notifyActionIfGobIsSelf_(gob, AC_MOVE_DID_BEGIN);
+        WaitManager.notifyAction(gob, AC_MOVE_DID_BEGIN);
     }
 
     public static void linMoveDidDeleted(haven.Gob gob) {
         // LinMove::$linstep::apply()
-        notifyActionIfGobIsSelf_(gob, AC_MOVE_DID_END);
+        WaitManager.notifyAction(gob, AC_MOVE_DID_END);
     }
 
     // following
     public static void followingDidAdded(haven.Gob gob) {
         // Following::$follow::apply()
-        // TODO implement this
+        final haven.Gob target = GobHandler.followingTarget(gob);
+        if (target != Self.gob()) return;
+
         WaitManager.notifyAction(gob, AC_DID_LIFT);
     }
 
     public static void followingDidDeleted(haven.Gob gob) {
         // Following::$follow::apply()
-        // TODO implement this
+        final haven.Gob target = GobHandler.followingTarget(gob);
+        if (target != Self.gob()) return;
+
+        WaitManager.notifyAction(gob, AC_DID_PUT);
     }
 
     // progress
@@ -94,11 +99,5 @@ public class Delegate {
         final String command = MessageHandler.getAction(message);
         Util.debugPrint(Delegate.class, "command: " + command);
         WaitManager.notifyAction(command);
-    }
-
-    // private method
-    private static void notifyActionIfGobIsSelf_(haven.Gob gob, Action.Custom customAction) {
-        if (gob == lmi.api.Self.gob())
-            WaitManager.notifyAction(gob, customAction);
     }
 }

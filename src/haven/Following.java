@@ -110,8 +110,8 @@ public class Following extends Moving {
 		g.setattr(new Following(g, oid, xfres, xfname));
         lmi.Delegate.followingDidAdded(g);
 	    } else {
-		g.delattr(Following.class);
         lmi.Delegate.followingDidDeleted(g);
+		g.delattr(Following.class);
 	    }
 	}
     }
