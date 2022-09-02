@@ -1,25 +1,15 @@
 // https://developer.apple.com/documentation/swift/array/
-// this class follow Swift::Array
+// this class mimic Swift::Array
 package lmi.collection;
 
 public class Array<Element> extends java.util.ArrayList<Element> {
     // constructor
-    public Array() {
-        super();
-    }
-
-    public Array(int capacity) {
-        super(capacity);
-    }
+    public Array() { super(); }
+    public Array(int capacity) { super(capacity); }
 
     // Inspecting and Array
-    public boolean isEmpty() {
-        return super.isEmpty();
-    }
-
-    public int count() {
-        return super.size();
-    }
+    public boolean isEmpty() { return super.isEmpty(); }
+    public int count() { return super.size(); }
 
     // Accessing Elements
     public Element subscript(int index) {
@@ -47,15 +37,11 @@ public class Array<Element> extends java.util.ArrayList<Element> {
     }
 
     // Adding Elements
-    public void append(Element element) {
-        super.add(element);
-    }
+    public void append(Element element) { super.add(element); }
 
     // Removing Elements
     // assume: the collection is not empty
-    public Element removeFirst() {
-        return remove(0);
-    }
+    public Element removeFirst() { return remove(0); }
 
     // Finding Elements
     public boolean containsWhere(java.util.function.Predicate<Element> predicate) {
@@ -66,11 +52,6 @@ public class Array<Element> extends java.util.ArrayList<Element> {
     }
 
     // assume: the collection is not empty
-    public Element removeLast() {
-        return remove(count() - 1);
-    }
-
-    public void removeAll() {
-        super.clear();
-    }
+    public Element removeLast() { return remove(count() - 1); }
+    public void removeAll() { super.clear(); }
 }

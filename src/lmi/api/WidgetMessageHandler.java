@@ -2,13 +2,33 @@ package lmi.api;
 
 import lmi.*;
 import lmi.Constant.*;
-import static lmi.Constant.Command.*;
+import static lmi.Constant.*;
 import static lmi.Constant.Input.Mouse.*;
 import static lmi.Constant.Input.Modifier.*;
 import static lmi.Constant.InteractionType.*;
+import static lmi.Constant.MeshId.*;
+import static lmi.Constant.Action.*;
 
 public class WidgetMessageHandler {
     // public method
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    public static StatusCode actionClick(haven.Gob gob) {
+        haven.Coord gobLocationInCoord = GobHandler.locationInCoord(gob);
+        return WidgetMessageHandler.sendObjectClickMessage(
+                ObjectShadow.mapView(),
+                Util.mapViewCenter(),
+                gobLocationInCoord,
+                IM_LEFT,
+                IM_NONE,
+                IT_DEFAULT,
+                GobHandler.id(gob),
+                gobLocationInCoord,
+                0,
+                MI_NONE);
+    }
+
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
@@ -58,7 +78,7 @@ public class WidgetMessageHandler {
             int modifiers) {
         return wdgmsg_(
                 widget,
-                Command.C_CLICK,
+                A_CLICK,
                 clickedMapViewPoint,
                 clickedMapPoint,
                 mouseButton,
@@ -81,7 +101,7 @@ public class WidgetMessageHandler {
             int meshId) {
         return wdgmsg_(
                 widget,
-                Command.C_CLICK,
+                A_CLICK,
                 clickedMapViewPoint,
                 clickedMapPoint,
                 mouseButton,
@@ -96,14 +116,14 @@ public class WidgetMessageHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    static StatusCode sendActMessage(haven.MenuGrid widget, String action) {
-        return wdgmsg_(widget, C_ACT, action, 0);
+    static StatusCode sendActionMessage(haven.MenuGrid widget, String action) {
+        return wdgmsg_(widget, A_ACT, action, 0);
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    static StatusCode sendCancelActMessage() {
+    static StatusCode sendCancelActionMessage() {
         return sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
@@ -118,7 +138,7 @@ public class WidgetMessageHandler {
     static StatusCode sendChoosePetalMessage(haven.FlowerMenu widget, int index) {
         return wdgmsg_(
                 widget,
-                Command.C_CLOSE_FLOWER_MENU,
+                A_CLOSE_FLOWER_MENU,
                 index,
                 0);
     }
@@ -129,7 +149,7 @@ public class WidgetMessageHandler {
     static StatusCode sendCloseFlowerMenuMessage(haven.FlowerMenu widget) {
         return wdgmsg_(
                 widget,
-                Command.C_CLOSE_FLOWER_MENU,
+                A_CLOSE_FLOWER_MENU,
                 -1);
     }
 
@@ -137,16 +157,16 @@ public class WidgetMessageHandler {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     static StatusCode sendSelectCharacterMessage(haven.Charlist widget, String name) {
-        return wdgmsg_(widget, Command.C_SELECT_CHARACTER, name);
+        return wdgmsg_(widget, A_SELECT_CHARACTER, name);
     }
 
     // private method
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static StatusCode wdgmsg_(haven.Widget widget, String command, Object... args) {
-        widget.wdgmsg(command, args);
-        return WaitManager.waitCommand(command);
+    private static StatusCode wdgmsg_(haven.Widget widget, String action, Object... args) {
+        widget.wdgmsg(action, args);
+        return WaitManager.waitAction(action);
     }
 
     // deprecated method
@@ -160,6 +180,6 @@ public class WidgetMessageHandler {
             IM_NONE};
         if(clickData != null)
             args = haven.Utils.extend(args, clickData.clickargs());
-        return wdgmsg_(widget, Command.C_CLICK, args);
+        return wdgmsg_(widget, A_CLICK, args);
     }
 }

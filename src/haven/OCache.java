@@ -345,6 +345,13 @@ public class OCache implements Iterable<Gob> {
 			    break;
 		    }
 		    synchronized(gob) {
+            if (
+                    d.type != 1
+                    && d.type != 3
+                    && d.type != 4
+                    && d.type != 10
+                    && d.type != 16
+                    && d.type != 18)
             lmi.Util.debugPrint(this.getClass(), "d.type: " + d.type);
 			deltas.get(d.type).apply(gob, d.clone());
 		    }

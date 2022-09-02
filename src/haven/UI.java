@@ -342,15 +342,17 @@ public class UI {
 	
     public void uimsg(int id, String msg, Object... args) {
 	Widget wdg = getwidget(id);
-    if (!msg.contentEquals("glut")
-            && !msg.contentEquals("msg")
-            && !msg.contentEquals("chres")
-            && !msg.contentEquals("tt")
-            && !msg.contentEquals("set")
-            && !msg.contentEquals("tip")
-            && !msg.contentEquals("auth")
-            && !msg.contentEquals("ppower")
-            && !msg.contentEquals("max")) {
+    if (
+            !msg.contentEquals("chres")
+            && !msg.contentEquals("glut")
+            && !msg.contentEquals("attr")
+//              && !msg.contentEquals("msg")
+//              && !msg.contentEquals("set")
+//              && !msg.contentEquals("tip")
+//              && !msg.contentEquals("auth")
+//              && !msg.contentEquals("ppower")
+//              && !msg.contentEquals("max")
+            && !msg.contentEquals("tt")) {
         lmi.Util.debugPrint(this.getClass(), "commannd: " + msg + ", widgetClass: " + wdg.getClass().getName() + ", args.length: " + args.length);
         for (Object object : args)
             lmi.Debug.describeField(object);
