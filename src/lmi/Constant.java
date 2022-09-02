@@ -1,31 +1,31 @@
 package lmi;
 
 public class Constant {
-    public static class Command {
-        public static final String C_ACT = "act";
-        public static final String C_LOGIN = "login";
-        public static final String C_FOCUS = "focus";
-        public static final String C_SELECT_CHARACTER = "play";   // args = { haven.widget <haven.Charlist>, String <character name> }
-        public static final String C_CLICK = "click";
-        public static final String C_CLOSE_FLOWER_MENU = "cl";
-        public static final String C_AFK = "afk";
-        public static final String C_CHANGE_CURSOR = "curs";
-        public static final String C_GET = "click";
-        public static final String C_PUT = "drop";
+    public static class Action {
+        public static final String A_ACT = "act";
+        public static final String A_LOGIN = "login";
+        public static final String A_FOCUS = "focus";
+        public static final String A_SELECT_CHARACTER = "play";   // args = { haven.widget <haven.Charlist>, String <character name> }
+        public static final String A_CLICK = "click";
+        public static final String A_CLOSE_FLOWER_MENU = "cl";
+        public static final String A_AFK = "afk";
+        public static final String A_CHANGE_CURSOR = "curs";
+        public static final String A_GET = "click";
+        public static final String A_PUT = "drop";
 
         public static enum Custom {
-            CC_NONE,
-            CC_SELF_MOVE_DID_BEGIN,
-            CC_SELF_MOVE_DID_END,
-            CC_PROGRESS_DID_BEGIN,
-            CC_PROGRESS_DID_END,
-            CC_FLOWER_MENU_DID_ADDED,
-            CC_PROGRESS_DID_DESTROYED,
-            CC_PROGRESS_DID_ADDED,
+            AC_NONE,
+            AC_MOVE_DID_BEGIN,
+            AC_MOVE_DID_END,
+            AC_DID_LIFT,
+            AC_DID_PUT,
+            AC_FLOWER_MENU_DID_ADDED,
+            AC_PROGRESS_DID_ADDED,
+            AC_PROGRESS_DID_DESTROYED,
         }
     }
 
-    public static class Action {
+    public static class SelfAction {
         public static final String A_POSE = "pose";
         public static final String A_DIG = "dig";
         public static final String A_MINE = "mine";
@@ -62,21 +62,15 @@ public class Constant {
     }
 
     public static class Gauge {
-        public static class ResourceName {
-            public static final String HIT_POINT = "gfx/hud/meter/hp";
-            public static final String STAMINA = "gfx/hud/meter/stam";
-            public static final String ENERGY = "gfx/hud/meter/nrj";
-        }
-
         public static class HitPointIndex {
-            public static final int HARD = 0;
-            public static final int SOFT = 1;
+            public static final int GI_HARD = 0;
+            public static final int GI_SOFT = 1;
         }
 
         public static class Index {
-            public static final int HIT_POINT = 0;
-            public static final int STAMINA = 1;
-            public static final int ENERGY = 2;
+            public static final int GI_HIT_POINT = 0;
+            public static final int GI_STAMINA = 1;
+            public static final int GI_ENERGY = 2;
         }
     }
 
@@ -128,6 +122,19 @@ public class Constant {
     }
 
     public static class gfx {
+        public static class hud {
+            public static class meter {
+                public static final String RN_HIT_POINT = "hp";
+                public static final String RN_STAMINA = "stam";
+                public static final String RN_ENERGY = "nrj";
+            }
+
+            public static class curs {
+                public static final String RN_ARROW = "arw";
+                public static final String RN_HAND = "hand";
+            }
+        }
+
         public static class borka {
             public static final String RN_BODY = "body";
             public static final String RN_IDLE = "idle";
@@ -277,5 +284,7 @@ public class Constant {
         SC_FAILED_OPEN_WINDOW,
         SC_FAILED_CHOOSE,
         SC_FAILED_MOVE,
+        SC_FAILED_LIFT,
+        SC_FAILED_PUT,
     }
 }

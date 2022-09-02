@@ -2,7 +2,7 @@ package lmi.api;
 
 import lmi.Constant.StatusCode;
 import static lmi.Constant.StatusCode.*;
-import static lmi.Constant.Command.Custom.*;
+import static lmi.Constant.Action.Custom.*;
 import static lmi.Constant.TimeOut.*;
 
 class MoveManager {
@@ -67,7 +67,7 @@ class MoveManager {
     ///     - SC_FAILED_MOVE
     StatusCode waitMoveBeginning() {
         if (isMoving_()) return SC_SUCCEEDED;
-        switch (WaitManager.waitTimeOut(CC_SELF_MOVE_DID_BEGIN, TO_TEMPORARY)) {
+        switch (WaitManager.waitTimeOut(gob_, AC_MOVE_DID_BEGIN, TO_TEMPORARY)) {
             case SC_SUCCEEDED: return SC_SUCCEEDED;
             case SC_INTERRUPTED: return SC_INTERRUPTED;
             case SC_TIME_OUT: return isMoving_() ? SC_SUCCEEDED : SC_FAILED_MOVE;
@@ -83,7 +83,7 @@ class MoveManager {
     StatusCode waitMoveEnding() {
         while (true) {
             if (!isMoving_()) return SC_SUCCEEDED;
-            switch (WaitManager.waitTimeOut(CC_SELF_MOVE_DID_END, TO_GENERAL)) {
+            switch (WaitManager.waitTimeOut(gob_, AC_MOVE_DID_END, TO_GENERAL)) {
                 case SC_SUCCEEDED: return SC_SUCCEEDED;
                 case SC_INTERRUPTED: return SC_INTERRUPTED;
                 case SC_TIME_OUT: break;

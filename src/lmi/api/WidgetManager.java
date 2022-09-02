@@ -13,4 +13,12 @@ public class WidgetManager {
 
         return null;
     }
+
+    public static haven.MenuGrid menuGrid() {
+        return ObjectShadow.gameUI().menu;
+    }
+
+    public static haven.Indir<haven.Resource> cursor() {
+        return ObjectShadow.rootWidget().cursor;
+    }
 }

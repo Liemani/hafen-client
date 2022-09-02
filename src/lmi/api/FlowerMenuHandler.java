@@ -2,9 +2,9 @@ package lmi.api;
 
 import lmi.*;
 import lmi.Constant.StatusCode;
-import lmi.Constant.Command;
+import lmi.Constant.Action;
 import static lmi.Constant.StatusCode.*;
-import static lmi.Constant.Command.Custom.*;
+import static lmi.Constant.Action.Custom.*;
 import static lmi.Constant.TimeOut.*;
 
 public class FlowerMenuHandler {
@@ -58,7 +58,7 @@ public class FlowerMenuHandler {
     ///     - SC_FAILED_OPEN_FLOWER_MENU
     private static StatusCode waitFlowerMenuOpening() {
         if (isAdded_()) return SC_SUCCEEDED;
-        switch (WaitManager.waitTimeOut(CC_FLOWER_MENU_DID_ADDED, TO_TEMPORARY)) {
+        switch (WaitManager.waitTimeOut(AC_FLOWER_MENU_DID_ADDED, TO_TEMPORARY)) {
             case SC_SUCCEEDED: return SC_SUCCEEDED;
             case SC_INTERRUPTED: return SC_INTERRUPTED;
             case SC_TIME_OUT: return isAdded_() ? SC_SUCCEEDED : SC_FAILED_OPEN_FLOWER_MENU;
@@ -67,7 +67,6 @@ public class FlowerMenuHandler {
                 return SC_INTERRUPTED;
         }
     }
-
 
     private static boolean isAdded_() {
         return widget_ != null;

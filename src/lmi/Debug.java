@@ -328,7 +328,7 @@ public class Debug {
             }
         }
 
-        printStream.println(description.toString());
+        printStream.println(description.toString() + "\n");
     }
 
     // descriptionField()

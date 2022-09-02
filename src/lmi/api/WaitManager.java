@@ -2,37 +2,74 @@ package lmi.api;
 
 import lmi.*;
 import lmi.Constant.StatusCode;
+import lmi.Constant.Action;
+
 import static lmi.Constant.StatusCode.*;
-import lmi.Constant.Command;
-import lmi.Constant.TimeOut;
-import static lmi.Constant.Command.Custom.*;
+import static lmi.Constant.Action.Custom.*;
 import static lmi.Constant.TimeOut.*;
 
 public class WaitManager {
     // property
-    private static Object monitor_ = new Object();
-    private static String command_ = null;
-    private static Command.Custom customCommand_ = CC_NONE;
+    private static Object subject_ = null;
+    private static String action_ = null;
+    private static Action.Custom customAction_ = AC_NONE;
+
+    // notify
+    public static void notifyAction(Object subject, String action) {
+        if (action_ == null || action == null) return;
+        if (!equals_(subject, action)) return;
+
+        notify_();
+        lmi.Util.debugPrint(WaitManager.class, "action: " + action);
+    }
+
+    public static void notifyAction(Object subject, Action.Custom customAction) {
+        if (!equals_(subject, customAction)) return;
+
+        notify_();
+        lmi.Util.debugPrint(WaitManager.class, "custom action: " + customAction);
+    }
+
+    public static void notifyAction(String action) {
+        notifyAction(null, action);
+    }
+
+    public static void notifyAction(Action.Custom customAction) {
+        notifyAction(null, customAction);
+    }
 
     // wait
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    ///     - SC_TIME_OUT
-    public static StatusCode waitTimeOut(String command, long timeOut) {
-        init_(command);
-        return waitTimeOut_(timeOut);
+    public static StatusCode waitAction(String action) {
+        action_ = action;
+        return wait_();
     }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_TIME_OUT
-    public static StatusCode waitTimeOut(Command.Custom customCommand, long timeOut) {
-        init_(customCommand);
+    public static StatusCode waitTimeOut(Object subject, String action, long timeOut) {
+        init_(subject, action);
         return waitTimeOut_(timeOut);
     }
 
+    public static StatusCode waitTimeOut(Object subject, Action.Custom customAction, long timeOut) {
+        init_(subject, customAction);
+        return waitTimeOut_(timeOut);
+    }
+
+    public static StatusCode waitTimeOut(String action, long timeOut) {
+        return waitTimeOut(null, action, timeOut);
+    }
+
+    public static StatusCode waitTimeOut(Action.Custom customAction, long timeOut) {
+        return waitTimeOut(null, customAction, timeOut);
+    }
+
+    // private methods
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
@@ -47,59 +84,35 @@ public class WaitManager {
             return SC_TIME_OUT;
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    public static StatusCode waitCommand(String command) {
-        init_(command);
-        return wait_();
+    private static void init_(Object subject, String action) {
+        subject_ = subject;
+        action_ = action;
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    public static StatusCode waitCommand(Command.Custom customCommand) {
-        init_(customCommand);
-        return wait_();
+    private static void init_(Object subject, Action.Custom customAction) {
+        subject_ = subject;
+        customAction_ = customAction;
     }
 
-    public static void notifyCommand(String command) {
-        if (command_ == null || command == null) return;
-
-        if (!commandEquals_(command)) return;
-        notify_();
-        lmi.Util.debugPrint(WaitManager.class, "command: " + command);
-    }
-
-    public static void notifyCommand(Command.Custom customCommand) {
-        if (!commandEquals_(customCommand)) return;
-        notify_();
-        lmi.Util.debugPrint(WaitManager.class, "custom command: " + customCommand);
-    }
-
-    // private methods
+    // clear
     private static void clear_() {
-        command_ = null;
-        customCommand_ = CC_NONE;
+        subject_ = null;
+        action_ = null;
+        customAction_ = AC_NONE;
     }
 
-    private static void init_(String command) {
-        clear_();
-        command_ = command;
+    // equal
+    private static boolean equals_(Object subject, String action) {
+        return subjectEquals_(subject) && actionEquals_(action);
     }
 
-    private static void init_(Command.Custom customCommand) {
-        clear_();
-        customCommand_ = customCommand;
+    private static boolean equals_(Object subject, Action.Custom customAction) {
+        return subjectEquals_(subject) && actionEquals_(customAction);
     }
 
-    private static boolean commandEquals_(String command) {
-        return command.contentEquals(command_);
-    }
-
-    private static boolean commandEquals_(Command.Custom customCommand) {
-        return customCommand == customCommand_;
-    }
+    private static boolean subjectEquals_(Object subject) { return subject == subject_; }
+    private static boolean actionEquals_(String action) { return action.contentEquals(action_); }
+    private static boolean actionEquals_(Action.Custom customAction) { return customAction == customAction_; }
 
     // wrap wait
     /// - Returns:
@@ -107,13 +120,15 @@ public class WaitManager {
     ///     - SC_INTERRUPTED
     private static StatusCode wait_(long timeOut) {
         try {
-            synchronized (monitor_) {
-                monitor_.wait(timeOut);
+            synchronized (WaitManager.class) {
+                WaitManager.class.wait(timeOut);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            clear_();
             return SC_INTERRUPTED;
         }
+        clear_();
         return SC_SUCCEEDED;
     }
 
@@ -124,8 +139,8 @@ public class WaitManager {
 
     // wrap notify
     private static void notify_() {
-        synchronized (monitor_) {
-            monitor_.notify();
+        synchronized (WaitManager.class) {
+            WaitManager.class.notify();
         }
     }
 }
