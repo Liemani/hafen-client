@@ -123,6 +123,25 @@ public class GobHandler {
         return poseArray.containsWhere(pose -> pose.endsWith(poseName));
     }
 
+    public static haven.Gob followingTarget(haven.Gob follower) {
+        final haven.GAttrib moving = GobHandler.attribute(follower, haven.Moving.class);
+        if (moving == null) return null;
+        if (!(moving instanceof haven.Following)) return null;
+
+        final haven.Following following = (haven.Following)moving;
+        final haven.Gob targetGob = following.tgt();
+        return targetGob;
+    }
+
+    public static boolean isGobFollowing(haven.Gob follower, haven.Gob target) {
+        return GobHandler.followingTarget(follower) == target;
+    }
+
+    public static boolean isGobLifting(haven.Gob follower, haven.Gob target) {
+        return isGobFollowing(target, follower);
+
+    }
+
     // TODO implement this
     public static boolean isFollowing(haven.Gob gob, haven.Gob target) {
         return false;
