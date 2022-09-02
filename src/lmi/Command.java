@@ -263,11 +263,12 @@ class Command {
         return null;
     }
 
-//      static Void liftClosestGob() {
-//          haven.Gob closestGob = GobHandler.closestGob();
-//          WidgetMessageHandler.lift(closestGob);
-//          return null;
-//      }
+    static Void liftClosestGob() {
+        haven.Gob closestGob = GobHandler.closestGob();
+        final StatusCode result = Self.lift(closestGob);
+        Util.debugPrint(Command.class, "result: " + result);
+        return null;
+    }
 
     static Void putNorthTile() {
         haven.Coord2d location = CoordinateHandler.northTile(Self.location());
@@ -395,29 +396,6 @@ class Command {
         Self.moveNorthTile();
         return null;
     }
-
-//      static Void test() {
-//          Array<String> array = new Array<String>();
-//  
-//          array.append("hi");
-//          array.append("there");
-//          array.append("nice");
-//          array.append("to");
-//          array.append("meet");
-//          array.append("you");
-//  
-//          if (array.contains("hello"))
-//              System.out.println("\"hello\" is contains in array");
-//          else
-//              System.out.println("\"hello\" is not contains in array");
-//  
-//          if (array.contains("meet"))
-//              System.out.println("\"meet\" is contains in array");
-//          else
-//              System.out.println("\"meet\" is not contains in array");
-//  
-//          return null;
-//      }
 
     static Void test() {
         if (GobHandler.hasPose(Self.gob(), RN_SAWING))

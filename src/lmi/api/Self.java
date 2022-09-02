@@ -97,16 +97,24 @@ public class Self {
     }
 
     // carry
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_FAILED_LIFT
     public static StatusCode lift(haven.Gob gob) {
         if (sendCarryMessage_() == SC_INTERRUPTED) return SC_INTERRUPTED;
         if (waitCursorChange_(RN_HAND) == SC_INTERRUPTED) return SC_INTERRUPTED;
         if (WidgetMessageHandler.actionClick(gob) == SC_INTERRUPTED) return SC_INTERRUPTED;
         new MoveManager(Self.gob()).waitMove();
-        return waitLift(gob);
+        return waitLift_(gob);
     }
 
-    // TODO implement this
-    public static StatusCode put(haven.Gob gob) {
+    public static StatusCode put(haven.Coord point) {
+//          if (sendCarryMessage_() == SC_INTERRUPTED) return SC_INTERRUPTED;
+//          if (waitCursorChange_(RN_HAND) == SC_INTERRUPTED) return SC_INTERRUPTED;
+//          if (WidgetMessageHandler.actionClick(gob) == SC_INTERRUPTED) return SC_INTERRUPTED;
+//          new MoveManager(Self.gob()).waitMove();
+//          return waitLift_(gob);
         return SC_SUCCEEDED;
     }
 
@@ -138,12 +146,12 @@ public class Self {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED_LIFT
-    private static StatusCode waitLift(haven.Gob gob) {
-        if (isLifting(gob)) return SC_SUCCEEDED;
+    private static StatusCode waitLift_(haven.Gob gob) {
+        if (isLifting_(gob)) return SC_SUCCEEDED;
         switch (WaitManager.waitTimeOut(gob, AC_DID_LIFT, TO_TEMPORARY)) {
             case SC_SUCCEEDED: return SC_SUCCEEDED;
             case SC_INTERRUPTED: return SC_INTERRUPTED;
-            case SC_TIME_OUT: return isLifting(gob) ? SC_SUCCEEDED : SC_FAILED_LIFT;
+            case SC_TIME_OUT: return isLifting_(gob) ? SC_SUCCEEDED : SC_FAILED_LIFT;
             default:
                 new Exception().printStackTrace();
                 return SC_INTERRUPTED;
@@ -154,24 +162,23 @@ public class Self {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED_PUT
-    private static StatusCode waitPut(haven.Gob gob) {
-        if (!isLifting(gob)) return SC_SUCCEEDED;
+    private static StatusCode waitPut_(haven.Gob gob) {
+        if (!isLifting_(gob)) return SC_SUCCEEDED;
         switch (WaitManager.waitTimeOut(gob, AC_DID_PUT, TO_TEMPORARY)) {
             case SC_SUCCEEDED: return SC_SUCCEEDED;
             case SC_INTERRUPTED: return SC_INTERRUPTED;
-            case SC_TIME_OUT: return !isLifting(gob) ? SC_SUCCEEDED : SC_FAILED_PUT;
+            case SC_TIME_OUT: return !isLifting_(gob) ? SC_SUCCEEDED : SC_FAILED_PUT;
             default:
                 new Exception().printStackTrace();
                 return SC_INTERRUPTED;
         }
     }
 
-    private static boolean isLifting(haven.Gob gob) {
-        return GobHandler.isFollowing(gob, Self.gob());
+    private static boolean isLifting_(haven.Gob gob) {
+        return GobHandler.isGobLifting(Self.gob(), gob);
     }
 
     // TODO
-    //  GobHandler.isLifting(haven.Gob gob);
     //  Delegate.didLift();
     //  Delegate.didPut();
     //  Delegate.didCursorChanged();

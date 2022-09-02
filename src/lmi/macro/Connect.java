@@ -12,7 +12,7 @@ public class Connect implements Runnable {
     }
 
     public void main() throws InterruptedException {
-        String characterName = "Liemani";
+        String characterName = "Riedar";
 
         haven.Coord logInButtonLocation = centerOfLogInButton();
         lmi.api.AWTEventGenerator.generateMouseClickGeneral(logInButtonLocation, java.awt.event.MouseEvent.BUTTON1);
