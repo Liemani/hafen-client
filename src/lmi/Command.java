@@ -412,11 +412,11 @@ class Command {
         Self.move(standardPoint.add(0, 2048));
         Self.put(standardPoint);
 
-        final int start = 1024 / 11 * 3 + 100;
+        final int start = 1024 / 8 * 3 + 1;
         int variant = start;
         while (true) {
             final haven.Coord variantPoint = standardPoint.add(variant, 0);
-            if (carry(variantGob, variantPoint) != SC_SUCCEEDED) break;
+            if (carryWidth_(variantGob, variantPoint) != SC_SUCCEEDED) break;
             System.out.println("succeeded coord: " + variantPoint);
             --variant;
         }
@@ -426,9 +426,40 @@ class Command {
         return null;
     }
 
-    private static StatusCode carry(haven.Gob gob, haven.Coord putPoint) {
+    private static StatusCode carryWidth_(haven.Gob gob, haven.Coord putPoint) {
         Self.lift(gob);
         Self.move(putPoint.add(0, 2048));
+        return Self.put(putPoint);
+    }
+
+    static Void investigateGobBoundingBoxHeight() {
+        System.out.println("click gob of standard!");
+        haven.Gob standardGob = ClickManager.getGob();
+
+        System.out.println("click next gob to move!");
+        haven.Gob variantGob = ClickManager.getGob();
+
+        haven.Coord standardPoint = CoordinateHandler.tileCenter(Self.locationInCoord());
+        Self.lift(standardGob);
+        Self.move(standardPoint.add(0, 2048));
+        Self.put(standardPoint);
+
+        final int start = 1024 / 8 * 13;
+        int variant = start;
+        while (true) {
+            final haven.Coord variantPoint = standardPoint.add(0, variant);
+            if (carryHeight_(variantGob, variantPoint) != SC_SUCCEEDED) break;
+            System.out.println("succeeded coord: " + variantPoint);
+            --variant;
+        }
+
+        System.out.println("failed variant is " + variant);
+
+        return null;
+    }
+
+    private static StatusCode carryHeight_(haven.Gob gob, haven.Coord putPoint) {
+        Self.lift(gob);
         return Self.put(putPoint);
     }
 }
