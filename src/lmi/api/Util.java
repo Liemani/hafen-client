@@ -10,7 +10,6 @@ public class Util {
     // TODO 화면 사이즈가 바뀌면 이 값도 바꿔주도록 하자
     // 아마 frame에 sizeChanged() 같은 event가 있을 것 같다
     private static haven.Coord mapViewCenter_;
-    static haven.ClickData clickData_;
 
     public static haven.Coord mapViewCenter() {
         return Util.mapViewCenter_;
@@ -19,30 +18,6 @@ public class Util {
     public static void initMapViewCenterByMapView(haven.MapView mapView) {
         mapViewCenter_ = mapView.sz.div(2);
     }
-
-    public static void storeClickedData(haven.ClickData clickData) {
-        clickData_ = clickData;
-    }
-
-    public static haven.ClickData clickData() { return clickData_; }
-
-    public static haven.Gob clickedGob() {
-        return gobFromClickData(clickData());
-    }
-
-    public static haven.Gob gobFromClickData(haven.ClickData clickData) {
-        if (clickData == null)
-            return null;
-
-        final haven.Clickable clickable = clickData.ci;
-        if (clickable.getClass() != haven.Gob.GobClick.class)
-            return null;
-
-        final haven.Gob.GobClick gobClick = (haven.Gob.GobClick)clickable;
-        return gobClick.gob;
-    }
-
-    public static void describeClickedGob() { lmi.Debug.describeField(clickedGob()); }
 
     // TODO re-implement
     public static void waitHourGlassFailable() throws InterruptedException {

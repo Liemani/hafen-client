@@ -54,11 +54,6 @@ class Command {
         return null;
     }
 
-    static Void macroDescribeClickedGob() {
-        lmi.api.Util.describeClickedGob();
-        return null;
-    }
-
     // etc command
     static Void recordMouseLocation() {
         AWTEventGenerator.setMouseLocation(ObjectShadow.ui().mc.x, ObjectShadow.ui().mc.y);
@@ -109,12 +104,6 @@ class Command {
     static Void objectInitWithRootWidget() {
         ObjectFinder.init();
         ObjectFinder.moveForward(ObjectShadow.rootWidget());
-        return null;
-    }
-
-    static Void objectInitByClickedGob() {
-        ObjectFinder.init();
-        ObjectFinder.moveForward(lmi.api.Util.clickedGob());
         return null;
     }
 
@@ -392,6 +381,17 @@ class Command {
         return null;
     }
 
+    static Void test2() {
+        System.out.println("click gob to inspect!");
+        haven.Gob gob = ClickManager.getGob();
+        Util.debugPrint(Command.class, "resource name: " + GobHandler.resourceName(gob));
+
+        System.out.println("click gob to inspect!");
+        gob = ClickManager.getGob();
+        Util.debugPrint(Command.class, "resource name: " + GobHandler.resourceName(gob));
+        return null;
+    }
+
     static Void test() {
         haven.Coord northTile = CoordinateHandler.northTile(Self.locationInCoord());
 
@@ -400,9 +400,35 @@ class Command {
         return null;
     }
 
-//      static Void investigateGobBoundingBoxWidth() {
-//          haven.Gob closestGob = GobHandler.closestGob();
-//          double start = 1024;
-//          return null;
-//      }
+    static Void investigateGobBoundingBoxWidth() {
+        System.out.println("click gob of standard!");
+        haven.Gob standardGob = ClickManager.getGob();
+
+        System.out.println("click next gob to move!");
+        haven.Gob variantGob = ClickManager.getGob();
+
+        haven.Coord standardPoint = CoordinateHandler.tileCenter(Self.locationInCoord());
+        Self.lift(standardGob);
+        Self.move(standardPoint.add(0, 2048));
+        Self.put(standardPoint);
+
+        final int start = 1024 / 11 * 3 + 100;
+        int variant = start;
+        while (true) {
+            final haven.Coord variantPoint = standardPoint.add(variant, 0);
+            if (carry(variantGob, variantPoint) != SC_SUCCEEDED) break;
+            System.out.println("succeeded coord: " + variantPoint);
+            --variant;
+        }
+
+        System.out.println("failed variant is " + variant);
+
+        return null;
+    }
+
+    private static StatusCode carry(haven.Gob gob, haven.Coord putPoint) {
+        Self.lift(gob);
+        Self.move(putPoint.add(0, 2048));
+        return Self.put(putPoint);
+    }
 }

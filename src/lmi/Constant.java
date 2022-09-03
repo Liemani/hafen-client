@@ -22,6 +22,7 @@ public class Constant {
             AC_FLOWER_MENU_DID_ADDED,
             AC_PROGRESS_DID_ADDED,
             AC_PROGRESS_DID_DESTROYED,
+            AC_DID_OBJECT_CLICK,
         }
     }
 
@@ -287,5 +288,6 @@ public class Constant {
         SC_FAILED_MOVE,
         SC_FAILED_LIFT,
         SC_FAILED_PUT,
+        SC_FAILED_GET_GOB,
     }
 }
