@@ -15,6 +15,7 @@ import lmi.Constant.StatusCode;
 import static lmi.Constant.StatusCode.*;
 import static lmi.Constant.MeshId.*;
 import static lmi.Constant.gfx.borka.*;
+import static lmi.Constant.BoundingBox.*;
 
 class Command {
     // type define
@@ -216,8 +217,33 @@ class Command {
         return null;
     }
 
-    static Void moveNorthTile() {
+    static Void w() {
         Self.moveNorthTile();
+        return null;
+    }
+
+    static Void a() {
+        Self.moveWestTile();
+        return null;
+    }
+
+    static Void s() {
+        Self.moveSouthTile();
+        return null;
+    }
+
+    static Void s1() {
+        while (true) {
+            haven.Coord destination = Self.locationInCoord().add(0, 1);
+            if (Self.move(destination) != SC_SUCCEEDED) break;
+            haven.Coord currentLocation = Self.locationInCoord();
+            System.out.println("current location: " + currentLocation);
+        }
+        return null;
+    }
+
+    static Void d() {
+        Self.moveEastTile();
         return null;
     }
 
@@ -461,5 +487,72 @@ class Command {
     private static StatusCode carryHeight_(haven.Gob gob, haven.Coord putPoint) {
         Self.lift(gob);
         return Self.put(putPoint);
+    }
+
+    static Void investigateSelfBoundingBoxWidthOnce() {
+        System.out.println("click gob of standard!");
+        haven.Gob standardGob = ClickManager.getGob();
+
+        String variantString = lmi.Scanner.nextLineWithPrompt("enter variant");
+        final int variant = Util.stoi(variantString);
+
+
+        if (checkSelfVariantWidth(standardGob, variant) == SC_SUCCEEDED)
+            System.out.println("succeeded");
+        else
+            System.out.println("failed");
+
+        return null;
+    }
+
+    static Void investigateSelfBoundingBoxWidth() {
+        System.out.println("click gob of standard!");
+        haven.Gob standardGob = ClickManager.getGob();
+
+        final int start = 512;
+        int variant = start;
+        while (true) {
+            if (checkSelfVariantWidth(standardGob, variant) != SC_SUCCEEDED) break;
+            variant -= 1;
+        }
+
+        System.out.println("failed variant is " + variant);
+
+        return null;
+    }
+
+    private static StatusCode checkSelfVariantWidth(haven.Gob standardGob, int variant) {
+        final haven.Coord variantPoint = GobHandler.locationInCoord(standardGob).add(variant, 0);
+        haven.Coord firstStep = CoordinateHandler.northTile(variantPoint);
+
+        Self.move(firstStep);
+        final StatusCode result = Self.move(variantPoint);
+        if (result != SC_SUCCEEDED) return result;
+
+        final double distance = GobHandler.distance(standardGob, Self.gob());
+        System.out.println("succeeded coord: " + variantPoint + ", distance: " + distance);
+
+        return SC_SUCCEEDED;
+    }
+
+    static Void test3() {
+        final haven.Coord locationInCoord = Self.locationInCoord();
+        final haven.Coord centerPosition = CoordinateHandler.tileCenter(locationInCoord);
+
+        System.out.println("첫 번째 로그를 선택해주세요");
+        haven.Gob firstLog = ClickManager.getGob();
+
+        System.out.println("두 번째 로그를 선택해주세요");
+        haven.Gob secondLog = ClickManager.getGob();
+
+        Self.lift(firstLog);
+        Self.move(centerPosition.add(- BW_LOG / 2 - BW_BODY / 2, (BH_LOG + BH_BODY) / 2));
+        Self.put(centerPosition.add(- BW_LOG / 2 - BW_BODY / 2, 0));
+
+        Self.lift(secondLog);
+        Self.move(centerPosition.add(BW_LOG / 2 + BW_BODY / 2, (BH_LOG + BH_BODY) / 2));
+        Self.put(centerPosition.add(BW_LOG / 2 + BW_BODY / 2, 0));
+
+        return null;
     }
 }

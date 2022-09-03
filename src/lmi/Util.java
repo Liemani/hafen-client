@@ -156,4 +156,8 @@ public class Util {
     public static void debugPrint(Class classObject) {
         System.out.println("[" + classObject.getName() + "::" + currentMethod() + "()]");
     }
+
+    public static int stoi(String string) {
+        return Integer.parseInt(string);
+    }
 }
