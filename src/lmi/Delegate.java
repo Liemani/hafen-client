@@ -7,6 +7,7 @@ import lmi.collection.Array;
 // constant
 import static lmi.Constant.Action.*;
 import static lmi.Constant.Action.Custom.*;
+import static lmi.Constant.Input.Mouse.*;
 
 // resource
 import static lmi.Constant.gfx.borka.*;
@@ -92,6 +93,18 @@ public class Delegate {
             System.out.println("  " + pose);
         if (GobHandler.hasPose(gob, RN_IDLE))
             WaitManager.notifyAction(gob, AC_DID_PUT);
+    }
+
+    public static boolean objectDidClicked(int mouseButton, haven.ClickData clickData) {
+        // MapView::Click::hit()
+        if (mouseButton != IM_LEFT) return false;
+        if (clickData == null) return false;
+        if (!ClickManager.isWatingInput()) return false;
+
+        ClickManager.setClickData(clickData);
+        WaitManager.notifyAction(AC_DID_OBJECT_CLICK);
+        return true;
+
     }
 
     public static void cursorDidChanged() {

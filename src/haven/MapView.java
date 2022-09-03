@@ -1936,8 +1936,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	}
 	
 	protected void hit(Coord pc, Coord2d mc, ClickData inf) {
-        if (inf != null)
-            lmi.api.Util.storeClickedData(inf);
+        if (lmi.Delegate.objectDidClicked(clickb, inf)) return;
 	    Object[] args = {pc, mc.floor(posres), clickb, ui.modflags()};
 	    if(inf != null)
 		args = Utils.extend(args, inf.clickargs());
