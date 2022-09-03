@@ -16,17 +16,21 @@ public class WaitManager {
 
     // notify
     public static void notifyAction(Object subject, String action) {
-        if (action_ == null || action == null) return;
-        if (!equals_(subject, action)) return;
+        synchronized (WaitManager.class) {
+            if (action_ == null || action == null) return;
+            if (!equals_(subject, action)) return;
 
-        notify_();
+            notify_();
+        }
         lmi.Util.debugPrint(WaitManager.class, "action: " + action);
     }
 
     public static void notifyAction(Object subject, Action.Custom customAction) {
-        if (!equals_(subject, customAction)) return;
+        synchronized (WaitManager.class) {
+            if (!equals_(subject, customAction)) return;
 
-        notify_();
+            notify_();
+        }
         lmi.Util.debugPrint(WaitManager.class, "custom action: " + customAction);
     }
 
@@ -44,6 +48,11 @@ public class WaitManager {
     ///     - SC_INTERRUPTED
     public static StatusCode waitAction(String action) {
         action_ = action;
+        return wait_();
+    }
+
+    public static StatusCode waitAction(Action.Custom customAction) {
+        customAction_ = customAction;
         return wait_();
     }
 
@@ -119,16 +128,16 @@ public class WaitManager {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     private static StatusCode wait_(long timeOut) {
-        try {
-            synchronized (WaitManager.class) {
+        synchronized (WaitManager.class) {
+            try {
                 WaitManager.class.wait(timeOut);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                clear_();
+                return SC_INTERRUPTED;
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
             clear_();
-            return SC_INTERRUPTED;
         }
-        clear_();
         return SC_SUCCEEDED;
     }
 
@@ -139,8 +148,6 @@ public class WaitManager {
 
     // wrap notify
     private static void notify_() {
-        synchronized (WaitManager.class) {
-            WaitManager.class.notify();
-        }
+        WaitManager.class.notify();
     }
 }
