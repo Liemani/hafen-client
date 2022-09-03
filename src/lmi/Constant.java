@@ -145,7 +145,8 @@ public class Constant {
             public static final String RN_SAWING = "sawing";
             public static final String RN_BUILDAN = "buildan";
             public static final String RN_THINKAN = "thinkan";
-//              treepickan
+            public static final String RN_BANZAI = "banzai";
+            public static final String RN_TREEPICKAN = "treepickan";
         }
 
         public static class terobjs {

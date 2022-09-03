@@ -360,12 +360,6 @@ class Command {
         return null;
     }
 
-//      static Void investigateGobBoundingBoxWidth() {
-//          haven.Gob closestGob = GobHandler.closestGob();
-//          double start = 1024;
-//          return null;
-//      }
-
     static haven.Gob storedGob_ = null;
     static Void storeClosestGob() {
         storedGob_ = GobHandler.closestGob();
@@ -375,7 +369,8 @@ class Command {
     static Void describeStoredGob() {
         Util.debugPrint(Command.class, "resource name: " + GobHandler.resourceName(storedGob_));
         Util.debugPrint(Command.class, "removed: " + storedGob_.removed);
-        Util.debugPrint(Command.class, "location(storedGob_): " + GobHandler.location(storedGob_));
+        Util.debugPrint(Command.class, "location: " + GobHandler.location(storedGob_));
+        Util.debugPrint(Command.class, "location in coord: " + GobHandler.locationInCoord(storedGob_));
         return null;
     }
 
@@ -398,14 +393,16 @@ class Command {
     }
 
     static Void test() {
-        if (GobHandler.hasPose(Self.gob(), RN_SAWING))
-            System.out.println("Self.gob has pose RN_SAWING");
-        else
-            System.out.println("Self.gob has not pose RN_SAWING");
-        if (GobHandler.hasPose(Self.gob(), RN_THINKAN))
-            System.out.println("Self.gob has pose RN_THINKAN");
-        else
-            System.out.println("Self.gob has not pose RN_THINKAN");
+        haven.Coord northTile = CoordinateHandler.northTile(Self.locationInCoord());
+
+        Self.lift(storedGob_);
+        Self.put(northTile);
         return null;
     }
+
+//      static Void investigateGobBoundingBoxWidth() {
+//          haven.Gob closestGob = GobHandler.closestGob();
+//          double start = 1024;
+//          return null;
+//      }
 }

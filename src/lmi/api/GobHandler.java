@@ -38,7 +38,7 @@ public class GobHandler {
     }
 
     // attribute
-    public static haven.GAttrib attribute(haven.Gob gob, Class<? extends haven.GAttrib> attributeClass) {
+    public static <C extends haven.GAttrib> C attribute(haven.Gob gob, Class<C> attributeClass) {
         if (gob == null)
             return null;
         return gob.getattr(attributeClass);
@@ -106,13 +106,9 @@ public class GobHandler {
         return CoordinateHandler.equals(gobLocation, point);
     }
 
-    // etc
-    public static int id(haven.Gob gob) {
-        return (int)gob.id;
-    }
-
+    // pose
     public static Array<String> poseArray(haven.Gob gob) {
-        haven.Composite composite = gob.getattr(haven.Composite.class);
+        final haven.Composite composite = gob.getattr(haven.Composite.class);
         if (composite == null)
             return null;
         return composite.poseArray();
@@ -123,8 +119,13 @@ public class GobHandler {
         return poseArray.containsWhere(pose -> pose.endsWith(poseName));
     }
 
+    // etc
+    public static int id(haven.Gob gob) {
+        return (int)gob.id;
+    }
+
     public static haven.Gob followingTarget(haven.Gob follower) {
-        final haven.GAttrib moving = GobHandler.attribute(follower, haven.Moving.class);
+        final haven.Moving moving = GobHandler.attribute(follower, haven.Moving.class);
         if (moving == null) return null;
         if (!(moving instanceof haven.Following)) return null;
 

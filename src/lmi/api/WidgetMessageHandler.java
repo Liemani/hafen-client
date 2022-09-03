@@ -16,7 +16,7 @@ public class WidgetMessageHandler {
     ///     - SC_INTERRUPTED
     public static StatusCode actionClick(haven.Gob gob) {
         haven.Coord gobLocationInCoord = GobHandler.locationInCoord(gob);
-        return WidgetMessageHandler.sendObjectClickMessage(
+        return WidgetMessageHandler.sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 gobLocationInCoord,
@@ -34,7 +34,7 @@ public class WidgetMessageHandler {
     ///     - SC_INTERRUPTED
     public static StatusCode interact(haven.Gob gob, int meshId) {
         haven.Coord gobLocationInCoord = GobHandler.locationInCoord(gob);
-        return sendObjectClickMessage(
+        return sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 gobLocationInCoord,
@@ -88,7 +88,7 @@ public class WidgetMessageHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    static StatusCode sendObjectClickMessage(
+    static StatusCode sendClickMessage(
             haven.MapView widget,
             haven.Coord clickedMapViewPoint,
             haven.Coord clickedMapPoint,
