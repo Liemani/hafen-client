@@ -7,7 +7,6 @@ import lmi.Constant.*;
 import lmi.Constant.StatusCode;
 import lmi.Constant.Action;
 
-import static lmi.Constant.gfx.hud.curs.*;
 import static lmi.Constant.StatusCode.*;
 import static lmi.Constant.Action.*;
 import static lmi.Constant.Action.Custom.*;
@@ -19,6 +18,10 @@ import static lmi.Constant.MeshId.*;
 import static lmi.Constant.TimeOut.*;
 import static lmi.Constant.Gauge.Index.*;
 import static lmi.Constant.Gauge.HitPointIndex.*;
+
+// resource
+import static lmi.Constant.gfx.borka.*;
+import static lmi.Constant.gfx.hud.curs.*;
 
 public class Self {
     // access properties
@@ -61,6 +64,8 @@ public class Self {
             .get(0)
             .a;
     }
+
+    public static boolean hasPose(String pose) { return GobHandler.hasPose(Self.gob(), pose); }
 
     // move
     /// - Returns:
@@ -109,13 +114,20 @@ public class Self {
         return waitLift_(gob);
     }
 
+    public static StatusCode put(haven.Coord2d point) {
+        if (put_(point) == SC_INTERRUPTED) return SC_INTERRUPTED;
+        new MoveManager(Self.gob()).waitMove();
+        return waitPut_();
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_FAILED_PUT
     public static StatusCode put(haven.Coord point) {
-//          if (sendCarryMessage_() == SC_INTERRUPTED) return SC_INTERRUPTED;
-//          if (waitCursorChange_(RN_HAND) == SC_INTERRUPTED) return SC_INTERRUPTED;
-//          if (WidgetMessageHandler.actionClick(gob) == SC_INTERRUPTED) return SC_INTERRUPTED;
-//          new MoveManager(Self.gob()).waitMove();
-//          return waitLift_(gob);
-        return SC_SUCCEEDED;
+        if (put_(point) == SC_INTERRUPTED) return SC_INTERRUPTED;
+        new MoveManager(Self.gob()).waitMove();
+        return waitPut_();
     }
 
     /// - Returns:
@@ -162,21 +174,20 @@ public class Self {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED_PUT
-    private static StatusCode waitPut_(haven.Gob gob) {
-        if (!isLifting_(gob)) return SC_SUCCEEDED;
-        switch (WaitManager.waitTimeOut(gob, AC_DID_PUT, TO_TEMPORARY)) {
+    private static StatusCode waitPut_() {
+        if (!isLifting_()) return SC_SUCCEEDED;
+        switch (WaitManager.waitTimeOut(Self.gob(), AC_DID_PUT, TO_TEMPORARY)) {
             case SC_SUCCEEDED: return SC_SUCCEEDED;
             case SC_INTERRUPTED: return SC_INTERRUPTED;
-            case SC_TIME_OUT: return !isLifting_(gob) ? SC_SUCCEEDED : SC_FAILED_PUT;
+            case SC_TIME_OUT: return !isLifting_() ? SC_SUCCEEDED : SC_FAILED_PUT;
             default:
                 new Exception().printStackTrace();
                 return SC_INTERRUPTED;
         }
     }
 
-    private static boolean isLifting_(haven.Gob gob) {
-        return GobHandler.isGobLifting(Self.gob(), gob);
-    }
+    private static boolean isLifting_() { return Self.hasPose(RN_BANZAI); }
+    private static boolean isLifting_(haven.Gob gob) { return GobHandler.isGobLifting(Self.gob(), gob); }
 
     // TODO
     //  Delegate.didLift();
@@ -292,6 +303,21 @@ public class Self {
     ///     - SC_INTERRUPTED
     private static StatusCode sendActionMessage_(String action) {
         return WidgetMessageHandler.sendActionMessage(WidgetManager.menuGrid(), action);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static StatusCode put_(haven.Coord2d point) {
+        haven.Coord pointInCoord = CoordinateHandler.convertCoord2dToCoord(point);
+        return WidgetMessageHandler.put(pointInCoord);
+    }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    private static StatusCode put_(haven.Coord point) {
+        return WidgetMessageHandler.put(point);
     }
 
     /// - Returns:

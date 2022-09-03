@@ -8,6 +8,9 @@ import lmi.collection.Array;
 import static lmi.Constant.Action.*;
 import static lmi.Constant.Action.Custom.*;
 
+// resource
+import static lmi.Constant.gfx.borka.*;
+
 public class Delegate {
     // widget
     public static void newWidgetDidAdded(haven.Widget widget) {
@@ -87,6 +90,8 @@ public class Delegate {
         Util.debugPrint(Delegate.class, "gob: " + gob);
         for (String pose : poseArray)
             System.out.println("  " + pose);
+        if (GobHandler.hasPose(gob, RN_IDLE))
+            WaitManager.notifyAction(gob, AC_DID_PUT);
     }
 
     public static void cursorDidChanged() {
