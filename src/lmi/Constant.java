@@ -117,6 +117,8 @@ public class Constant {
     public static class BoundingBox {
         public static final int BW_LOG = 352;
         public static final int BH_LOG = 1656;
+        public static final int BW_BODY = 512;
+        public static final int BH_BODY = 512;
     }
 
     public static class gfx {

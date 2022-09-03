@@ -20,12 +20,23 @@ public class ClickManager {
         if (WaitManager.waitAction(AC_DID_OBJECT_CLICK) == SC_INTERRUPTED) return null;
 
         final haven.Clickable clickable = clickData_.ci;
-        if (clickable.getClass() != haven.Gob.GobClick.class) return null;
-        final haven.Gob.GobClick gobClick = (haven.Gob.GobClick)clickable;
-        final haven.Gob clickedGob = gobClick.gob;
+        if (clickable.getClass() == haven.Gob.GobClick.class) {
+            final haven.Gob.GobClick gobClick = (haven.Gob.GobClick)clickable;
+            final haven.Gob clickedGob = gobClick.gob;
 
-        clear_();
+            clear_();
 
-        return clickedGob;
+            return clickedGob;
+        } else if (clickable.getClass() == haven.Composited.CompositeClick.class) {
+            final haven.Composited.CompositeClick compositeClick = (haven.Composited.CompositeClick)clickable;
+            final haven.Gob.GobClick gobClick = compositeClick.gi;
+            final haven.Gob clickedGob = gobClick.gob;
+
+            clear_();
+
+            return clickedGob;
+        }
+
+        return null;
     }
 }
