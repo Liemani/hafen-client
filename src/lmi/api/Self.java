@@ -108,7 +108,11 @@ public class Self {
     ///     - SC_FAILED_LIFT
     public static StatusCode lift(haven.Gob gob) {
         if (sendCarryMessage_() == SC_INTERRUPTED) return SC_INTERRUPTED;
-        if (waitCursorChange_(RN_HAND) == SC_INTERRUPTED) return SC_INTERRUPTED;
+//          if (waitCursorChange_(RN_HAND) == SC_INTERRUPTED) return SC_INTERRUPTED;
+        final StatusCode result = waitCursorChange_(RN_HAND);
+        lmi.Util.debugPrint(Self.class, "result: " + result);
+        if (result == SC_INTERRUPTED) return SC_INTERRUPTED;
+
         if (WidgetMessageHandler.actionClick(gob) == SC_INTERRUPTED) return SC_INTERRUPTED;
         new MoveManager(Self.gob()).waitMove();
         return waitLift_(gob);
@@ -151,7 +155,7 @@ public class Self {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     private static boolean isCursorChanged_(String cursor) {
-        return WidgetManager.cursor().get().name.equals(cursor);
+        return WidgetManager.cursor().get().name.endsWith(cursor);
     }
 
     /// - Returns:
@@ -188,11 +192,6 @@ public class Self {
 
     private static boolean isLifting_() { return Self.hasPose(RN_BANZAI); }
     private static boolean isLifting_(haven.Gob gob) { return GobHandler.isGobLifting(Self.gob(), gob); }
-
-    // TODO
-    //  Delegate.didLift();
-    //  Delegate.didPut();
-    //  Delegate.didCursorChanged();
 
     /// - Returns:
     ///     - SC_SUCCEEDED

@@ -17,7 +17,6 @@ public class WaitManager {
     // notify
     public static void notifyAction(Object subject, String action) {
         synchronized (WaitManager.class) {
-            if (action_ == null || action == null) return;
             if (!equals_(subject, action)) return;
 
             notify_();
@@ -87,7 +86,7 @@ public class WaitManager {
         final long startTime = System.currentTimeMillis();
         if (wait_(timeOut) == SC_INTERRUPTED) return SC_INTERRUPTED;
         final long endTime = System.currentTimeMillis();
-        if (startTime + timeOut >= endTime)
+        if (startTime + timeOut > endTime)
             return SC_SUCCEEDED;
         else
             return SC_TIME_OUT;
@@ -120,7 +119,12 @@ public class WaitManager {
     }
 
     private static boolean subjectEquals_(Object subject) { return subject == subject_; }
-    private static boolean actionEquals_(String action) { return action.contentEquals(action_); }
+
+    private static boolean actionEquals_(String action) {
+        if (action_ == null) return false;
+        return action.contentEquals(action_);
+    }
+
     private static boolean actionEquals_(Action.Custom customAction) { return customAction == customAction_; }
 
     // wrap wait
