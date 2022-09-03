@@ -114,12 +114,9 @@ public class Constant {
         public static final int MI_DEFAULT = 0;
     }
 
-    public static class HitBoxSize {
-        public static class Width {
-        }
-
-        public static class Height {
-        }
+    public static class BoundingBox {
+        public static final int BW_LOG = 352;
+        public static final int BH_LOG = 1656;
     }
 
     public static class gfx {
