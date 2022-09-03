@@ -168,18 +168,4 @@ public class WidgetMessageHandler {
         widget.wdgmsg(action, args);
         return WaitManager.waitAction(action);
     }
-
-    // deprecated method
-    @Deprecated
-    public static StatusCode openFlowerMenuByClickData(haven.MapView widget, haven.ClickData clickData) {
-        final haven.Gob gob = Util.gobFromClickData(clickData);
-        Object[] args = {
-            Util.mapViewCenter(),
-            CoordinateHandler.convertCoord2dToCoord(gob.rc),
-            IM_RIGHT,
-            IM_NONE};
-        if(clickData != null)
-            args = haven.Utils.extend(args, clickData.clickargs());
-        return wdgmsg_(widget, A_CLICK, args);
-    }
 }

@@ -88,8 +88,23 @@ public class Self {
 
     // etc
     public static StatusCode moveNorthTile() {
-        haven.Coord2d northTile = CoordinateHandler.northTile(Self.location());
+        haven.Coord northTile = CoordinateHandler.northTile(Self.locationInCoord());
         return move(northTile);
+    }
+
+    public static StatusCode moveEastTile() {
+        haven.Coord eastTile = CoordinateHandler.eastTile(Self.locationInCoord());
+        return move(eastTile);
+    }
+
+    public static StatusCode moveWestTile() {
+        haven.Coord westTile = CoordinateHandler.westTile(Self.locationInCoord());
+        return move(westTile);
+    }
+
+    public static StatusCode moveSouthTile() {
+        haven.Coord southTile = CoordinateHandler.southTile(Self.locationInCoord());
+        return move(southTile);
     }
 
     public static double distance(haven.Gob gob) {
