@@ -1,5 +1,8 @@
 package lmi.api;
 
+import haven.Gob;
+import haven.Coord;
+
 import lmi.*;
 import lmi.Constant.*;
 import static lmi.Constant.*;
@@ -14,8 +17,8 @@ public class WidgetMessageHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    public static StatusCode actionClick(haven.Gob gob) {
-        haven.Coord gobLocationInCoord = Gob.locationInCoord(gob);
+    public static StatusCode actionClick(Gob gob) {
+        Coord gobLocationInCoord = gob.location();
         return WidgetMessageHandler.sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
@@ -23,7 +26,7 @@ public class WidgetMessageHandler {
                 IM_LEFT,
                 IM_NONE,
                 IT_DEFAULT,
-                Gob.id(gob),
+                gob.id(),
                 gobLocationInCoord,
                 0,
                 MI_NONE);
@@ -32,8 +35,8 @@ public class WidgetMessageHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    public static StatusCode interact(haven.Gob gob, int meshId) {
-        haven.Coord gobLocationInCoord = Gob.locationInCoord(gob);
+    public static StatusCode interact(Gob gob, int meshId) {
+        Coord gobLocationInCoord = gob.location();
         return sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
@@ -41,7 +44,7 @@ public class WidgetMessageHandler {
                 IM_RIGHT,
                 IM_NONE,
                 IT_DEFAULT,
-                Gob.id(gob),
+                gob.id(),
                 gobLocationInCoord,
                 0,
                 meshId);
@@ -50,7 +53,7 @@ public class WidgetMessageHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    public static StatusCode put(haven.Coord location) {
+    public static StatusCode put(Coord location) {
         return sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
@@ -72,8 +75,8 @@ public class WidgetMessageHandler {
     ///     - SC_INTERRUPTED
     static StatusCode sendClickMessage(
             haven.MapView widget,
-            haven.Coord clickedMapViewPoint,
-            haven.Coord clickedMapPoint,
+            Coord clickedMapViewPoint,
+            Coord clickedMapPoint,
             int mouseButton,
             int modifiers) {
         return wdgmsg_(
@@ -90,13 +93,13 @@ public class WidgetMessageHandler {
     ///     - SC_INTERRUPTED
     static StatusCode sendClickMessage(
             haven.MapView widget,
-            haven.Coord clickedMapViewPoint,
-            haven.Coord clickedMapPoint,
+            Coord clickedMapViewPoint,
+            Coord clickedMapPoint,
             int mouseButton,
             int modifiers,
             int interactionType,
             int gobId,
-            haven.Coord gobLocation,
+            Coord gobLocation,
             int overlayId,
             int meshId) {
         return wdgmsg_(
@@ -127,7 +130,7 @@ public class WidgetMessageHandler {
         return sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
-                Self.locationInCoord(),
+                Self.location(),
                 IM_RIGHT,
                 IM_NONE);
     }
