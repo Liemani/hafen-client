@@ -97,9 +97,10 @@ public class Constant {
         public static final String TAKE_BRANCH = "Take branch";
     }
 
-    public static final double TILE_WIDTH_IN_COORD2D = 11.0;
-    public static final int TILE_WIDTH_IN_COORD = 1024;
-    public static final double COORD2D_PER_COORD = TILE_WIDTH_IN_COORD2D / TILE_WIDTH_IN_COORD;
+    public static final double TILE_IN_COORD2D = 11.0;
+    public static final int TILE_IN_COORD = 1024;
+    public static final double COORD2D_PER_COORD = TILE_IN_COORD2D / TILE_IN_COORD;
+    public static final double COORD_PER_COORD2D = TILE_IN_COORD / TILE_IN_COORD2D;
 
     public static class TimeOut {
         public static final long TO_MAX = Long.MAX_VALUE;

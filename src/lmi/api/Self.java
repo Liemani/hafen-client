@@ -34,11 +34,11 @@ public class Self {
 
     public static haven.Coord2d location() { return gob().rc; }
     public static double direction() { return gob().a; }
-    public static double velocity() { return GobHandler.velocity(gob()); }
+    public static double velocity() { return Gob.velocity(gob()); }
     public static haven.Skeleton.Pose pose() { return gob().getpose(); }
 
     public static haven.Coord locationInCoord() {
-        return CoordinateHandler.convertCoord2dToCoord(Self.location());
+        return Coordinate.toCoord(Self.location());
     }
 
     public static double hardHitPoint() {
@@ -65,7 +65,7 @@ public class Self {
             .a;
     }
 
-    public static boolean hasPose(String pose) { return GobHandler.hasPose(Self.gob(), pose); }
+    public static boolean hasPose(String pose) { return Gob.hasPose(Self.gob(), pose); }
 
     // move
     /// - Returns:
@@ -88,31 +88,31 @@ public class Self {
 
     // etc
     public static StatusCode moveNorthTile() {
-        haven.Coord northTile = CoordinateHandler.northTile(Self.locationInCoord());
+        haven.Coord northTile = Coordinate.northTile(Self.locationInCoord());
         return move(northTile);
     }
 
     public static StatusCode moveEastTile() {
-        haven.Coord eastTile = CoordinateHandler.eastTile(Self.locationInCoord());
+        haven.Coord eastTile = Coordinate.eastTile(Self.locationInCoord());
         return move(eastTile);
     }
 
     public static StatusCode moveWestTile() {
-        haven.Coord westTile = CoordinateHandler.westTile(Self.locationInCoord());
+        haven.Coord westTile = Coordinate.westTile(Self.locationInCoord());
         return move(westTile);
     }
 
     public static StatusCode moveSouthTile() {
-        haven.Coord southTile = CoordinateHandler.southTile(Self.locationInCoord());
+        haven.Coord southTile = Coordinate.southTile(Self.locationInCoord());
         return move(southTile);
     }
 
     public static double distance(haven.Gob gob) {
-        return Self.location().dist(GobHandler.location(gob));
+        return Self.location().dist(Gob.location(gob));
     }
 
     public static StatusCode moveCenter() {
-        haven.Coord2d center = CoordinateHandler.tileCenter(Self.location());
+        haven.Coord2d center = Coordinate.center(Self.location());
         return move(center);
     }
 
@@ -206,7 +206,7 @@ public class Self {
     }
 
     private static boolean isLifting_() { return Self.hasPose(RN_BANZAI); }
-    private static boolean isLifting_(haven.Gob gob) { return GobHandler.isGobLifting(Self.gob(), gob); }
+    private static boolean isLifting_(haven.Gob gob) { return Gob.isGobLifting(Self.gob(), gob); }
 
     /// - Returns:
     ///     - SC_SUCCEEDED
@@ -297,7 +297,7 @@ public class Self {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     private static StatusCode sendClickMessage_(haven.Coord2d point) {
-        return sendClickMessage_(CoordinateHandler.convertCoord2dToCoord(point));
+        return sendClickMessage_(Coordinate.toCoord(point));
     }
 
     /// - Returns:
@@ -323,7 +323,7 @@ public class Self {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     private static StatusCode put_(haven.Coord2d point) {
-        haven.Coord pointInCoord = CoordinateHandler.convertCoord2dToCoord(point);
+        haven.Coord pointInCoord = Coordinate.toCoord(point);
         return WidgetMessageHandler.put(pointInCoord);
     }
 

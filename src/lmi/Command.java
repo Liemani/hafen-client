@@ -55,52 +55,6 @@ class Command {
         return null;
     }
 
-    // etc command
-    static Void recordMouseLocation() {
-        AWTEventGenerator.setMouseLocation(ObjectShadow.ui().mc.x, ObjectShadow.ui().mc.y);
-        return null;
-    }
-
-    static Void printRecordedMouseLocation() {
-        AWTEventGenerator.printRecordedMouseLocation();
-        return null;
-    }
-
-//      // awt commands
-//      static Void awtGenerateMouseClick() {
-//          AWTEventGenerator.generateMouseClickGeneral(java.awt.event.MouseEvent.BUTTON3);
-//          return null;
-//      }
-//  
-//      static Void awtGenerateMouseRightClick() {
-//          AWTEventGenerator.generateMouseClickModified(0, java.awt.event.MouseEvent.BUTTON3);
-//          return null;
-//      }
-//  
-//      static Void toggleEquipment() {
-//          AWTEventGenerator.generateCtrlE();
-//          return null;
-//      }
-//  
-//      static Void openAxeCraftWindow() {
-//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
-//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
-//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
-//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_A);
-//          AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
-//          return null;
-//      }
-//  
-//      static Void typeEnter() {
-//          AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_ENTER);
-//          return null;
-//      }
-//  
-//      static Void typeTab() {
-//          AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_TAB);
-//          return null;
-//      }
-
     // Wrapping ObjectFinder
     static Void objectInitWithRootWidget() {
         ObjectFinder.init();
@@ -170,7 +124,7 @@ class Command {
         return null;
     }
 
-    // etc
+    // Debug
     static Void toggleDebugIsPrint() {
         Debug.toggleIsPrint();
         return null;
@@ -199,7 +153,7 @@ class Command {
 
     // test command
     static Void describeSelf() {
-        System.out.println("resource name: " + GobHandler.resourceName(Self.gob()));
+        System.out.println("resource name: " + Gob.resourceName(Self.gob()));
         System.out.println("Self.location(): " + Self.location());
         System.out.println("Self.locationInCoord(): " + Self.locationInCoord());
         System.out.println("Self.hardHitPoint(): " + Self.hardHitPoint());
@@ -217,22 +171,17 @@ class Command {
         return null;
     }
 
-    static Void w() {
-        Self.moveNorthTile();
-        return null;
-    }
-
-    static Void a() {
+    static Void h() {
         Self.moveWestTile();
         return null;
     }
 
-    static Void s() {
+    static Void j() {
         Self.moveSouthTile();
         return null;
     }
 
-    static Void s1() {
+    static Void jIterate() {
         while (true) {
             haven.Coord destination = Self.locationInCoord().add(0, 1);
             if (Self.move(destination) != SC_SUCCEEDED) break;
@@ -242,25 +191,23 @@ class Command {
         return null;
     }
 
-    static Void d() {
-        Self.moveEastTile();
+    static Void k() {
+        Self.moveNorthTile();
         return null;
     }
 
-    static Void moveEastSouth() {
-        haven.Coord2d targetLocation = CoordinateHandler.newCoordinateByOffset(Self.location(), 33.0, 33.0);
-        final Constant.StatusCode result = Self.move(targetLocation);
-        Util.debugPrint(Command.class, "result: " + result);
+    static Void l() {
+        Self.moveEastTile();
         return null;
     }
 
     static Void describeAllGob() {
         int count = 0;
-        java.util.Iterator<haven.Gob> iterator = GobHandler.iterator();
+        java.util.Iterator<haven.Gob> iterator = Gob.iterator();
         while (iterator.hasNext()) {
             ++count;
             haven.Gob gob = iterator.next();
-            System.out.println(GobHandler.resourceName(gob));
+            System.out.println(Gob.resourceName(gob));
             System.out.println(count);
         }
         return null;
@@ -279,29 +226,29 @@ class Command {
     }
 
     static Void liftClosestGob() {
-        haven.Gob closestGob = GobHandler.closestGob();
+        haven.Gob closestGob = Gob.closestGob();
         final StatusCode result = Self.lift(closestGob);
         Util.debugPrint(Command.class, "result: " + result);
         return null;
     }
 
     static Void putNorthTile() {
-        haven.Coord2d location = CoordinateHandler.northTile(Self.location());
-        haven.Coord locationInCoord = CoordinateHandler.convertCoord2dToCoord(location);
+        haven.Coord2d location = Coordinate.northTile(Self.location());
+        haven.Coord locationInCoord = Coordinate.toCoord(location);
         WidgetMessageHandler.put(locationInCoord);
         return null;
     }
 
     static Void describeClosestGob() {
-        haven.Gob closestGob = GobHandler.closestGob();
-        System.out.println("[closest gob] " + GobHandler.resourceName(closestGob));
+        haven.Gob closestGob = Gob.closestGob();
+        System.out.println("[closest gob] " + Gob.resourceName(closestGob));
         System.out.println("[disstance] " + Self.distance(closestGob));
         return null;
     }
 
     static Void describeClosestGobOverlay() {
-        haven.Gob closestGob = GobHandler.closestGob();
-        System.out.println("[closest gob] " + GobHandler.resourceName(closestGob));
+        haven.Gob closestGob = Gob.closestGob();
+        System.out.println("[closest gob] " + Gob.resourceName(closestGob));
         for (haven.Gob.Overlay overlay : closestGob.ols) {
             try {
                 System.out.println(overlay.res.get().name);
@@ -315,9 +262,9 @@ class Command {
     }
 
     static Void describeClosestGobAttribute() {
-        haven.Gob closestGob = GobHandler.closestGob();
+        haven.Gob closestGob = Gob.closestGob();
         java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> attributeMap = haven.LMI.gobAttr(closestGob);
-        String resourceName = GobHandler.resourceName(closestGob);
+        String resourceName = Gob.resourceName(closestGob);
         System.out.println("[resource name] " + resourceName);
         for (haven.GAttrib attribute : attributeMap.values()) {
             if (attribute instanceof haven.GobIcon
@@ -337,7 +284,7 @@ class Command {
     }
 
     static Void move() {
-        haven.Coord2d destination = CoordinateHandler.newCoordinateByOffset(Self.location(), 33.0, 33.0);
+        haven.Coord2d destination = Coordinate.newCoordinateByOffset(Self.location(), 33.0, 33.0);
         final Constant.StatusCode result = Self.move(destination);
         Util.debugPrint(Command.class, "result: " + result);
         return null;
@@ -356,13 +303,13 @@ class Command {
     }
 
     static Void describeClosestGobSdt() {
-        haven.Gob closestGob = GobHandler.closestGob();
-        final haven.Resource resource = GobHandler.resource(closestGob);
+        haven.Gob closestGob = Gob.closestGob();
+        final haven.Resource resource = Gob.resource(closestGob);
         if(resource == null) {
             System.out.println("[resource is null]");
             return null;
         }
-        haven.ResDrawable resourceDrawable = (haven.ResDrawable)GobHandler.attribute(closestGob, haven.ResDrawable.class);
+        haven.ResDrawable resourceDrawable = (haven.ResDrawable)Gob.attribute(closestGob, haven.ResDrawable.class);
         byte[] buffer = haven.LMI.resourceDrawableBuffer(resourceDrawable);
         if (buffer == null) {
             System.out.println("[buffer is null]");
@@ -377,20 +324,20 @@ class Command {
 
     static haven.Gob storedGob_ = null;
     static Void storeClosestGob() {
-        storedGob_ = GobHandler.closestGob();
+        storedGob_ = Gob.closestGob();
         return null;
     }
 
     static Void describeStoredGob() {
-        Util.debugPrint(Command.class, "resource name: " + GobHandler.resourceName(storedGob_));
+        Util.debugPrint(Command.class, "resource name: " + Gob.resourceName(storedGob_));
         Util.debugPrint(Command.class, "removed: " + storedGob_.removed);
-        Util.debugPrint(Command.class, "location: " + GobHandler.location(storedGob_));
-        Util.debugPrint(Command.class, "location in coord: " + GobHandler.locationInCoord(storedGob_));
+        Util.debugPrint(Command.class, "location: " + Gob.location(storedGob_));
+        Util.debugPrint(Command.class, "location in coord: " + Gob.locationInCoord(storedGob_));
         return null;
     }
 
     static Void describeSelfPose() {
-        Array<String> poseArray = GobHandler.poseArray(Self.gob());
+        Array<String> poseArray = Gob.poseArray(Self.gob());
         if (poseArray == null)
             Util.debugPrint(Command.class, "no pose");
         for (String pose : poseArray)
@@ -400,7 +347,7 @@ class Command {
 
     static Void gatherClosestGob() {
         String action = lmi.Scanner.nextLineWithPrompt("enter action");
-        haven.Gob closestGob = GobHandler.closestGob();
+        haven.Gob closestGob = Gob.closestGob();
         final Constant.StatusCode result = FlowerMenuHandler.choose(closestGob, MI_DEFAULT, action);
         Util.debugPrint(Command.class, "FlowerMenuHandler.choose() result " + result);
         Self.moveNorthTile();
@@ -410,16 +357,16 @@ class Command {
     static Void test2() {
         System.out.println("click gob to inspect!");
         haven.Gob gob = ClickManager.getGob();
-        Util.debugPrint(Command.class, "resource name: " + GobHandler.resourceName(gob));
+        Util.debugPrint(Command.class, "resource name: " + Gob.resourceName(gob));
 
         System.out.println("click gob to inspect!");
         gob = ClickManager.getGob();
-        Util.debugPrint(Command.class, "resource name: " + GobHandler.resourceName(gob));
+        Util.debugPrint(Command.class, "resource name: " + Gob.resourceName(gob));
         return null;
     }
 
     static Void test() {
-        haven.Coord northTile = CoordinateHandler.northTile(Self.locationInCoord());
+        haven.Coord northTile = Coordinate.northTile(Self.locationInCoord());
 
         Self.lift(storedGob_);
         Self.put(northTile);
@@ -433,7 +380,7 @@ class Command {
         System.out.println("click next gob to move!");
         haven.Gob variantGob = ClickManager.getGob();
 
-        haven.Coord standardPoint = CoordinateHandler.tileCenter(Self.locationInCoord());
+        haven.Coord standardPoint = Coordinate.center(Self.locationInCoord());
         Self.lift(standardGob);
         Self.move(standardPoint.add(0, 2048));
         Self.put(standardPoint);
@@ -465,7 +412,7 @@ class Command {
         System.out.println("click next gob to move!");
         haven.Gob variantGob = ClickManager.getGob();
 
-        haven.Coord standardPoint = CoordinateHandler.tileCenter(Self.locationInCoord());
+        haven.Coord standardPoint = Coordinate.center(Self.locationInCoord());
         Self.lift(standardGob);
         Self.move(standardPoint.add(0, 2048));
         Self.put(standardPoint);
@@ -522,14 +469,14 @@ class Command {
     }
 
     private static StatusCode checkSelfVariantWidth(haven.Gob standardGob, int variant) {
-        final haven.Coord variantPoint = GobHandler.locationInCoord(standardGob).add(variant, 0);
-        haven.Coord firstStep = CoordinateHandler.northTile(variantPoint);
+        final haven.Coord variantPoint = Gob.locationInCoord(standardGob).add(variant, 0);
+        haven.Coord firstStep = Coordinate.northTile(variantPoint);
 
         Self.move(firstStep);
         final StatusCode result = Self.move(variantPoint);
         if (result != SC_SUCCEEDED) return result;
 
-        final double distance = GobHandler.distance(standardGob, Self.gob());
+        final double distance = Gob.distance(standardGob, Self.gob());
         System.out.println("succeeded coord: " + variantPoint + ", distance: " + distance);
 
         return SC_SUCCEEDED;
@@ -537,7 +484,7 @@ class Command {
 
     static Void test3() {
         final haven.Coord locationInCoord = Self.locationInCoord();
-        final haven.Coord centerPosition = CoordinateHandler.tileCenter(locationInCoord);
+        final haven.Coord centerPosition = Coordinate.center(locationInCoord);
 
         System.out.println("첫 번째 로그를 선택해주세요");
         haven.Gob firstLog = ClickManager.getGob();

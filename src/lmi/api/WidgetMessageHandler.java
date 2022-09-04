@@ -15,7 +15,7 @@ public class WidgetMessageHandler {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     public static StatusCode actionClick(haven.Gob gob) {
-        haven.Coord gobLocationInCoord = GobHandler.locationInCoord(gob);
+        haven.Coord gobLocationInCoord = Gob.locationInCoord(gob);
         return WidgetMessageHandler.sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
@@ -23,7 +23,7 @@ public class WidgetMessageHandler {
                 IM_LEFT,
                 IM_NONE,
                 IT_DEFAULT,
-                GobHandler.id(gob),
+                Gob.id(gob),
                 gobLocationInCoord,
                 0,
                 MI_NONE);
@@ -33,7 +33,7 @@ public class WidgetMessageHandler {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     public static StatusCode interact(haven.Gob gob, int meshId) {
-        haven.Coord gobLocationInCoord = GobHandler.locationInCoord(gob);
+        haven.Coord gobLocationInCoord = Gob.locationInCoord(gob);
         return sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
@@ -41,7 +41,7 @@ public class WidgetMessageHandler {
                 IM_RIGHT,
                 IM_NONE,
                 IT_DEFAULT,
-                GobHandler.id(gob),
+                Gob.id(gob),
                 gobLocationInCoord,
                 0,
                 meshId);

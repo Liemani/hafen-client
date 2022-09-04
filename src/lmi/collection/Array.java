@@ -3,7 +3,7 @@
 package lmi.collection;
 
 public class Array<Element> extends java.util.ArrayList<Element> {
-    // constructor
+    // Constructor
     public Array() { super(); }
     public Array(int capacity) { super(capacity); }
 

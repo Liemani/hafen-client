@@ -3,14 +3,13 @@ package lmi.api;
 import lmi.*;
 import lmi.collection.Array;
 
-public class GobHandler {
-//      iter = oc.iterator();
-//      while(iter.hasNext()) {
-//          System.out.println(iter.next());
-//      }
+public class Gob {
+    // field
+    private haven.Gob gob_;
+
     public static java.util.Iterator<haven.Gob> iterator() { return ObjectShadow.objectCache().iterator(); }
     public static haven.Coord2d location(haven.Gob gob) { return gob.rc; }
-    public static haven.Coord locationInCoord(haven.Gob gob) { return CoordinateHandler.convertCoord2dToCoord(gob.rc); }
+    public static haven.Coord locationInCoord(haven.Gob gob) { return Coordinate.toCoord(gob.rc); }
     public static boolean isStop(haven.Gob gob) { return velocity(gob) == 0.0; }
     public static boolean isMoving(haven.Gob gob) { return velocity(gob) != 0.0; }
 
@@ -53,7 +52,7 @@ public class GobHandler {
         haven.Gob gob = null;
         while (true) {
             try {
-                iterator = GobHandler.iterator();
+                iterator = Gob.iterator();
                 gob = closestGob(iterator);
                 break;
             } catch (Exception e) {}
@@ -73,7 +72,7 @@ public class GobHandler {
             gob = iterator.next();
             if (gob.getClass() != haven.Gob.class)
                 continue;
-            if (GobHandler.isAt(Self.gob(), gob))
+            if (Gob.isAt(Self.gob(), gob))
                 continue;
             distance = Self.distance(gob);
             if (distance < closestDistance) {
@@ -86,24 +85,24 @@ public class GobHandler {
     }
 
     public static double distance(haven.Gob lhs, haven.Gob rhs) {
-        return GobHandler.location(lhs).dist(GobHandler.location(rhs));
+        return Gob.location(lhs).dist(Gob.location(rhs));
     }
 
     // compare coordiante
     public static boolean isAt(haven.Gob lhs, haven.Gob rhs) {
-        haven.Coord2d lhsLocation = GobHandler.location(lhs);
-        haven.Coord2d rhsLocation = GobHandler.location(rhs);
-        return CoordinateHandler.equals(lhsLocation, rhsLocation);
+        haven.Coord2d lhsLocation = Gob.location(lhs);
+        haven.Coord2d rhsLocation = Gob.location(rhs);
+        return Coordinate.equals(lhsLocation, rhsLocation);
     }
 
     public static boolean isAt(haven.Gob gob, haven.Coord2d point) {
-        haven.Coord2d gobLocation = GobHandler.location(gob);
-        return CoordinateHandler.equals(gobLocation, point);
+        haven.Coord2d gobLocation = Gob.location(gob);
+        return Coordinate.equals(gobLocation, point);
     }
 
     public static boolean isAt(haven.Gob gob, haven.Coord point) {
-        haven.Coord2d gobLocation = GobHandler.location(gob);
-        return CoordinateHandler.equals(gobLocation, point);
+        haven.Coord2d gobLocation = Gob.location(gob);
+        return Coordinate.equals(gobLocation, point);
     }
 
     // pose
@@ -115,7 +114,7 @@ public class GobHandler {
     }
 
     public static boolean hasPose(haven.Gob gob, String poseName) {
-        Array<String> poseArray = GobHandler.poseArray(gob);
+        Array<String> poseArray = Gob.poseArray(gob);
         return poseArray.containsWhere(pose -> pose.endsWith(poseName));
     }
 
@@ -125,7 +124,7 @@ public class GobHandler {
     }
 
     public static haven.Gob followingTarget(haven.Gob follower) {
-        final haven.Moving moving = GobHandler.attribute(follower, haven.Moving.class);
+        final haven.Moving moving = Gob.attribute(follower, haven.Moving.class);
         if (moving == null) return null;
         if (!(moving instanceof haven.Following)) return null;
 
@@ -135,7 +134,7 @@ public class GobHandler {
     }
 
     public static boolean isGobFollowing(haven.Gob follower, haven.Gob target) {
-        return GobHandler.followingTarget(follower) == target;
+        return Gob.followingTarget(follower) == target;
     }
 
     public static boolean isGobLifting(haven.Gob follower, haven.Gob target) {
