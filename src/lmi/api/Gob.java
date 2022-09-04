@@ -4,9 +4,76 @@ import lmi.*;
 import lmi.collection.Array;
 
 public class Gob {
-    // field
-    private haven.Gob gob_;
+    // Field
+    final private haven.Gob gob_;
 
+    // Constructor
+    private Gob(haven.Gob gob) { gob_ = gob; }
+
+    // Factory
+    public Gob of(haven.Gob gob) { return new Gob(gob_); }
+
+    // Access Property
+    public Point location() { return Point.of(gob_.rc); }
+    public double direction() { return gob_.a; }
+    public double velocity() { return gob_.getv(); }
+
+    public <C extends haven.GAttrib> C attribute(Class<C> attributeClass) {
+        return gob_.getattr(attributeClass);
+    }
+
+    public haven.Resource resource() { return gob_.getres(); }
+
+    public String resourceName() {
+        final haven.Resource resource = this.resource();
+        return resource != null ? resource.name : null;
+    }
+
+    public String resourceBasename() {
+        final String resourceName = this.resourceName();
+        if (resourceName == null) return null;
+
+        final int lastIndexOfSlash = resourceName.lastIndexOf('/');
+        if (lastIndexOfSlash < 0) return resourceName;
+
+        final String basename = resourceName.substring(lastIndexOfSlash + 1);
+        return basename;
+    }
+
+    // Instance Method
+    public boolean equals(Gob gob) { return this.gob_ == gob.gob_; }
+    public boolean isAt(Point point) { return this.location().equals(point); }
+    public boolean isMoving() { return this.velocity() != 0.0; }
+    public boolean isStop() { return !isMoving(); }
+    public double distance(Point point) { return this.location().distance(point); }
+
+    public Array<String> poseArray() {
+        final haven.Composite composite = this.attribute(haven.Composite.class);
+        return composite != null ? composite.poseArray() : null;
+    }
+
+    public boolean hasPose(String poseName) {
+        Array<String> poseArray = this.poseArray();
+        return poseArray.containsWhere(pose -> pose.endsWith(poseName));
+    }
+
+    public Gob followingTarget() {
+        final haven.Moving moving = this.attribute(haven.Moving.class);
+        if (moving == null) return null;
+        if (!(moving instanceof haven.Following)) return null;
+
+        final haven.Following following = (haven.Following)moving;
+        final haven.Gob targetGob = following.tgt();
+        return new Gob(targetGob);
+    }
+
+    public boolean isFollowing(Gob gob) { return this.followingTarget().equals(gob); }
+    public boolean isLifting(Gob gob) { return gob.isFollowing(this); }
+
+
+
+
+    // Statiac Method
     public static java.util.Iterator<haven.Gob> iterator() { return ObjectShadow.objectCache().iterator(); }
     public static haven.Coord2d location(haven.Gob gob) { return gob.rc; }
     public static haven.Coord locationInCoord(haven.Gob gob) { return Coordinate.toCoord(gob.rc); }
@@ -55,7 +122,9 @@ public class Gob {
                 iterator = Gob.iterator();
                 gob = closestGob(iterator);
                 break;
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return gob;
