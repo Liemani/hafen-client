@@ -174,6 +174,7 @@ class Command {
         return null;
     }
 
+    // Simple Move
     static Void h() {
         Self.moveWest();
         return null;
@@ -218,7 +219,7 @@ class Command {
 
     static Void moveCenter() {
         final StatusCode result = Self.moveCenter();
-        lmi.Util.debugPrint(Command.class, "result: " + result);
+        Util.debugPrint(Command.class, "result: " + result);
         return null;
     }
 
@@ -228,23 +229,14 @@ class Command {
         return null;
     }
 
-    static Void liftClosestGob() {
-        Gob closestGob = lmi.api.Util.closestGob();
-        final StatusCode result = Self.lift(closestGob);
-        Util.debugPrint(Command.class, "result: " + result);
-        return null;
-    }
+    static Void describeClickedGob() {
+        Gob gob = ClickManager.getGob();
 
-    static Void putNorth() {
-        Coord location = Self.location().north();
-        WidgetMessageHandler.put(location);
-        return null;
-    }
+        Util.debugPrint(Command.class, "resource name: " + gob.resourceName());
+        Util.debugPrint(Command.class, "location: " + gob.location());
+        Util.debugPrint(Command.class, "distance: " + Self.distance(gob));
+        Util.debugPrint(Command.class, "removed: " + gob.removed);
 
-    static Void describeClosestGob() {
-        Gob closestGob = lmi.api.Util.closestGob();
-        System.out.println("[closest gob] " + closestGob.resourceName());
-        System.out.println("[disstance] " + Self.distance(closestGob));
         return null;
     }
 
@@ -292,7 +284,7 @@ class Command {
         return null;
     }
 
-    static Void moveNorthTen() {
+    static Void moveNorthTenTimes() {
         {
             final StatusCode result = Self.moveCenter();
             Util.debugPrint(Command.class, "result: " + result);
@@ -324,19 +316,6 @@ class Command {
         return null;
     }
 
-    static Gob storedGob_ = null;
-    static Void storeClosestGob() {
-        storedGob_ = lmi.api.Util.closestGob();
-        return null;
-    }
-
-    static Void describeStoredGob() {
-        Util.debugPrint(Command.class, "resource name: " + storedGob_.resourceName());
-        Util.debugPrint(Command.class, "removed: " + storedGob_.removed);
-        Util.debugPrint(Command.class, "location: " + storedGob_.location());
-        return null;
-    }
-
     static Void describeSelfPose() {
         Array<String> poseArray = Self.gob().poseArray();
         if (poseArray == null)
@@ -352,24 +331,6 @@ class Command {
         final Constant.StatusCode result = FlowerMenuHandler.choose(closestGob, MI_DEFAULT, action);
         Util.debugPrint(Command.class, "FlowerMenuHandler.choose() result " + result);
         Self.moveNorth();
-        return null;
-    }
-
-    static Void test2() {
-        System.out.println("click gob to inspect!");
-        Gob gob = ClickManager.getGob();
-        Util.debugPrint(Command.class, "resource name: " + gob.resourceName());
-
-        System.out.println("click gob to inspect!");
-        gob = ClickManager.getGob();
-        Util.debugPrint(Command.class, "resource name: " + gob.resourceName());
-        return null;
-    }
-
-    static Void test() {
-        Coord north = Self.location().north();
-        Self.lift(storedGob_);
-        Self.put(north);
         return null;
     }
 
@@ -499,6 +460,13 @@ class Command {
         Self.move(centerPosition.add(BW_LOG / 2 + BW_BODY / 2, (BH_LOG + BH_BODY) / 2));
         Self.put(centerPosition.add(BW_LOG / 2 + BW_BODY / 2, 0));
 
+        return null;
+    }
+
+    static Void getArea() {
+        Coord[] coordArray = ClickManager.getArea();
+        Util.debugPrint(Command.class, "first point: " + coordArray[0]);
+        Util.debugPrint(Command.class, "second point: " + coordArray[1]);
         return null;
     }
 }

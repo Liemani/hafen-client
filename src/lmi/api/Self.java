@@ -37,6 +37,7 @@ public class Self {
     public static double direction() { return Self.gob().direction(); }
     public static double velocity() { return Self.gob().velocity(); }
     public static haven.Skeleton.Pose pose() { return Self.gob().getpose(); }
+    public static boolean hasPose(String poseName) { return Self.gob().hasPose(poseName); }
 
     public static double hardHitPoint() {
         return haven.LMI.gaugeWidgetGaugeArray(ObjectShadow.gaugeWidgetArray()[GI_HIT_POINT])
@@ -61,8 +62,6 @@ public class Self {
             .get(0)
             .a;
     }
-
-    public static boolean hasPose(String poseName) { return Self.gob().hasPose(poseName); }
 
     /// - Returns:
     ///     - SC_SUCCEEDED

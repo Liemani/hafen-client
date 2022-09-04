@@ -1,5 +1,8 @@
 package lmi.api;
 
+import haven.Gob;
+import haven.Coord;
+
 import lmi.*;
 import static lmi.Constant.TimeOut.*;
 
@@ -9,9 +12,9 @@ import static lmi.Constant.TimeOut.*;
 public class Util {
     // TODO 화면 사이즈가 바뀌면 이 값도 바꿔주도록 하자
     // 아마 frame에 sizeChanged() 같은 event가 있을 것 같다
-    private static haven.Coord mapViewCenter_;
+    private static Coord mapViewCenter_;
 
-    public static haven.Coord mapViewCenter() {
+    public static Coord mapViewCenter() {
         return Util.mapViewCenter_;
     }
 
@@ -43,12 +46,12 @@ public class Util {
 //      while(iter.hasNext()) {
 //          System.out.println(iter.next());
 //      }
-    public static java.util.Iterator<haven.Gob> iterator() { return ObjectShadow.objectCache().iterator(); }
+    public static java.util.Iterator<Gob> iterator() { return ObjectShadow.objectCache().iterator(); }
 
     // find gob
-    public static haven.Gob closestGob() {
-        java.util.Iterator<haven.Gob> iterator;
-        haven.Gob gob = null;
+    public static Gob closestGob() {
+        java.util.Iterator<Gob> iterator;
+        Gob gob = null;
         while (true) {
             try {
                 iterator = Util.iterator();
@@ -62,16 +65,16 @@ public class Util {
         return gob;
     }
 
-    private static haven.Gob closestGob(java.util.Iterator<haven.Gob> iterator) {
-        haven.Gob gob;
+    private static Gob closestGob(java.util.Iterator<Gob> iterator) {
+        Gob gob;
         double distance;
 
-        haven.Gob closestGob = null;
+        Gob closestGob = null;
         double closestDistance = 1100.0;
 
         while (iterator.hasNext()) {
             gob = iterator.next();
-            if (gob.getClass() != haven.Gob.class)
+            if (gob.getClass() != Gob.class)
                 continue;
             if (Self.gob().isAt(gob.location()))
                 continue;
