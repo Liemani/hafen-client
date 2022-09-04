@@ -1,5 +1,8 @@
 package lmi;
 
+import static lmi.Constant.gfx.hud.meter.*;
+import static lmi.Constant.Gauge.Index.*;
+
 public class ObjectShadow {
     // static fields
     private static haven.MainFrame mainFrame_;   // haven.MainFrame::MainFrame()
@@ -55,12 +58,12 @@ public class ObjectShadow {
     static void setObjectCache(haven.OCache objectCache) { objectCache_ = objectCache; }
 
     static void setGaugeArray(haven.IMeter gauge) {
-        if (Util.resourceName(gauge).equals(Constant.Gauge.ResourceName.HIT_POINT))
-            gaugeWidgetArray_[Constant.Gauge.Index.HIT_POINT] = gauge;
-        else if (Util.resourceName(gauge).equals(Constant.Gauge.ResourceName.STAMINA))
-            gaugeWidgetArray_[Constant.Gauge.Index.STAMINA] = gauge;
-        else if (Util.resourceName(gauge).equals(Constant.Gauge.ResourceName.ENERGY))
-            gaugeWidgetArray_[Constant.Gauge.Index.ENERGY] = gauge;
+        if (Util.resourceName(gauge).equals(RN_HIT_POINT))
+            gaugeWidgetArray_[GI_HIT_POINT] = gauge;
+        else if (Util.resourceName(gauge).equals(RN_STAMINA))
+            gaugeWidgetArray_[GI_STAMINA] = gauge;
+        else if (Util.resourceName(gauge).equals(RN_ENERGY))
+            gaugeWidgetArray_[GI_ENERGY] = gauge;
     }
 
     // package methods
