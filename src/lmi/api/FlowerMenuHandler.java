@@ -1,5 +1,7 @@
 package lmi.api;
 
+import haven.Gob;
+
 import lmi.*;
 import lmi.Constant.StatusCode;
 import lmi.Constant.Action;
@@ -23,7 +25,7 @@ public class FlowerMenuHandler {
     ///     - SC_FAILED_OPEN_FLOWER_MENU
     ///     - SC_FAILED_MATCH
     ///     - SC_FAILED_OPEN_PROGRESS
-    public static StatusCode choose(haven.Gob gob, int meshId, String name) {
+    public static StatusCode choose(Gob gob, int meshId, String name) {
         if (gob == null || name == null)
             return SC_FAILED_INVALID_ARGUMENT;
 
@@ -38,7 +40,7 @@ public class FlowerMenuHandler {
                 return result;
             }
         }
-        new MoveManager(Self.gob()).waitMove();
+        Self.gob().waitMove();
         return ProgressManager.waitProgress();
     }
 
@@ -47,7 +49,7 @@ public class FlowerMenuHandler {
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
     ///     - SC_FAILED_OPEN_FLOWER_MENU
-    private static StatusCode open_(haven.Gob gob, int meshId) {
+    private static StatusCode open_(Gob gob, int meshId) {
         if (sendInteractMessage_(gob, meshId) == SC_INTERRUPTED) return SC_INTERRUPTED;
         return waitFlowerMenuOpening();
     }
@@ -107,7 +109,7 @@ public class FlowerMenuHandler {
     /// - Returns:
     ///     - SC_SUCCEEDED
     ///     - SC_INTERRUPTED
-    private static StatusCode sendInteractMessage_(haven.Gob gob, int meshId) {
+    private static StatusCode sendInteractMessage_(Gob gob, int meshId) {
         return WidgetMessageHandler.interact(gob, meshId);
     }
 

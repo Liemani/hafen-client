@@ -1,5 +1,7 @@
 package lmi;
 
+import haven.Gob;
+
 import lmi.api.*;
 import lmi.Constant.Action;
 import lmi.collection.Array;
@@ -44,31 +46,31 @@ public class Delegate {
     }
 
     // linMove
-    public static void linMoveDidAdded(haven.Gob gob) {
+    public static void linMoveDidAdded(Gob gob) {
         // LinMove::$linbeg::apply()
         WaitManager.notifyAction(gob, AC_MOVE_DID_BEGIN);
     }
 
-    public static void linMoveDidDeleted(haven.Gob gob) {
+    public static void linMoveDidDeleted(Gob gob) {
         // LinMove::$linstep::apply()
         WaitManager.notifyAction(gob, AC_MOVE_DID_END);
     }
 
     // following
-    public static void followingDidAdded(haven.Gob gob) {
+    public static void followingDidAdded(Gob gob) {
         // Following::$follow::apply()
-        final haven.Gob target = Gob.followingTarget(gob);
+        final Gob target = gob.followingTarget();
         if (target != Self.gob()) return;
 
-        WaitManager.notifyAction(gob, AC_DID_LIFT);
+        WaitManager.notifyAction(target, AC_DID_LIFT);
     }
 
-    public static void followingDidDeleted(haven.Gob gob) {
+    public static void followingDidDeleted(Gob gob) {
         // Following::$follow::apply()
-        final haven.Gob target = Gob.followingTarget(gob);
+        final Gob target = gob.followingTarget();
         if (target != Self.gob()) return;
 
-        WaitManager.notifyAction(gob, AC_DID_PUT);
+        WaitManager.notifyAction(target, AC_DID_PUT);
     }
 
     // progress
@@ -85,9 +87,9 @@ public class Delegate {
     }
 
     // etc
-    public static void poseDidChanged(haven.Gob gob) {
+    public static void poseDidChanged(Gob gob) {
         // Composite::poseDidChange()
-        if (Gob.hasPose(gob, RN_IDLE))
+        if (gob.hasPose(RN_IDLE))
             WaitManager.notifyAction(gob, AC_DID_PUT);
     }
 

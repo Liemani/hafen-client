@@ -33,11 +33,6 @@ public class Util {
             return object.getClass() == Class.class;
     }
 
-    // resourceName()
-    static String resourceName(haven.IMeter gauge) {
-        return gauge.bg.get().name;
-    }
-
     // return if array has same address of element
     static <T> boolean contains(T array[], T element) {
         for (T entry : array)

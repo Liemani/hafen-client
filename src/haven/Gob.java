@@ -30,6 +30,12 @@ import java.util.*;
 import java.util.function.*;
 import haven.render.*;
 
+// lmi custom import
+import lmi.collection.Array;
+import lmi.Constant.StatusCode;
+import lmi.api.GobManager;
+import static lmi.Constant.gfx.borka.*;
+
 public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Skeleton.HasPose {
     public Coord2d rc;
     public double a;
@@ -633,4 +639,93 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
 	public TickList.Ticking ticker() {return(this);}
     }
     public final Placed placed = new Placed();
+
+    // lmi custom
+    // Access Property
+    public Coord location() { return Coord.of(this.rc); }
+    public double direction() { return this.a; }
+    public double velocity() { return this.getv(); }
+
+    public <C extends haven.GAttrib> C attribute(Class<C> attributeClass) {
+        return this.getattr(attributeClass);
+    }
+
+    public Map<Class<? extends GAttrib>, GAttrib> attributeMap() {
+        return this.attr;
+    }
+
+    public haven.Resource resource() { return this.getres(); }
+
+    public String resourceName() {
+        final haven.Resource resource = this.resource();
+        return resource != null ? resource.name : null;
+    }
+
+    public String resourceBasename() {
+        final String resourceName = this.resourceName();
+        if (resourceName == null) return null;
+
+        final int lastIndexOfSlash = resourceName.lastIndexOf('/');
+        if (lastIndexOfSlash < 0) return resourceName;
+
+        final String basename = resourceName.substring(lastIndexOfSlash + 1);
+        return basename;
+    }
+
+    // Instance Method
+    public boolean isAt(Coord coord) { return this.location().equals(coord); }
+    public boolean isMoving() { return this.velocity() != 0.0; }
+    public boolean isStop() { return !isMoving(); }
+    public double distance(Coord coord) { return this.location().distance(coord); }
+    public double distance(Gob gob) { return this.location().distance(gob.location()); }
+
+    public Array<String> poseArray() {
+        final haven.Composite composite = this.attribute(haven.Composite.class);
+        return composite != null ? composite.poseArray() : null;
+    }
+
+    public boolean hasPose(String poseName) {
+        Array<String> poseArray = this.poseArray();
+        return poseArray.containsWhere(pose -> pose.endsWith(poseName));
+    }
+
+    public Gob followingTarget() {
+        final haven.Moving moving = this.attribute(haven.Moving.class);
+        if (moving == null) return null;
+        if (!(moving instanceof haven.Following)) return null;
+
+        final haven.Following following = (haven.Following)moving;
+        return following.tgt();
+    }
+
+    public boolean isFollowing(Gob gob) { return this.followingTarget().equals(gob); }
+    public boolean isLifting() { return this.hasPose(RN_BANZAI); }
+    public boolean isLifting(Gob gob) { return gob.isFollowing(this); }
+
+    // wait
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_FAILED_MOVE
+    public StatusCode waitMove() { return new GobManager(this).waitMove(); }
+    public StatusCode waitMove(Coord destination) { return new GobManager(this).waitMove(destination); }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_FAILED_LIFT
+    public StatusCode waitLift(Gob gob) { return new GobManager(this).waitLift(gob); }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_FAILED_PUT
+    public StatusCode waitPut() { return new GobManager(this).waitPut();  }
+
+    /// - Returns:
+    ///     - SC_SUCCEEDED
+    ///     - SC_INTERRUPTED
+    ///     - SC_FAILED_PUT
+
+    public int id() { return (int)this.id; }
 }

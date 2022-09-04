@@ -68,4 +68,9 @@ public class IMeter extends LayerMeter {
 	} catch(Loading l) {
 	}
     }
+
+    // lmi custom
+    public String resourceName() {
+        return this.bg.get().name;
+    }
 }
