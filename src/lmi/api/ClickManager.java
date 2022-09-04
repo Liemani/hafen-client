@@ -11,11 +11,13 @@ public class ClickManager {
     // field
     private static boolean isWatingInput_ = false;
     private static haven.ClickData clickData_ = null;
+    private static Coord clickPoint_ = null;
 
     // getter setter
     public static boolean isWatingInput() { return isWatingInput_; }
     public static void setClickData(haven.ClickData clickData) { clickData_ = clickData; }
-    private static void clear_() { isWatingInput_ = false; clickData_ = null; }
+    public static void setClickPoint(Coord clickPoint) { clickPoint_ = clickPoint; }
+    private static void clear_() { isWatingInput_ = false; clickData_ = null; clickPoint_ = null; }
 
     // public method
     public static Gob getGob() {
@@ -41,8 +43,21 @@ public class ClickManager {
         return null;
     }
 
+    public static Coord getCoord() {
+        isWatingInput_ = true;
+        if (WaitManager.waitAction(AC_DID_CLICK) == SC_INTERRUPTED) return null;
+
+        final Coord clickPoint = clickPoint_;
+
+        clear_();
+        return clickPoint;
+    }
+
     // TODO implement this
-    public static Coord[] getRange() {
-        return null;
+    public static Coord[] getArea() {
+        Coord[] coordArray = new Coord[2];
+        coordArray[0] = ClickManager.getCoord();
+        coordArray[1] = ClickManager.getCoord();
+        return coordArray;
     }
 }
