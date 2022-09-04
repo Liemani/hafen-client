@@ -1,5 +1,8 @@
 package lmi;
 
+import haven.Gob;
+import haven.Coord;
+
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -16,6 +19,7 @@ import static lmi.Constant.StatusCode.*;
 import static lmi.Constant.MeshId.*;
 import static lmi.Constant.gfx.borka.*;
 import static lmi.Constant.BoundingBox.*;
+import static lmi.Constant.*;
 
 class Command {
     // type define
@@ -153,9 +157,8 @@ class Command {
 
     // test command
     static Void describeSelf() {
-        System.out.println("resource name: " + Gob.resourceName(Self.gob()));
+        System.out.println("resource name: " + Self.gob().resourceName());
         System.out.println("Self.location(): " + Self.location());
-        System.out.println("Self.locationInCoord(): " + Self.locationInCoord());
         System.out.println("Self.hardHitPoint(): " + Self.hardHitPoint());
         System.out.println("Self.softHitPoint(): " + Self.softHitPoint());
         System.out.println("Self.stamina(): " + Self.stamina());
@@ -164,7 +167,7 @@ class Command {
     }
 
     static Void describeSelfAttribute() {
-        java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> map = haven.LMI.gobAttr(Self.gob());
+        java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> map = Self.gob().attributeMap();
         map.forEach((unused, value) -> {
                 Debug.describeField(value);
                 });
@@ -172,42 +175,42 @@ class Command {
     }
 
     static Void h() {
-        Self.moveWestTile();
+        Self.moveWest();
         return null;
     }
 
     static Void j() {
-        Self.moveSouthTile();
+        Self.moveSouth();
         return null;
     }
 
     static Void jIterate() {
         while (true) {
-            haven.Coord destination = Self.locationInCoord().add(0, 1);
+            Coord destination = Self.location().add(0, 1);
             if (Self.move(destination) != SC_SUCCEEDED) break;
-            haven.Coord currentLocation = Self.locationInCoord();
+            Coord currentLocation = Self.location();
             System.out.println("current location: " + currentLocation);
         }
         return null;
     }
 
     static Void k() {
-        Self.moveNorthTile();
+        Self.moveNorth();
         return null;
     }
 
     static Void l() {
-        Self.moveEastTile();
+        Self.moveEast();
         return null;
     }
 
     static Void describeAllGob() {
         int count = 0;
-        java.util.Iterator<haven.Gob> iterator = Gob.iterator();
+        java.util.Iterator<Gob> iterator = lmi.api.Util.iterator();
         while (iterator.hasNext()) {
             ++count;
-            haven.Gob gob = iterator.next();
-            System.out.println(Gob.resourceName(gob));
+            Gob gob = iterator.next();
+            System.out.println(gob.resourceName());
             System.out.println(count);
         }
         return null;
@@ -226,30 +229,29 @@ class Command {
     }
 
     static Void liftClosestGob() {
-        haven.Gob closestGob = Gob.closestGob();
+        Gob closestGob = lmi.api.Util.closestGob();
         final StatusCode result = Self.lift(closestGob);
         Util.debugPrint(Command.class, "result: " + result);
         return null;
     }
 
-    static Void putNorthTile() {
-        haven.Coord2d location = Coordinate.northTile(Self.location());
-        haven.Coord locationInCoord = Coordinate.toCoord(location);
-        WidgetMessageHandler.put(locationInCoord);
+    static Void putNorth() {
+        Coord location = Self.location().north();
+        WidgetMessageHandler.put(location);
         return null;
     }
 
     static Void describeClosestGob() {
-        haven.Gob closestGob = Gob.closestGob();
-        System.out.println("[closest gob] " + Gob.resourceName(closestGob));
+        Gob closestGob = lmi.api.Util.closestGob();
+        System.out.println("[closest gob] " + closestGob.resourceName());
         System.out.println("[disstance] " + Self.distance(closestGob));
         return null;
     }
 
     static Void describeClosestGobOverlay() {
-        haven.Gob closestGob = Gob.closestGob();
-        System.out.println("[closest gob] " + Gob.resourceName(closestGob));
-        for (haven.Gob.Overlay overlay : closestGob.ols) {
+        Gob closestGob = lmi.api.Util.closestGob();
+        System.out.println("[closest gob] " + closestGob.resourceName());
+        for (Gob.Overlay overlay : closestGob.ols) {
             try {
                 System.out.println(overlay.res.get().name);
                 for (byte b : overlay.sdt.rbuf)
@@ -262,9 +264,9 @@ class Command {
     }
 
     static Void describeClosestGobAttribute() {
-        haven.Gob closestGob = Gob.closestGob();
-        java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> attributeMap = haven.LMI.gobAttr(closestGob);
-        String resourceName = Gob.resourceName(closestGob);
+        Gob closestGob = lmi.api.Util.closestGob();
+        java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> attributeMap = closestGob.attributeMap();
+        String resourceName = closestGob.resourceName();
         System.out.println("[resource name] " + resourceName);
         for (haven.GAttrib attribute : attributeMap.values()) {
             if (attribute instanceof haven.GobIcon
@@ -284,32 +286,32 @@ class Command {
     }
 
     static Void move() {
-        haven.Coord2d destination = Coordinate.newCoordinateByOffset(Self.location(), 33.0, 33.0);
+        final Coord destination = Self.location().offset(TILE_IN_COORD * 3, TILE_IN_COORD * 3);
         final Constant.StatusCode result = Self.move(destination);
         Util.debugPrint(Command.class, "result: " + result);
         return null;
     }
 
-    static Void moveNorthTileTenTimes() {
+    static Void moveNorthTen() {
         {
             final StatusCode result = Self.moveCenter();
             Util.debugPrint(Command.class, "result: " + result);
         }
         for (int count = 0; count < 10; ++count) {
-            final StatusCode result = Self.moveNorthTile();
+            final StatusCode result = Self.moveNorth();
             Util.debugPrint(Command.class, "result: " + result);
         }
         return null;
     }
 
     static Void describeClosestGobSdt() {
-        haven.Gob closestGob = Gob.closestGob();
-        final haven.Resource resource = Gob.resource(closestGob);
+        Gob closestGob = lmi.api.Util.closestGob();
+        final haven.Resource resource = closestGob.resource();
         if(resource == null) {
             System.out.println("[resource is null]");
             return null;
         }
-        haven.ResDrawable resourceDrawable = (haven.ResDrawable)Gob.attribute(closestGob, haven.ResDrawable.class);
+        haven.ResDrawable resourceDrawable = (haven.ResDrawable)closestGob.attribute(haven.ResDrawable.class);
         byte[] buffer = haven.LMI.resourceDrawableBuffer(resourceDrawable);
         if (buffer == null) {
             System.out.println("[buffer is null]");
@@ -322,22 +324,21 @@ class Command {
         return null;
     }
 
-    static haven.Gob storedGob_ = null;
+    static Gob storedGob_ = null;
     static Void storeClosestGob() {
-        storedGob_ = Gob.closestGob();
+        storedGob_ = lmi.api.Util.closestGob();
         return null;
     }
 
     static Void describeStoredGob() {
-        Util.debugPrint(Command.class, "resource name: " + Gob.resourceName(storedGob_));
+        Util.debugPrint(Command.class, "resource name: " + storedGob_.resourceName());
         Util.debugPrint(Command.class, "removed: " + storedGob_.removed);
-        Util.debugPrint(Command.class, "location: " + Gob.location(storedGob_));
-        Util.debugPrint(Command.class, "location in coord: " + Gob.locationInCoord(storedGob_));
+        Util.debugPrint(Command.class, "location: " + storedGob_.location());
         return null;
     }
 
     static Void describeSelfPose() {
-        Array<String> poseArray = Gob.poseArray(Self.gob());
+        Array<String> poseArray = Self.gob().poseArray();
         if (poseArray == null)
             Util.debugPrint(Command.class, "no pose");
         for (String pose : poseArray)
@@ -347,48 +348,47 @@ class Command {
 
     static Void gatherClosestGob() {
         String action = lmi.Scanner.nextLineWithPrompt("enter action");
-        haven.Gob closestGob = Gob.closestGob();
+        Gob closestGob = lmi.api.Util.closestGob();
         final Constant.StatusCode result = FlowerMenuHandler.choose(closestGob, MI_DEFAULT, action);
         Util.debugPrint(Command.class, "FlowerMenuHandler.choose() result " + result);
-        Self.moveNorthTile();
+        Self.moveNorth();
         return null;
     }
 
     static Void test2() {
         System.out.println("click gob to inspect!");
-        haven.Gob gob = ClickManager.getGob();
-        Util.debugPrint(Command.class, "resource name: " + Gob.resourceName(gob));
+        Gob gob = ClickManager.getGob();
+        Util.debugPrint(Command.class, "resource name: " + gob.resourceName());
 
         System.out.println("click gob to inspect!");
         gob = ClickManager.getGob();
-        Util.debugPrint(Command.class, "resource name: " + Gob.resourceName(gob));
+        Util.debugPrint(Command.class, "resource name: " + gob.resourceName());
         return null;
     }
 
     static Void test() {
-        haven.Coord northTile = Coordinate.northTile(Self.locationInCoord());
-
+        Coord north = Self.location().north();
         Self.lift(storedGob_);
-        Self.put(northTile);
+        Self.put(north);
         return null;
     }
 
     static Void investigateGobBoundingBoxWidth() {
         System.out.println("click gob of standard!");
-        haven.Gob standardGob = ClickManager.getGob();
+        Gob standardGob = ClickManager.getGob();
 
         System.out.println("click next gob to move!");
-        haven.Gob variantGob = ClickManager.getGob();
+        Gob variantGob = ClickManager.getGob();
 
-        haven.Coord standardPoint = Coordinate.center(Self.locationInCoord());
+        Coord standardPoint = Self.location();
         Self.lift(standardGob);
         Self.move(standardPoint.add(0, 2048));
         Self.put(standardPoint);
 
-        final int start = 1024 / 8 * 3 + 1;
+        final int start = TILE_IN_COORD / 8 * 3 + 1;
         int variant = start;
         while (true) {
-            final haven.Coord variantPoint = standardPoint.add(variant, 0);
+            final Coord variantPoint = standardPoint.add(variant, 0);
             if (carryWidth_(variantGob, variantPoint) != SC_SUCCEEDED) break;
             System.out.println("succeeded coord: " + variantPoint);
             --variant;
@@ -399,20 +399,20 @@ class Command {
         return null;
     }
 
-    private static StatusCode carryWidth_(haven.Gob gob, haven.Coord putPoint) {
+    private static StatusCode carryWidth_(Gob gob, Coord putPoint) {
         Self.lift(gob);
-        Self.move(putPoint.add(0, 2048));
+        Self.move(putPoint.add(0, TILE_IN_COORD * 2));
         return Self.put(putPoint);
     }
 
     static Void investigateGobBoundingBoxHeight() {
         System.out.println("click gob of standard!");
-        haven.Gob standardGob = ClickManager.getGob();
+        Gob standardGob = ClickManager.getGob();
 
         System.out.println("click next gob to move!");
-        haven.Gob variantGob = ClickManager.getGob();
+        Gob variantGob = ClickManager.getGob();
 
-        haven.Coord standardPoint = Coordinate.center(Self.locationInCoord());
+        Coord standardPoint = Self.location().center();
         Self.lift(standardGob);
         Self.move(standardPoint.add(0, 2048));
         Self.put(standardPoint);
@@ -420,7 +420,7 @@ class Command {
         final int start = 1024 / 8 * 13;
         int variant = start;
         while (true) {
-            final haven.Coord variantPoint = standardPoint.add(0, variant);
+            final Coord variantPoint = standardPoint.add(0, variant);
             if (carryHeight_(variantGob, variantPoint) != SC_SUCCEEDED) break;
             System.out.println("succeeded coord: " + variantPoint);
             --variant;
@@ -431,14 +431,14 @@ class Command {
         return null;
     }
 
-    private static StatusCode carryHeight_(haven.Gob gob, haven.Coord putPoint) {
+    private static StatusCode carryHeight_(Gob gob, Coord putPoint) {
         Self.lift(gob);
         return Self.put(putPoint);
     }
 
     static Void investigateSelfBoundingBoxWidthOnce() {
         System.out.println("click gob of standard!");
-        haven.Gob standardGob = ClickManager.getGob();
+        Gob standardGob = ClickManager.getGob();
 
         String variantString = lmi.Scanner.nextLineWithPrompt("enter variant");
         final int variant = Util.stoi(variantString);
@@ -454,7 +454,7 @@ class Command {
 
     static Void investigateSelfBoundingBoxWidth() {
         System.out.println("click gob of standard!");
-        haven.Gob standardGob = ClickManager.getGob();
+        Gob standardGob = ClickManager.getGob();
 
         final int start = 512;
         int variant = start;
@@ -468,29 +468,28 @@ class Command {
         return null;
     }
 
-    private static StatusCode checkSelfVariantWidth(haven.Gob standardGob, int variant) {
-        final haven.Coord variantPoint = Gob.locationInCoord(standardGob).add(variant, 0);
-        haven.Coord firstStep = Coordinate.northTile(variantPoint);
+    private static StatusCode checkSelfVariantWidth(Gob standardGob, int variant) {
+        final Coord variantPoint = standardGob.location().add(variant, 0);
+        Coord firstStep = variantPoint.north();
 
         Self.move(firstStep);
         final StatusCode result = Self.move(variantPoint);
         if (result != SC_SUCCEEDED) return result;
 
-        final double distance = Gob.distance(standardGob, Self.gob());
+        final double distance = standardGob.distance(Self.gob());
         System.out.println("succeeded coord: " + variantPoint + ", distance: " + distance);
 
         return SC_SUCCEEDED;
     }
 
     static Void test3() {
-        final haven.Coord locationInCoord = Self.locationInCoord();
-        final haven.Coord centerPosition = Coordinate.center(locationInCoord);
+        final Coord centerPosition = Self.location().center();
 
         System.out.println("첫 번째 로그를 선택해주세요");
-        haven.Gob firstLog = ClickManager.getGob();
+        Gob firstLog = ClickManager.getGob();
 
         System.out.println("두 번째 로그를 선택해주세요");
-        haven.Gob secondLog = ClickManager.getGob();
+        Gob secondLog = ClickManager.getGob();
 
         Self.lift(firstLog);
         Self.move(centerPosition.add(- BW_LOG / 2 - BW_BODY / 2, (BH_LOG + BH_BODY) / 2));

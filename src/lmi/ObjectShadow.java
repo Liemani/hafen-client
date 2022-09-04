@@ -58,11 +58,12 @@ public class ObjectShadow {
     static void setObjectCache(haven.OCache objectCache) { objectCache_ = objectCache; }
 
     static void setGaugeArray(haven.IMeter gauge) {
-        if (Util.resourceName(gauge).equals(RN_HIT_POINT))
+        final String resourceName = gauge.resourceName();
+        if (resourceName.endsWith(RN_HIT_POINT))
             gaugeWidgetArray_[GI_HIT_POINT] = gauge;
-        else if (Util.resourceName(gauge).equals(RN_STAMINA))
+        else if (resourceName.endsWith(RN_STAMINA))
             gaugeWidgetArray_[GI_STAMINA] = gauge;
-        else if (Util.resourceName(gauge).equals(RN_ENERGY))
+        else if (resourceName.endsWith(RN_ENERGY))
             gaugeWidgetArray_[GI_ENERGY] = gauge;
     }
 

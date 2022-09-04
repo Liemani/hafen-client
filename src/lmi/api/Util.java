@@ -43,4 +43,45 @@ public class Util {
 //      while(iter.hasNext()) {
 //          System.out.println(iter.next());
 //      }
+    public static java.util.Iterator<haven.Gob> iterator() { return ObjectShadow.objectCache().iterator(); }
+
+    // find gob
+    public static haven.Gob closestGob() {
+        java.util.Iterator<haven.Gob> iterator;
+        haven.Gob gob = null;
+        while (true) {
+            try {
+                iterator = Util.iterator();
+                gob = closestGob(iterator);
+                break;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return gob;
+    }
+
+    private static haven.Gob closestGob(java.util.Iterator<haven.Gob> iterator) {
+        haven.Gob gob;
+        double distance;
+
+        haven.Gob closestGob = null;
+        double closestDistance = 1100.0;
+
+        while (iterator.hasNext()) {
+            gob = iterator.next();
+            if (gob.getClass() != haven.Gob.class)
+                continue;
+            if (Self.gob().isAt(gob.location()))
+                continue;
+            distance = Self.gob().distance(gob);
+            if (distance < closestDistance) {
+                closestGob = gob;
+                closestDistance = distance;
+            }
+        }
+
+        return closestGob;
+    }
 }

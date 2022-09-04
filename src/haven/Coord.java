@@ -29,6 +29,9 @@ package haven;
 import static java.lang.Math.PI;
 import java.util.Iterator;
 
+// lmi custom import
+import static lmi.Constant.*;
+
 public class Coord implements Comparable<Coord>, java.io.Serializable {
     public int x, y;
     public static Coord z = new Coord(0, 0);
@@ -253,5 +256,179 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
 
     public Coord min(int x, int y) {
 	return(of(Math.min(this.x, x), Math.min(this.y, y)));
+    }
+
+    // lmi custom
+    // Static Value
+    public static final Coord zero = new Coord(0, 0);
+
+    // Factory
+    public static Coord of(haven.Coord2d coord2d) {
+        return new Coord(
+                (int)Math.floor(coord2d.x * COORD_PER_COORD2D),
+                (int)Math.floor(coord2d.y * COORD_PER_COORD2D));
+    }
+
+    // Convert To Haven Coordinate
+    public haven.Coord2d toCoord2d() {
+        return new haven.Coord2d(
+                this.x * COORD2D_PER_COORD,
+                this.y * COORD2D_PER_COORD);
+    }
+
+    // Equal To
+    public boolean equals(Coord coord) { return this.x == coord.x && this.y == coord.y; }
+
+    // Operation
+    //  Common Vector
+    public Coord subtract(Coord coord) {
+        Coord newCoord = new Coord();
+
+        newCoord.x = this.x - coord.x;
+        newCoord.y = this.y - coord.y;
+
+        return newCoord;
+    }
+
+    public Coord multiply(Coord coord) {
+        Coord newCoord = new Coord();
+
+        newCoord.x = this.x * coord.x;
+        newCoord.y = this.y * coord.y;
+
+        return newCoord;
+    }
+
+    public Coord divide(Coord coord) {
+        Coord newCoord = new Coord();
+
+        newCoord.x = this.x / coord.x;
+        newCoord.y = this.y / coord.y;
+
+        return newCoord;
+    }
+
+    //  Common Scalar
+    public Coord add(int value) {
+        Coord newCoord = new Coord();
+
+        newCoord.x = this.x + value;
+        newCoord.y = this.y + value;
+
+        return newCoord;
+    }
+
+    public Coord subtract(int value) {
+        Coord newCoord = new Coord();
+
+        newCoord.x = this.x - value;
+        newCoord.y = this.y - value;
+
+        return newCoord;
+    }
+
+    public Coord multiply(int value) {
+        Coord newCoord = new Coord();
+
+        newCoord.x = this.x * value;
+        newCoord.y = this.y * value;
+
+        return newCoord;
+    }
+
+    public Coord divide(int value) {
+        Coord newCoord = new Coord();
+
+        newCoord.x = this.x / value;
+        newCoord.y = this.y / value;
+
+        return newCoord;
+    }
+
+    public Coord floorDivide(int value) {
+        Coord newCoord = new Coord();
+
+        newCoord.x = Math.floorDiv(this.x, value);
+        newCoord.y = Math.floorDiv(this.y, value);
+
+        return newCoord;
+    }
+
+    //  Transform Vector
+    public Coord assignAdd(Coord coord) {
+        this.x += coord.x;
+        this.y += coord.y;
+        return this;
+    }
+
+    public Coord assignSubtract(Coord coord) {
+        this.x -= coord.x;
+        this.y -= coord.y;
+        return this;
+    }
+
+    public Coord assignMultiply(Coord coord) {
+        this.x *= coord.x;
+        this.y *= coord.y;
+        return this;
+    }
+
+    public Coord assignDivide(Coord coord) {
+        this.x /= coord.x;
+        this.y /= coord.y;
+        return this;
+    }
+
+    //  Transform Scalar
+    public Coord assignAdd(int value) {
+        this.x += value;
+        this.y += value;
+        return this;
+    }
+
+    public Coord assignSubtract(int value) {
+        this.x -= value;
+        this.y -= value;
+        return this;
+    }
+
+    public Coord assignMultiply(int value) {
+        this.x *= value;
+        this.y *= value;
+        return this;
+    }
+
+    public Coord assignDivide(int value) {
+        this.x /= value;
+        this.y /= value;
+        return this;
+    }
+
+    public Coord assignFloorDivide(int value) {
+        this.x = Math.floorDiv(this.x, value);
+        this.y = Math.floorDiv(this.y, value);
+        return this;
+    }
+
+    // Convenient
+    public Coord center() {
+        return Coord.of(this)
+            .assignFloorDivide(TILE_IN_COORD)
+            .assignMultiply(TILE_IN_COORD)
+            .assignAdd(TILE_IN_COORD / 2);
+    }
+
+    public Coord north() { return this.add(0, -TILE_IN_COORD); }
+    public Coord east() { return this.add(TILE_IN_COORD, 0); }
+    public Coord west() { return this.add(-TILE_IN_COORD, 0); }
+    public Coord south() { return this.add(0, TILE_IN_COORD); }
+
+    public Coord offset(int x, int y) { return this.add(x, y); }
+
+    // warning: ignore overflow
+    public double distance(Coord coord) {
+        final int dx = this.x - coord.x;
+        final int dy = this.y - coord.y;
+        return Math.sqrt(dx * dx + dy * dy);
     }
 }

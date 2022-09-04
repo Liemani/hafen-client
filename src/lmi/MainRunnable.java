@@ -12,7 +12,6 @@ public class MainRunnable implements Runnable {
             if (commandString.contentEquals("exit")) {
                 break;
             } else if (commandString.contentEquals("")
-                    || commandString.contentEquals("h")
                     || commandString.contentEquals("help")) {
                 printCommandStringList(System.out);
                 continue;
