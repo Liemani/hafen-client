@@ -2,58 +2,55 @@ package lmi.api;
 
 import lmi.*;
 
-public class CoordinateHandler {
-    // convert
-    public static haven.Coord convertCoord2dToCoord(haven.Coord2d mapPoint) {
-        return mapPoint.floor(haven.OCache.posres);
-    }
+import static lmi.Constant.*;
 
-    public static haven.Coord2d convertCoordToCoord2d(haven.Coord mapPointInIntCoordinate) {
-	    return mapPointInIntCoordinate.mul(haven.OCache.posres);
-    }
+public class Coordinate {
+    // Convert
+    public static haven.Coord toCoord(haven.Coord2d coord2d) { return coord2d.floor(haven.OCache.posres); }
+    public static haven.Coord2d toCoord2d(haven.Coord coord) { return coord.mul(haven.OCache.posres); }
 
-    // center of tile
-    public static haven.Coord2d tileCenter(haven.Coord2d point) {
-        double x = java.lang.Math.floor(point.x / 11.0) * 11.0 + 5.5;
-        double y = java.lang.Math.floor(point.y / 11.0) * 11.0 + 5.5;
+    // Center Of Tile
+    public static haven.Coord2d center(haven.Coord2d point) {
+        double x = java.lang.Math.floor(point.x / TILE_IN_COORD2D) * TILE_IN_COORD2D + TILE_IN_COORD2D / 2;
+        double y = java.lang.Math.floor(point.y / TILE_IN_COORD2D) * TILE_IN_COORD2D + TILE_IN_COORD2D / 2;
         return new haven.Coord2d(x, y);
     }
 
-    public static haven.Coord tileCenter(haven.Coord point) {
-        return point.div(1024).mul(1024).add(512, 512);
+    public static haven.Coord center(haven.Coord point) {
+        return point.div(TILE_IN_COORD).mul(TILE_IN_COORD).add(TILE_IN_COORD / 2, TILE_IN_COORD / 2);
     }
 
     // 4 direction 1 tile
     public static haven.Coord eastTile(haven.Coord mapPoint) {
-        return mapPoint.add(1024, 0);
+        return mapPoint.add(TILE_IN_COORD, 0);
     }
 
     public static haven.Coord westTile(haven.Coord mapPoint) {
-        return mapPoint.add(-1024, 0);
+        return mapPoint.add(-TILE_IN_COORD, 0);
     }
 
     public static haven.Coord southTile(haven.Coord mapPoint) {
-        return mapPoint.add(0, 1024);
+        return mapPoint.add(0, TILE_IN_COORD);
     }
 
     public static haven.Coord northTile(haven.Coord mapPoint) {
-        return mapPoint.add(0, -1024);
+        return mapPoint.add(0, -TILE_IN_COORD);
     }
 
     public static haven.Coord2d eastTile(haven.Coord2d mapPoint) {
-        return mapPoint.add(11.0, 0.0);
+        return mapPoint.add(TILE_IN_COORD2D, 0.0);
     }
 
     public static haven.Coord2d westTile(haven.Coord2d mapPoint) {
-        return mapPoint.add(-11.0, 0.0);
+        return mapPoint.add(-TILE_IN_COORD2D, 0.0);
     }
 
     public static haven.Coord2d southTile(haven.Coord2d mapPoint) {
-        return mapPoint.add(0.0, 11.0);
+        return mapPoint.add(0.0, TILE_IN_COORD2D);
     }
 
     public static haven.Coord2d northTile(haven.Coord2d mapPoint) {
-        return mapPoint.add(0.0, -11.0);
+        return mapPoint.add(0.0, -TILE_IN_COORD2D);
     }
 
     // etc
@@ -73,11 +70,8 @@ public class CoordinateHandler {
         return point.add(xOffset, yOffset);
     }
 
-    // equals
-    public static boolean equals(haven.Coord lhs, haven.Coord rhs) {
-        return Math.abs(lhs.x - rhs.x) < Constant.COORD2D_PER_COORD
-            && Math.abs(lhs.y - rhs.y) < Constant.COORD2D_PER_COORD;
-    }
+    // Equal To
+    public static boolean equals(haven.Coord lhs, haven.Coord rhs) { return lhs.x == rhs.x && lhs.y == rhs.y; }
 
     public static boolean equals(haven.Coord2d lhs, haven.Coord2d rhs) {
         return Math.abs(lhs.x - rhs.x) < Constant.COORD2D_PER_COORD
@@ -85,11 +79,11 @@ public class CoordinateHandler {
     }
 
     public static boolean equals(haven.Coord2d lhs, haven.Coord rhs) {
-        final haven.Coord lhsInCoord = CoordinateHandler.convertCoord2dToCoord(lhs);
-        return CoordinateHandler.equals(lhsInCoord, rhs);
+        final haven.Coord lhsInCoord = Coordinate.toCoord(lhs);
+        return Coordinate.equals(lhsInCoord, rhs);
     }
 
     public static boolean equals(haven.Coord lhs, haven.Coord2d rhs) {
-        return CoordinateHandler.equals(rhs, lhs);
+        return Coordinate.equals(rhs, lhs);
     }
 }

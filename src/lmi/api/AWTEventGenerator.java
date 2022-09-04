@@ -185,4 +185,24 @@ public class AWTEventGenerator {
             lmi.ObjectShadow.dispatcher().notifyAll();
         }
     }
+
+    // etc
+    static Void openAxeCraftWindow() {
+        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
+        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
+        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
+        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_A);
+        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
+        return null;
+    }
+
+    static Void typeEnter() {
+        AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_ENTER);
+        return null;
+    }
+
+    static Void typeTab() {
+        AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_TAB);
+        return null;
+    }
 }
