@@ -4,7 +4,7 @@ import static lmi.Constant.gfx.hud.meter.*;
 import static lmi.Constant.Gauge.Index.*;
 
 public class ObjectShadow {
-    // static fields
+    // Field
     private static haven.MainFrame mainFrame_;   // haven.MainFrame::MainFrame()
     private static Thread mainThread_;   // haven.MainFrame::run()
     private static haven.JOGLPanel joglPanel_;   // haven.JOGLPanel::JOGLPanel()
@@ -20,10 +20,10 @@ public class ObjectShadow {
     private static haven.Glob glob_;    // haven.Glob::Glob()
     private static haven.OCache objectCache_;
 
-    // initialize
+    // Initialize
     static void init() { gaugeWidgetArray_ = new haven.IMeter[3]; }
 
-    // getter
+    // Getter
     public static haven.MainFrame mainFrame() { return mainFrame_; }
     public static Thread mainThread() { return mainThread_; }
     public static haven.JOGLPanel joglPanel() { return joglPanel_; }
@@ -39,7 +39,7 @@ public class ObjectShadow {
     public static haven.Glob glob() { return glob_; }
     public static haven.OCache objectCache() { return objectCache_; }
 
-    // setter
+    // Setter
     static void setMainFrame(haven.MainFrame mainFrame) { mainFrame_ = mainFrame; }
     static void setMainThread(Thread mainThread) { mainThread_ = mainThread; }
     static void setJOGLPanel(haven.JOGLPanel joglPanel) { joglPanel_ = joglPanel; }
@@ -66,7 +66,7 @@ public class ObjectShadow {
             gaugeWidgetArray_[GI_ENERGY] = gauge;
     }
 
-    // package methods
+    // Package Method
     static haven.Coord getMouseLocation() {
         return ui_.mc;
     }

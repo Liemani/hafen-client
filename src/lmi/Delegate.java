@@ -57,7 +57,7 @@ public class Delegate {
     // following
     public static void followingDidAdded(haven.Gob gob) {
         // Following::$follow::apply()
-        final haven.Gob target = GobHandler.followingTarget(gob);
+        final haven.Gob target = Gob.followingTarget(gob);
         if (target != Self.gob()) return;
 
         WaitManager.notifyAction(gob, AC_DID_LIFT);
@@ -65,7 +65,7 @@ public class Delegate {
 
     public static void followingDidDeleted(haven.Gob gob) {
         // Following::$follow::apply()
-        final haven.Gob target = GobHandler.followingTarget(gob);
+        final haven.Gob target = Gob.followingTarget(gob);
         if (target != Self.gob()) return;
 
         WaitManager.notifyAction(gob, AC_DID_PUT);
@@ -87,7 +87,7 @@ public class Delegate {
     // etc
     public static void poseDidChanged(haven.Gob gob) {
         // Composite::poseDidChange()
-        if (GobHandler.hasPose(gob, RN_IDLE))
+        if (Gob.hasPose(gob, RN_IDLE))
             WaitManager.notifyAction(gob, AC_DID_PUT);
     }
 

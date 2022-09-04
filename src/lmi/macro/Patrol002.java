@@ -1,5 +1,6 @@
 package lmi.macro;
 
+import lmi.api.*;
 import lmi.collection.Array;
 
 public class Patrol002 implements Runnable {
@@ -26,8 +27,8 @@ public class Patrol002 implements Runnable {
     }
 
     private void main() throws InterruptedException {
-        haven.Coord firstPoint = lmi.api.CoordinateHandler.convertCoord2dToCoord(lmi.api.Self.location().add(0.0, -11.0));
-        haven.Coord secondPoint = lmi.api.CoordinateHandler.convertCoord2dToCoord(lmi.api.Self.location()).add(1, 0);
+        haven.Coord firstPoint = Coordinate.toCoord(lmi.api.Self.location().add(0.0, -11.0));
+        haven.Coord secondPoint = Coordinate.toCoord(lmi.api.Self.location()).add(1, 0);
         lmi.api.Self.move(firstPoint);
         Thread.sleep(2000);
         lmi.api.Self.move(secondPoint);

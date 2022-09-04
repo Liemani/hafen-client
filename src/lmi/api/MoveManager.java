@@ -100,10 +100,10 @@ class MoveManager {
     }
 
     public boolean didArrive_(haven.Coord2d point) {
-        return GobHandler.isAt(gob_, point);
+        return Gob.isAt(gob_, point);
     }
 
     public boolean didArrive_(haven.Coord point) {
-        return GobHandler.isAt(gob_, point);
+        return Gob.isAt(gob_, point);
     }
 }
