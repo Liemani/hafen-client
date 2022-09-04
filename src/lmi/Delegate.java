@@ -1,6 +1,7 @@
 package lmi;
 
 import haven.Gob;
+import haven.Coord;
 
 import lmi.api.*;
 import lmi.Constant.Action;
@@ -93,16 +94,20 @@ public class Delegate {
             WaitManager.notifyAction(gob, AC_DID_PUT);
     }
 
-    public static boolean objectDidClicked(int mouseButton, haven.ClickData clickData) {
+    public static boolean didClicked(haven.Coord2d coord2d, int mouseButton, haven.ClickData clickData) {
         // MapView::Click::hit()
-        if (mouseButton != IM_LEFT) return false;
-        if (clickData == null) return false;
         if (!ClickManager.isWatingInput()) return false;
+        if (mouseButton != IM_LEFT) return false;
 
-        ClickManager.setClickData(clickData);
-        WaitManager.notifyAction(AC_DID_OBJECT_CLICK);
-        return true;
-
+        if (clickData != null) {
+            ClickManager.setClickData(clickData);
+            WaitManager.notifyAction(AC_DID_OBJECT_CLICK);
+            return true;
+        } else {
+            ClickManager.setClickPoint(Coord.of(coord2d));
+            WaitManager.notifyAction(AC_DID_CLICK);
+            return true;
+        }
     }
 
     public static void cursorDidChanged() {

@@ -22,6 +22,7 @@ public class Constant {
             AC_FLOWER_MENU_DID_ADDED,
             AC_PROGRESS_DID_ADDED,
             AC_PROGRESS_DID_DESTROYED,
+            AC_DID_CLICK,
             AC_DID_OBJECT_CLICK,
         }
     }
