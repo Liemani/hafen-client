@@ -98,8 +98,8 @@ public class Self {
     }
 
     public static StatusCode moveCenter() {
-        Coord center = Self.location().center();
-        return move(center);
+        Coord tileCenter = Self.location().tileCenter();
+        return move(tileCenter);
     }
 
     // carry

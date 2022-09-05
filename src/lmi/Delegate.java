@@ -102,12 +102,11 @@ public class Delegate {
         if (clickData != null) {
             ClickManager.setClickData(clickData);
             WaitManager.notifyAction(AC_DID_OBJECT_CLICK);
-            return true;
-        } else {
-            ClickManager.setClickPoint(Coord.of(coord2d));
-            WaitManager.notifyAction(AC_DID_CLICK);
-            return true;
         }
+
+        ClickManager.setClickPoint(Coord.of(coord2d));
+        WaitManager.notifyAction(AC_DID_CLICK);
+        return true;
     }
 
     public static void cursorDidChanged() {
