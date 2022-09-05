@@ -1,5 +1,6 @@
 package lmi;
 
+// import haven package
 import haven.Gob;
 import haven.Coord;
 
@@ -10,8 +11,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+// import lmi package
 import lmi.api.*;
 import lmi.collection.Array;
+import lmi.graphic.Rect;
 
 // constant
 import lmi.Constant.StatusCode;
@@ -211,8 +214,7 @@ class Command {
         while (iterator.hasNext()) {
             ++count;
             Gob gob = iterator.next();
-            System.out.println(gob.resourceName());
-            System.out.println(count);
+            System.out.println("[" + count + "] { virtual: " + gob.virtual + ", class: " + gob.getClass() + ", resource name: " + gob.resourceName() + " }");
         }
         return null;
     }
@@ -373,7 +375,7 @@ class Command {
         System.out.println("click next gob to move!");
         Gob variantGob = ClickManager.getGob();
 
-        Coord standardPoint = Self.location().center();
+        Coord standardPoint = Self.location().tileCenter();
         Self.lift(standardGob);
         Self.move(standardPoint.add(0, 2048));
         Self.put(standardPoint);
@@ -444,7 +446,7 @@ class Command {
     }
 
     static Void test3() {
-        final Coord centerPosition = Self.location().center();
+        final Coord centerPosition = Self.location().tileCenter();
 
         System.out.println("첫 번째 로그를 선택해주세요");
         Gob firstLog = ClickManager.getGob();
@@ -464,9 +466,17 @@ class Command {
     }
 
     static Void getArea() {
-        Coord[] coordArray = ClickManager.getArea();
-        Util.debugPrint(Command.class, "first point: " + coordArray[0]);
-        Util.debugPrint(Command.class, "second point: " + coordArray[1]);
+        final Rect area = ClickManager.getArea();
+        Util.debugPrint(Command.class, "origin: " + area.origin);
+        Util.debugPrint(Command.class, "size: " + area.size);
+        return null;
+    }
+
+    static Void describeGobInArea() {
+        System.out.println("click tow points to get area to get gob");
+        Array<Gob> gobArray = ClickManager.getGobArrayInArea();
+        for (Gob gob : gobArray)
+            System.out.println("resource name: " + gob.resourceName());
         return null;
     }
 }

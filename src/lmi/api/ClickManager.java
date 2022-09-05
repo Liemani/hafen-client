@@ -1,9 +1,15 @@
 package lmi.api;
 
+// ipmort haven package
 import haven.Gob;
 import haven.Coord;
 
+// import lmi package
+import lmi.collection.Array;
+import lmi.graphic.Rect;
 import lmi.Constant.StatusCode;
+
+// import constant
 import static lmi.Constant.StatusCode.*;
 import static lmi.Constant.Action.Custom.*;
 
@@ -53,11 +59,25 @@ public class ClickManager {
         return clickPoint;
     }
 
-    // TODO implement this
-    public static Coord[] getArea() {
-        Coord[] coordArray = new Coord[2];
-        coordArray[0] = ClickManager.getCoord();
-        coordArray[1] = ClickManager.getCoord();
-        return coordArray;
+    public static Rect getArea() {
+        final Coord coord1 = ClickManager.getCoord();
+        final Coord coord2 = ClickManager.getCoord();
+        return new Rect(coord1, coord2).assignExtendToTile();
+    }
+
+    public static Array<Gob> getGobArrayInArea() {
+        final Rect rect = ClickManager.getArea();
+
+        Array<Gob> gobArray = new Array<Gob>();
+        java.util.Iterator<Gob> iterator = Util.iterator();
+        while (iterator.hasNext()) {
+            final Gob gob = iterator.next();
+            if (gob.getClass() != Gob.class)
+                continue;
+            if (rect.contains(gob.location()))
+                gobArray.add(gob);
+        }
+
+        return gobArray;
     }
 }

@@ -354,6 +354,10 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
         return newCoord;
     }
 
+    public Coord ceilDivide(int value) {
+        return this.floorDivide(value).assignAdd(1);
+    }
+
     //  Transform Vector
     public Coord assignAdd(Coord coord) {
         this.x += coord.x;
@@ -410,8 +414,12 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
         return this;
     }
 
+    public Coord assignCeilDivide(int value) {
+        return this.assignFloorDivide(value).assignAdd(1);
+    }
+
     // Convenient
-    public Coord center() {
+    public Coord tileCenter() {
         return Coord.of(this)
             .assignFloorDivide(TILE_IN_COORD)
             .assignMultiply(TILE_IN_COORD)
@@ -424,6 +432,30 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
     public Coord south() { return this.add(0, TILE_IN_COORD); }
 
     public Coord offset(int x, int y) { return this.add(x, y); }
+
+    public Coord min(Coord rhs) {
+        return Coord.of(
+                Math.min(this.x, rhs.x),
+                Math.min(this.y, rhs.y));
+    }
+
+    public Coord max(Coord rhs) {
+        return Coord.of(
+                Math.max(this.x, rhs.x),
+                Math.max(this.y, rhs.y));
+    }
+
+    public Coord tileMin() {
+        return Coord.of(this)
+            .assignFloorDivide(TILE_IN_COORD)
+            .assignMultiply(TILE_IN_COORD);
+    }
+
+    public Coord tileMax() {
+        return Coord.of(this)
+            .assignCeilDivide(TILE_IN_COORD)
+            .assignMultiply(TILE_IN_COORD);
+    }
 
     // warning: ignore overflow
     public double distance(Coord coord) {
