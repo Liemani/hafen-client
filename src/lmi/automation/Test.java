@@ -1,4 +1,4 @@
-package lmi.macro;
+package lmi.automation;
 
 public class Test implements Runnable {
     public void run() {

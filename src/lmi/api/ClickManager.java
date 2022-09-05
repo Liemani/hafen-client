@@ -66,18 +66,7 @@ public class ClickManager {
     }
 
     public static Array<Gob> getGobArrayInArea() {
-        final Rect rect = ClickManager.getArea();
-
-        Array<Gob> gobArray = new Array<Gob>();
-        java.util.Iterator<Gob> iterator = Util.iterator();
-        while (iterator.hasNext()) {
-            final Gob gob = iterator.next();
-            if (gob.getClass() != Gob.class)
-                continue;
-            if (rect.contains(gob.location()))
-                gobArray.add(gob);
-        }
-
-        return gobArray;
+        final Rect area = ClickManager.getArea();
+        return GobManager.getGobArrayInArea(area);
     }
 }

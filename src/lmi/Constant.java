@@ -227,10 +227,13 @@ public class Constant {
                 public static final String RN_WBLOCK = "wblock";
             }
 
+            // example:
             //  almondtree
             //  almondtreelog
             //  almondtreestump
             public static class trees {
+                public static final String RN_LOG = "log";
+                public static final String RN_STUMP = "stump";
                 public static final String RN_ALMONDTREE = "almondtree";
                 public static final String RN_APPLETREE = "appletree";
                 public static final String RN_BAYWILLOW = "baywillow";
@@ -290,5 +293,10 @@ public class Constant {
         SC_FAILED_LIFT,
         SC_FAILED_PUT,
         SC_FAILED_GET_GOB,
+
+        // automation status code
+        SC_FAILED_TOO_SMALL_AREA,
+        SC_FINISH_NOTHING_TO_DO,
+        SC_FINISH_NO_SPACE,
     }
 }

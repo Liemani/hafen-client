@@ -31,34 +31,39 @@ class Command {
     // fields
     private static CommandMap map_;
 
-    // macro command
-    static Void macroInterrupt() {
-        MacroThread.interrupt();
+    // automation command
+    static Void automationInterrupt() {
+        AutomationThread.interrupt();
         return null;
     }
 
-    static Void macroConnect() {
-        MacroThread.start(new lmi.macro.Connect());
+    static Void automationConnect() {
+        AutomationThread.start(new lmi.automation.Connect());
         return null;
     }
 
-    static Void macroPatrol000() {
-        MacroThread.start(new lmi.macro.Patrol000());
+    static Void automationPatrol000() {
+        AutomationThread.start(new lmi.automation.Patrol000());
         return null;
     }
 
-    static Void macroPatrol001() {
-        MacroThread.start(new lmi.macro.Patrol001());
+    static Void automationPatrol001() {
+        AutomationThread.start(new lmi.automation.Patrol001());
         return null;
     }
 
-    static Void macroPatrol002() {
-        MacroThread.start(new lmi.macro.Patrol002());
+    static Void automationPatrol002() {
+        AutomationThread.start(new lmi.automation.Patrol002());
         return null;
     }
 
-    static Void macroTest() {
-        MacroThread.start(new lmi.macro.Test());
+    static Void automationTest() {
+        AutomationThread.start(new lmi.automation.Test());
+        return null;
+    }
+
+    static Void automationCleanLog() {
+        AutomationThread.start(new lmi.automation.CleanLog());
         return null;
     }
 

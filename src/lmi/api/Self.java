@@ -97,6 +97,10 @@ public class Self {
         return Self.gob().distance(gob);
     }
 
+    public static double distance(Coord coord) {
+        return Self.gob().distance(coord);
+    }
+
     public static StatusCode moveCenter() {
         Coord tileCenter = Self.location().tileCenter();
         return move(tileCenter);
