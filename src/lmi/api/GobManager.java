@@ -1,9 +1,15 @@
 package lmi.api;
 
+// import haven package
 import haven.Gob;
 import haven.Coord;
 
+// import lmi package
+import lmi.collection.Array;
+import lmi.graphic.Rect;
 import lmi.Constant.StatusCode;
+
+// import constant
 import static lmi.Constant.StatusCode.*;
 import static lmi.Constant.Action.Custom.*;
 import static lmi.Constant.TimeOut.*;
@@ -108,6 +114,26 @@ public class GobManager {
                 new Exception().printStackTrace();
                 return SC_INTERRUPTED;
         }
+    }
+
+    public static Array<Gob> getGobArrayInArea() { return ClickManager.getGobArrayInArea(); }
+
+    public static Array<Gob> getGobArrayInArea(Rect area) {
+        Array<Gob> gobArray = new Array<Gob>();
+        while (true) {
+            try {
+                final java.util.Iterator<Gob> iterator = Util.iterator();
+                while (iterator.hasNext()) {
+                    final Gob gob = iterator.next();
+                    if (gob.getClass() != Gob.class)
+                        continue;
+                    if (area.contains(gob.location()))
+                        gobArray.add(gob);
+                }
+                break;
+            } catch (java.util.ConcurrentModificationException e) {}
+        }
+        return gobArray;
     }
 
     // private method

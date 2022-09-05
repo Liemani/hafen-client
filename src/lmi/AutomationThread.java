@@ -2,7 +2,7 @@ package lmi;
 
 import static lmi.Constant.TimeOut.*;
 
-class MacroThread {
+class AutomationThread {
     static Thread thread_;
 
     static void start(Runnable runnable) {
@@ -15,7 +15,7 @@ class MacroThread {
         thread_ = new Thread(() -> {
                 runnable.run();
                 thread_ = null;
-                System.out.println("[macro is terminating]");
+                System.out.println("[automation is terminating]");
                 });
         thread_.start();
     }
