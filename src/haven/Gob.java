@@ -698,7 +698,11 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
         return following.tgt();
     }
 
-    public boolean isFollowing(Gob gob) { return this.followingTarget().equals(gob); }
+    public boolean isFollowing(Gob gob) {
+        final Gob target = this.followingTarget();
+        if (target == null) return false;
+        return target == gob;
+    }
     public boolean isLifting() { return this.hasPose(RN_BANZAI); }
     public boolean isLifting(Gob gob) { return gob.isFollowing(this); }
 

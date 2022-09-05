@@ -1,9 +1,11 @@
-package lmi.macro;
+package lmi.automation;
 
 import lmi.collection.Array;
 
-public class Patrol001 implements Runnable {
-    private Array<haven.Coord2d> path_;
+import static lmi.Constant.*;
+
+public class Patrol000 implements Runnable {
+    private Array<haven.Coord> path_;
 
     public void run() {
         willRun();
@@ -20,17 +22,17 @@ public class Patrol001 implements Runnable {
     private void willRun() {
         clearPath();
         path_.append(lmi.api.Self.location());
-        path_.append(lmi.api.Self.location().add(0.0, 11.0));
+        path_.append(lmi.api.Self.location().add(TILE_IN_COORD, 0));
     }
 
     private void clearPath() {
         if (path_ == null)
-            path_ = new Array<haven.Coord2d>();
+            path_ = new Array<haven.Coord>();
         path_.removeAll();
     }
 
     public void patrolPath() throws InterruptedException {
-        for (haven.Coord2d location : path_) {
+        for (haven.Coord location : path_) {
             lmi.api.Self.move(location);
             Thread.sleep(1000);
         }

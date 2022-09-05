@@ -1,4 +1,4 @@
-package lmi.macro;
+package lmi.automation;
 
 import lmi.collection.Array;
 
@@ -6,13 +6,8 @@ public class MovePathTemplate implements Runnable {
     private Array<haven.Coord2d> path_;
 
     public void run() {
-        try {
-            willRun();
-            main();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (Exception e) { e.printStackTrace(); }
-
+        willRun();
+        main();
         didRun();
     }
 
@@ -30,8 +25,8 @@ public class MovePathTemplate implements Runnable {
         path_.removeAll();
     }
 
-    private void main() throws InterruptedException {
-        // compose your move macro code here...
+    private void main() {
+        // compose your move automation code here...
         // example:
         //  for (haven.Coord2d point : path_) {
         //      Player.mapClickLeftMouseButton(point, 0);
@@ -40,6 +35,6 @@ public class MovePathTemplate implements Runnable {
     }
 
     private void didRun() {
-        System.out.println("[macro is terminating]");
+        System.out.println("[automation is terminating]");
     }
 }

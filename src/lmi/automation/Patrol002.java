@@ -1,12 +1,14 @@
-package lmi.macro;
+package lmi.automation;
 
 import lmi.api.*;
 import lmi.collection.Array;
 
 import static lmi.Constant.*;
 
+import static lmi.Constant.*;
+
 public class Patrol002 implements Runnable {
-    private Array<haven.Coord2d> path_;
+    private Array<haven.Coord> path_;
 
     public void run() {
         try {
@@ -24,7 +26,7 @@ public class Patrol002 implements Runnable {
 
     private void clearPath() {
         if (path_ == null)
-            path_ = new Array<haven.Coord2d>();
+            path_ = new Array<haven.Coord>();
         path_.removeAll();
     }
 

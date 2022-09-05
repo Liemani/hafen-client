@@ -1,4 +1,4 @@
-package lmi.macro;
+package lmi.automation;
 
 import lmi.api.*;
 
