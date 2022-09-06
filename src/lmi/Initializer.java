@@ -10,7 +10,7 @@ public class Initializer {
         Debug.init();
     }
 
-    // set lmi.api.ObjectShadow
+    // set lmi.ObjectShadow
     public static void initMainFrame(haven.MainFrame mainFrame) { ObjectShadow.setMainFrame(mainFrame); }
     public static void initMainThread(Thread mainThread) { ObjectShadow.setMainThread(mainThread); }
     public static void initJOGLPanel(haven.JOGLPanel joglPanel) { ObjectShadow.setJOGLPanel(joglPanel); }

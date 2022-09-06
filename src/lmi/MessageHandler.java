@@ -1,6 +1,4 @@
-package lmi.api;
-
-import lmi.*;
+package lmi;
 
 public class MessageHandler {
     public static String getAction(haven.RMessage message) {

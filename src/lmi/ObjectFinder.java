@@ -1,7 +1,5 @@
 package lmi;
 
-import lmi.collection.*;
-
 class ObjectFinder {
     // static fields
     private static Array<Object> path_ = null;

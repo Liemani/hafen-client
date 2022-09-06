@@ -1,6 +1,6 @@
 package lmi.automation;
 
-import lmi.collection.Array;
+import lmi.Array;
 
 public class MovePathTemplate implements Runnable {
     private Array<haven.Coord2d> path_;

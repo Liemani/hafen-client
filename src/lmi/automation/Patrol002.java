@@ -1,7 +1,7 @@
 package lmi.automation;
 
-import lmi.api.*;
-import lmi.collection.Array;
+import lmi.Self;
+import lmi.Array;
 
 import static lmi.Constant.*;
 
@@ -33,9 +33,9 @@ public class Patrol002 implements Runnable {
     private void main() throws InterruptedException {
         haven.Coord firstPoint = Self.location().add(0, -TILE_IN_COORD);
         haven.Coord secondPoint = Self.location().add(TILE_IN_COORD, 0);
-        lmi.api.Self.move(firstPoint);
+        Self.move(firstPoint);
         Thread.sleep(2000);
-        lmi.api.Self.move(secondPoint);
+        Self.move(secondPoint);
         Thread.sleep(2000);
     }
 }

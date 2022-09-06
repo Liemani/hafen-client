@@ -1,4 +1,4 @@
-package lmi.api;
+package lmi;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.KeyEvent;

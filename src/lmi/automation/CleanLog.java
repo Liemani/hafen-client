@@ -5,11 +5,7 @@ import haven.Gob;
 import haven.Coord;
 
 // import lmi package
-import lmi.collection.Array;
 import lmi.*;
-import lmi.graphic.Rect;
-import lmi.api.*;
-import lmi.Constant.BoundingBox.*;
 import lmi.Constant.StatusCode;
 
 // import constant
@@ -189,7 +185,7 @@ public class CleanLog implements Runnable {
     }
 
     private boolean coordIsPossessed(Coord coord) {
-        java.util.Iterator<Gob> iterator = lmi.api.Util.iterator();
+        java.util.Iterator<Gob> iterator = Util.iterator();
         while (iterator.hasNext()) {
             final Gob gob = iterator.next();
             if (gob.getClass() != Gob.class)
