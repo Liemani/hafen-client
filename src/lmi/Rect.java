@@ -1,8 +1,9 @@
-package lmi.graphic;
+package lmi;
 
+// import haven package
 import haven.Coord;
 
-// constant
+// import constant
 import static lmi.Constant.*;
 
 public class Rect {

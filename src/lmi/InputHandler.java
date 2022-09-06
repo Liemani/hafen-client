@@ -1,4 +1,4 @@
-package lmi.api;
+package lmi;
 
 public class InputHandler {
     public static boolean isShiftDown() {

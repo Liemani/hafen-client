@@ -1,6 +1,6 @@
 // https://developer.apple.com/documentation/swift/array/
 // this class mimic Swift::Array
-package lmi.collection;
+package lmi;
 
 import java.util.function.Predicate;
 

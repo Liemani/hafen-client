@@ -1,10 +1,11 @@
-package lmi.api;
+package lmi;
 
+// import haven package
 import haven.Gob;
 import haven.Coord;
 
-import lmi.*;
-import lmi.Constant.*;
+// import constant
+import lmi.Constant.StatusCode;
 import static lmi.Constant.*;
 import static lmi.Constant.Input.Mouse.*;
 import static lmi.Constant.Input.Modifier.*;

@@ -3,9 +3,7 @@ package lmi;
 import haven.Gob;
 import haven.Coord;
 
-import lmi.api.*;
 import lmi.Constant.Action;
-import lmi.collection.Array;
 
 // constant
 import static lmi.Constant.Action.*;

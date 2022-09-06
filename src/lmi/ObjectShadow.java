@@ -50,7 +50,7 @@ public class ObjectShadow {
     static void setGameUI(haven.GameUI gameUI) { gameUI_ = gameUI; }
     static void setMapView(haven.MapView mapView) {
         mapView_ = mapView;
-        lmi.api.Util.initMapViewCenterByMapView(mapView_);
+        Util.initMapViewCenterByMapView(mapView_);
     }
     static void setSession(haven.Session session) { session_ = session; }
     static void setCharacterList(haven.Charlist characterList) { characterList_ = characterList; }

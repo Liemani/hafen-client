@@ -1,6 +1,5 @@
-package lmi.api;
+package lmi;
 
-import lmi.*;
 import lmi.Constant.StatusCode;
 import static lmi.Constant.StatusCode.*;
 import lmi.Constant.Action;

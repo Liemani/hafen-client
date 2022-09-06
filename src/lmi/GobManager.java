@@ -1,12 +1,10 @@
-package lmi.api;
+package lmi;
 
 // import haven package
 import haven.Gob;
 import haven.Coord;
 
 // import lmi package
-import lmi.collection.Array;
-import lmi.graphic.Rect;
 import lmi.Constant.StatusCode;
 
 // import constant

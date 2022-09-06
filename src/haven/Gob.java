@@ -31,9 +31,9 @@ import java.util.function.*;
 import haven.render.*;
 
 // lmi custom import
-import lmi.collection.Array;
+import lmi.Array;
 import lmi.Constant.StatusCode;
-import lmi.api.GobManager;
+import lmi.GobManager;
 import static lmi.Constant.gfx.borka.*;
 
 public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Skeleton.HasPose {
