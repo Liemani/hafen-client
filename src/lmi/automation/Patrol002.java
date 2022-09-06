@@ -8,7 +8,7 @@ import static lmi.Constant.*;
 import static lmi.Constant.*;
 
 public class Patrol002 implements Runnable {
-    private Array<haven.Coord> path_;
+    private Array<haven.Coord> _path;
 
     public void run() {
         try {
@@ -25,9 +25,9 @@ public class Patrol002 implements Runnable {
     }
 
     private void clearPath() {
-        if (path_ == null)
-            path_ = new Array<haven.Coord>();
-        path_.removeAll();
+        if (_path == null)
+            _path = new Array<haven.Coord>();
+        _path.removeAll();
     }
 
     private void main() throws InterruptedException {

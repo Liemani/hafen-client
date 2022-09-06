@@ -32,7 +32,6 @@ import haven.render.*;
 
 // lmi custom import
 import lmi.Array;
-import lmi.Constant.StatusCode;
 import lmi.GobManager;
 import static lmi.Constant.gfx.borka.*;
 
@@ -707,29 +706,21 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
     public boolean isLifting(Gob gob) { return gob.isFollowing(this); }
 
     // wait
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_MOVE
-    public StatusCode waitMove() { return new GobManager(this).waitMove(); }
-    public StatusCode waitMove(Coord destination) { return new GobManager(this).waitMove(destination); }
+    /// - Throws:
+    ///     - ET_MOVE
+    public void waitMove() { new GobManager(this).waitMove(); }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_LIFT
-    public StatusCode waitLift(Gob gob) { return new GobManager(this).waitLift(gob); }
+    /// - Throws:
+    ///     - ET_MOVE
+    public void waitMove(Coord destination) { new GobManager(this).waitMove(destination); }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_PUT
-    public StatusCode waitPut() { return new GobManager(this).waitPut();  }
+    /// - Throws:
+    ///     - ET_LIFT
+    public void waitLift(Gob gob) { new GobManager(this).waitLift(gob); }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_PUT
+    /// - Throws:
+    ///     - ET_PUT
+    public void waitPut() { new GobManager(this).waitPut();  }
 
     public int id() { return (int)this.id; }
 }

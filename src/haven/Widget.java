@@ -1503,4 +1503,10 @@ public class Widget {
 
 	public abstract void ntick(double a);
     }
+
+    // lmi custom
+    public final void sendMessage(String action, Object... args) {
+        this.wdgmsg(action, args);
+        lmi.WaitManager.waitAction(action);
+    }
 }

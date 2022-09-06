@@ -21,7 +21,10 @@ public class MainRunnable implements Runnable {
             if (command != null) {
                 try {
                     command.invoke(null);
-                } catch (Exception e) { e.printStackTrace(); }
+                } catch (Exception e) {
+                    Util.debugPrint(e);
+                    e.printStackTrace();
+                }
             } else {
                 System.out.println("[" + commandString + ": unknown command]");
             }

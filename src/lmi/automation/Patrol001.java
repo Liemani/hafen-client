@@ -6,7 +6,7 @@ import lmi.Self;
 import static lmi.Constant.*;
 
 public class Patrol001 implements Runnable {
-    private Array<haven.Coord> path_;
+    private Array<haven.Coord> _path;
 
     public void run() {
         willRun();
@@ -22,18 +22,18 @@ public class Patrol001 implements Runnable {
     // private methods
     private void willRun() {
         clearPath();
-        path_.append(Self.location());
-        path_.append(Self.location().add(0, TILE_IN_COORD));
+        _path.append(Self.location());
+        _path.append(Self.location().add(0, TILE_IN_COORD));
     }
 
     private void clearPath() {
-        if (path_ == null)
-            path_ = new Array<haven.Coord>();
-        path_.removeAll();
+        if (_path == null)
+            _path = new Array<haven.Coord>();
+        _path.removeAll();
     }
 
     public void patrolPath() throws InterruptedException {
-        for (haven.Coord location : path_) {
+        for (haven.Coord location : _path) {
             Self.move(location);
             Thread.sleep(1000);
         }

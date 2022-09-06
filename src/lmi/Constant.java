@@ -279,24 +279,20 @@ public class Constant {
         }
     }
 
-    public static enum StatusCode {
-        SC_SUCCEEDED,
-        SC_INTERRUPTED,
-        SC_TIME_OUT,
-        SC_FAILED_INVALID_ARGUMENT,
-        SC_FAILED_MATCH,
-        SC_FAILED_OPEN_FLOWER_MENU,
-        SC_FAILED_OPEN_PROGRESS,
-        SC_FAILED_OPEN_WINDOW,
-        SC_FAILED_CHOOSE,
-        SC_FAILED_MOVE,
-        SC_FAILED_LIFT,
-        SC_FAILED_PUT,
-        SC_FAILED_GET_GOB,
+    public static enum ExceptionType {
+        // why
+        ET_INTERRUPTED,
+        ET_TIME_OUT,
+        ET_NO_SPACE_LEFT,
+        ET_NO_WORK_TO_DO,
 
-        // automation status code
-        SC_FAILED_TOO_SMALL_AREA,
-        SC_FINISH_NOTHING_TO_DO,
-        SC_FINISH_NO_SPACE,
+        // what
+        ET_MOVE,
+        ET_FLOWER_MENU_OPEN,
+        ET_FLOWER_MENU_CHOOSE,
+        ET_FLOWER_MENU_MATCH,
+        ET_PROGRESS_OPEN,
+        ET_LIFT,
+        ET_PUT,
     }
 }

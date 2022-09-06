@@ -2,24 +2,24 @@ package lmi;
 
 class ObjectFinder {
     // static fields
-    private static Array<Object> path_ = null;
+    private static Array<Object> _path = null;
 
     // Initializing the Finder
     static void init() {
-        path_ = new Array<Object>();
+        _path = new Array<Object>();
     }
 
     static boolean isEmpty() {
-        return path_.isEmpty();
+        return _path.isEmpty();
     }
 
     static int count() {
-        return path_.count();
+        return _path.count();
     }
 
     // Accessing Elements
     static Object last() {
-        return path_.last();
+        return _path.last();
     }
 
     // Adding Elements
@@ -27,7 +27,7 @@ class ObjectFinder {
         if (object == null)
             return;
 
-        path_.append(object);
+        _path.append(object);
     }
 
     // Removing Elements
@@ -35,7 +35,7 @@ class ObjectFinder {
         if (isEmpty())
             return null;
 
-        return path_.removeLast();
+        return _path.removeLast();
     }
 
     // Controlling Path
@@ -44,7 +44,7 @@ class ObjectFinder {
     // TODO remove dependencey of input from Util.getObjectByInputFromField() and Util.getObjectByInputFromMethodo()
     static Object find(Util.MemberType type, Class classObjectToReset) throws Exception {
         if (classObjectToReset != null)
-            path_.removeAll();
+            _path.removeAll();
 
         boolean typeIsField = type.isField();
 

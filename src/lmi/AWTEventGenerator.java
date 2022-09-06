@@ -4,15 +4,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.KeyEvent;
 
 public class AWTEventGenerator {
-    public static haven.Coord mouseLocation_ = new haven.Coord();
+    public static haven.Coord _mouseLocation = new haven.Coord();
 
     public static void setMouseLocation(int x, int y) {
-        mouseLocation_.x = x;
-        mouseLocation_.y = y;
+        _mouseLocation.x = x;
+        _mouseLocation.y = y;
     }
 
     public static void printRecordedMouseLocation() {
-        lmi.Debug.describeField(mouseLocation_);
+        Debug.describeField(_mouseLocation);
     }
 
     // methods for command
@@ -22,7 +22,7 @@ public class AWTEventGenerator {
     // MouseEvent.BUTTON1: left mouse button
     // MouseEvent.BUTTON3: right mouse button
     public static void generateMouseClickGeneral(int button) {
-        generateMouseClickGeneral(mouseLocation_, button);
+        generateMouseClickGeneral(_mouseLocation, button);
     }
 
     public static void generateMouseClickGeneral(haven.Coord location, int button) {
@@ -58,20 +58,20 @@ public class AWTEventGenerator {
         generateMouseEvent(
                 MouseEvent.MOUSE_PRESSED,
                 modifiers | 0x1 << (button + 9),
-                mouseLocation_.x,
-                mouseLocation_.y,
+                _mouseLocation.x,
+                _mouseLocation.y,
                 button);
         generateMouseEvent(
                 MouseEvent.MOUSE_RELEASED,
                 modifiers,
-                mouseLocation_.x,
-                mouseLocation_.y,
+                _mouseLocation.x,
+                _mouseLocation.y,
                 button);
         generateMouseEvent(
                 MouseEvent.MOUSE_CLICKED,
                 modifiers,
-                mouseLocation_.x,
-                mouseLocation_.y,
+                _mouseLocation.x,
+                _mouseLocation.y,
                 button);
         generateKeyEvent(KeyEvent.KEY_RELEASED, 0, KeyEvent.VK_CONTROL, KeyEvent.CHAR_UNDEFINED, KeyEvent.KEY_LOCATION_LEFT);
     }
@@ -154,7 +154,7 @@ public class AWTEventGenerator {
     // private methods
     private static void generateKeyEvent(int id, int modifiers, int keyCode, char keyChar, int keyLocation) {
         KeyEvent event = new KeyEvent(
-                lmi.ObjectShadow.joglPanel(),
+                ObjectShadow.joglPanel(),
                 id,
                 System.currentTimeMillis(),
                 modifiers,
@@ -162,15 +162,15 @@ public class AWTEventGenerator {
                 keyChar,
                 keyLocation);
 
-        synchronized(lmi.ObjectShadow.dispatcher()) {
-            lmi.ObjectShadow.dispatcher().events.add(event);
-            lmi.ObjectShadow.dispatcher().notifyAll();
+        synchronized(ObjectShadow.dispatcher()) {
+            ObjectShadow.dispatcher().events.add(event);
+            ObjectShadow.dispatcher().notifyAll();
         }
     }
 
     private static void generateMouseEvent(int id, int modifiers, int x, int y, int button) {
         MouseEvent event = new MouseEvent(
-                lmi.ObjectShadow.joglPanel(),
+                ObjectShadow.joglPanel(),
                 id,
                 System.currentTimeMillis(),
                 modifiers,
@@ -180,9 +180,9 @@ public class AWTEventGenerator {
                 false,
                 button);
 
-        synchronized(lmi.ObjectShadow.dispatcher()) {
-            lmi.ObjectShadow.dispatcher().events.add(event);
-            lmi.ObjectShadow.dispatcher().notifyAll();
+        synchronized(ObjectShadow.dispatcher()) {
+            ObjectShadow.dispatcher().events.add(event);
+            ObjectShadow.dispatcher().notifyAll();
         }
     }
 

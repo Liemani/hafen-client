@@ -16,15 +16,15 @@ import java.util.ArrayList;
 import lmi.Util;
 
 public class Debug {
-    static boolean isPrint_;
+    static boolean _isPrint;
 
     static void init() {
-        isPrint_ = false;
+        _isPrint = false;
     }
 
     static void toggleIsPrint() {
-        isPrint_ = !isPrint_;
-        System.out.println("[isPrint: " + isPrint_ + "]");
+        _isPrint = !_isPrint;
+        System.out.println("[isPrint: " + _isPrint + "]");
     }
 
     static class Context {
@@ -99,18 +99,18 @@ public class Debug {
         }
 
         // fields
-        int indentCount_ = 0;
-        char previousNotSpaceChar_ = '\000';
-        ArrayList<Class> encloserStack_ = new ArrayList<Class>();
+        int _indentCount = 0;
+        char _previousNotSpaceChar = '\000';
+        ArrayList<Class> _encloserStack = new ArrayList<Class>();
 
         void adjustIndentBeforeUse(char ch) {
             if (CurlyBrace.isCloseChar(ch))
-                --indentCount_;
+                --_indentCount;
         }
 
         void adjustIndentAfterUse(char ch) {
             if (CurlyBrace.isOpenChar(ch))
-                ++indentCount_;
+                ++_indentCount;
         }
 
         // package methods
@@ -123,7 +123,7 @@ public class Debug {
             else if ((encloserType = getEncloserClassOpenChar(ch)) != null)
                 pushEncloserStack(encloserType);
 
-            previousNotSpaceChar_ = ch;
+            _previousNotSpaceChar = ch;
         }
 
         boolean isInDoubleQuotes() {
@@ -141,10 +141,10 @@ public class Debug {
         // second version
         // ,_["{] (when indent <= 2)
         boolean shouldPutNewLine(char ch) {
-//              if (CurlyBrace.isOpenChar(previousNotSpaceChar_) && !CurlyBrace.isCloseChar(ch)
-//                      || !CurlyBrace.isOpenChar(previousNotSpaceChar_) && CurlyBrace.isCloseChar(ch)
-//                      || previousNotSpaceChar_ == ',' && !CurlyBrace.isOpenChar(ch) && isInCurlyBraces())
-            if (previousNotSpaceChar_ == ',' && (ch == '\"' || ch == '{') && indentCount_ <= 2)
+//              if (CurlyBrace.isOpenChar(_previousNotSpaceChar) && !CurlyBrace.isCloseChar(ch)
+//                      || !CurlyBrace.isOpenChar(_previousNotSpaceChar) && CurlyBrace.isCloseChar(ch)
+//                      || _previousNotSpaceChar == ',' && !CurlyBrace.isOpenChar(ch) && isInCurlyBraces())
+            if (_previousNotSpaceChar == ',' && (ch == '\"' || ch == '{') && _indentCount <= 2)
                 return true;
             else
                 return false;
@@ -159,11 +159,11 @@ public class Debug {
         boolean shouldPutSpace(char ch) {
             Class currentEncloser = lastEncloser();
             if (currentEncloser != DoubleQuote.class
-                    &&previousNotSpaceChar_ == ','
+                    &&_previousNotSpaceChar == ','
                         && (ch != ')' && currentEncloser == Parenthesis.class
                             || ch == '{' && currentEncloser == CurlyBrace.class
                             || ch != ']' && currentEncloser == SquareBracket.class)
-                    || previousNotSpaceChar_ == ':'
+                    || _previousNotSpaceChar == ':'
                     || ch == ':')
                 return true;
             else
@@ -202,31 +202,31 @@ public class Debug {
         }
 
         private void pushEncloserStack(Class encloserClass) {
-            encloserStack_.add(encloserClass);
+            _encloserStack.add(encloserClass);
         }
 
         private Class popEncloserStack() {
-            int size = encloserStack_.size();
+            int size = _encloserStack.size();
 
             if (size == 0)
                 return null;
             else
-            return encloserStack_.remove(encloserStack_.size() - 1);
+            return _encloserStack.remove(_encloserStack.size() - 1);
         }
 
         private Class lastEncloser() {
-            int size = encloserStack_.size();
+            int size = _encloserStack.size();
 
             if (size == 0)
                 return null;
             else
-                return encloserStack_.get(size - 1);
+                return _encloserStack.get(size - 1);
         }
     }
 
     // printStackTrace
     public static void printStackTraceWithTag(String tag) {
-        if (!isPrint_)
+        if (!_isPrint)
             return;
 
         System.out.print(tag);
@@ -235,7 +235,7 @@ public class Debug {
 
     // describeField
     public static void describeClassNameHashCodeWithTag(String tag, Object object) {
-        if (!isPrint_) return;
+        if (!_isPrint) return;
 
         System.out.print(tag);
         describeClassNameHashCode(object);
@@ -254,7 +254,7 @@ public class Debug {
     }
 
     public static void describeField(PrintStream printStream, Object object, int indentSize) {
-        if (!isPrint_)
+        if (!_isPrint)
             return;
 
         String rawDescription;
@@ -308,7 +308,7 @@ public class Debug {
 
             if (context.shouldPutNewLine(ch)) {
                 description.append('\n');
-                appendIndent(description, context.indentCount_, indentSize);
+                appendIndent(description, context._indentCount, indentSize);
             }
 
             context.adjustIndentAfterUse(ch);

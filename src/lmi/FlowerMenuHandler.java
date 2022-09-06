@@ -2,120 +2,90 @@ package lmi;
 
 import haven.Gob;
 
-import lmi.Constant.StatusCode;
 import lmi.Constant.Action;
-import static lmi.Constant.StatusCode.*;
+import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.Action.Custom.*;
 import static lmi.Constant.TimeOut.*;
 
 public class FlowerMenuHandler {
     // field
-    private static haven.FlowerMenu widget_;
+    private static haven.FlowerMenu _widget;
 
     // set widget
-    public static void setWidget(haven.FlowerMenu widget) { widget_ = widget; }
-    public static void clearWidget() { widget_ = null; }
+    public static void setWidget(haven.FlowerMenu widget) { _widget = widget; }
+    public static void clearWidget() { _widget = null; }
 
     // choose
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_INVALID_ARGUMENT
-    ///     - SC_FAILED_OPEN_FLOWER_MENU
-    ///     - SC_FAILED_MATCH
-    ///     - SC_FAILED_OPEN_PROGRESS
-    public static StatusCode choose(Gob gob, int meshId, String name) {
+    /// - Throws:
+    ///     - ET_FLOWER_MENU_OPEN
+    ///     - ET_FLOWER_MENU_MATCH
+    ///     - ET_PROGRESS_OPEN
+    public static void choose(Gob gob, int meshId, String name) {
         if (gob == null || name == null)
-            return SC_FAILED_INVALID_ARGUMENT;
+            throw new IllegalArgumentException();
 
-        {
-            final StatusCode result = open_(gob, meshId);
-            if (result != SC_SUCCEEDED) return result;
+        _open(gob, meshId);
+        try {
+            _choose(name);
+        } catch (LMIException e) {
+            _close();
+            throw e;
         }
-        {
-            final StatusCode result = choose_(name);
-            if (result != SC_SUCCEEDED) {
-                close_();
-                return result;
-            }
-        }
-        Self.gob().waitMove();
-        return ProgressManager.waitProgress();
+        try {
+            Self.gob().waitMove();
+        } catch (LMIException e) { if (e.type() == ET_INTERRUPTED) throw e; }
+        ProgressManager.waitProgress();
     }
 
     // private methods
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_OPEN_FLOWER_MENU
-    private static StatusCode open_(Gob gob, int meshId) {
-        if (sendInteractMessage_(gob, meshId) == SC_INTERRUPTED) return SC_INTERRUPTED;
-        return waitFlowerMenuOpening();
+    /// - Throws:
+    ///     - ET_FLOWER_MENU_OPEN
+    private static void _open(Gob gob, int meshId) {
+        _sendInteractMessage(gob, meshId);
+        _waitFlowerMenuOpening();
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_OPEN_FLOWER_MENU
-    private static StatusCode waitFlowerMenuOpening() {
-        if (isAdded_()) return SC_SUCCEEDED;
-        switch (WaitManager.waitTimeOut(AC_FLOWER_MENU_DID_ADDED, TO_TEMPORARY)) {
-            case SC_SUCCEEDED: return SC_SUCCEEDED;
-            case SC_INTERRUPTED: return SC_INTERRUPTED;
-            case SC_TIME_OUT: return isAdded_() ? SC_SUCCEEDED : SC_FAILED_OPEN_FLOWER_MENU;
-            default:
-                new Exception().printStackTrace();
-                return SC_INTERRUPTED;
+    /// - Throws:
+    ///     - ET_FLOWER_MENU_OPEN
+    private static void _waitFlowerMenuOpening() {
+        if (_isAdded()) return;
+        try {
+            WaitManager.waitTimeOut(AC_FLOWER_MENU_DID_ADDED, TO_TEMPORARY);
+        } catch (LMIException e) {
+            if (e.type() != ET_TIME_OUT) throw e;
+            else if (!_isAdded()) throw new LMIException(ET_FLOWER_MENU_OPEN);
         }
     }
 
-    private static boolean isAdded_() {
-        return widget_ != null;
-    }
+    private static boolean _isAdded() { return (_widget != null); }
+    private static void _close() { _sendCloseMessage(); }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode close_() {
-        return sendCloseMessage_();
-    }
-
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_MATCH
-    private static StatusCode choose_(String name) {
-        for (haven.FlowerMenu.Petal petal : widget_.opts)
+    /// - Throws:
+    ///     - ET_FLOWER_MENU_MATCH
+    private static void _choose(String name) {
+        for (haven.FlowerMenu.Petal petal : _widget.opts)
             if (petal.name.contentEquals(name))
-                return sendChoosePetalMessage_(petal.num);
-        return SC_FAILED_MATCH;
+                WidgetMessageHandler.sendChoosePetalMessage(_widget, petal.num);
+        throw new LMIException(ET_FLOWER_MENU_MATCH);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_MATCH
-    private static StatusCode sendChoosePetalMessage_(int index) {
-        final int petalCount = widget_.opts.length;
-        if (0 <= index && index < petalCount) {
-            return WidgetMessageHandler.sendChoosePetalMessage(widget_, index);
-        } else {
-            return SC_FAILED_MATCH;
-        }
+    /// - Throws:
+    ///     - ET_FLOWER_MENU_MATCH
+    private static void _sendChoosePetalMessage(int index) {
+        final int petalCount = _widget.opts.length;
+        if (0 <= index && index < petalCount)
+            WidgetMessageHandler.sendChoosePetalMessage(_widget, index);
+        else
+            throw new LMIException(ET_FLOWER_MENU_MATCH);
     }
 
     // send message shadow
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode sendInteractMessage_(Gob gob, int meshId) {
-        return WidgetMessageHandler.interact(gob, meshId);
+    private static void _sendInteractMessage(Gob gob, int meshId) {
+        WidgetMessageHandler.interact(gob, meshId);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode sendCloseMessage_() {
-        return WidgetMessageHandler.sendCloseFlowerMenuMessage(widget_);
+    /// - Throws:
+    private static void _sendCloseMessage() {
+        WidgetMessageHandler.sendCloseFlowerMenuMessage(_widget);
     }
 }

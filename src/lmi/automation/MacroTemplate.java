@@ -1,24 +1,30 @@
 package lmi.automation;
 
+// import lmi pacakge
+import lmi.LMIException;
+
 public class MacroTemplate implements Runnable {
     public void run() {
-        willRun();
-        main();
-        didRun();
+        LMIException result = null;
+        try {
+            _willRun();
+            _main();
+        } catch (LMIException e) {
+            result = e;
+        }
+        _didRun(result);
     }
 
     // private methods
-    private void willRun() {
+    private void _willRun() {
         // compose your initial setting here...
     }
 
-    private void main() {
-        while (!Thread.interrupted()) {
-            // compose your automation code here...
-        }
+    private void _main() {
+        // compose your automation code here...
     }
 
-    private void didRun() {
+    private void _didRun(LMIException e) {
         System.out.println("[automation is terminating]");
     }
 }
