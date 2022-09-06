@@ -256,6 +256,6 @@ public class CleanLog implements Runnable {
                 System.out.println("log를 모두 정리했어요");
                 break;
         }
-        lmi.Util.debugPrint(this.getClass(), "result: " + result_);
+        lmi.Util.debugPrint("result: " + result_);
     }
 }

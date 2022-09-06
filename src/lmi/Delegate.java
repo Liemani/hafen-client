@@ -117,7 +117,7 @@ public class Delegate {
     public static void didGetACK(haven.RMessage message) {
         // Session::RWorker::gotack()
         final String command = MessageHandler.getAction(message);
-        Util.debugPrint(Delegate.class, "command: " + command);
+        Util.debugPrint("command: " + command);
         WaitManager.notifyAction(command);
     }
 }
