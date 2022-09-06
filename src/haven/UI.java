@@ -229,7 +229,7 @@ public class UI {
     }
 	
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
-    lmi.Util.debugPrint(this.getClass(), "type: " + type);
+    lmi.Util.debugPrint("type: " + type);
 	Widget.Factory f = Widget.gettype2(type);
 	if(f == null)
 	    throw(new UIException("Bad widget name", type, cargs));
@@ -313,7 +313,7 @@ public class UI {
     }
 
     public void destroy(Widget wdg) {
-    lmi.Util.debugPrint(this.getClass(), "wdg: " + wdg + ", wdg.parent: " + wdg.parent);
+    lmi.Util.debugPrint("wdg: " + wdg + ", wdg.parent: " + wdg.parent);
 	removeid(wdg);
 	wdg.reqdestroy();
     }
@@ -353,7 +353,7 @@ public class UI {
 //              && !msg.contentEquals("ppower")
 //              && !msg.contentEquals("max")
             && !msg.contentEquals("tt")) {
-        lmi.Util.debugPrint(this.getClass(), "commannd: " + msg + ", widgetClass: " + wdg.getClass().getName() + ", args.length: " + args.length);
+        lmi.Util.debugPrint("commannd: " + msg + ", widgetClass: " + wdg.getClass().getName() + ", args.length: " + args.length);
         for (Object object : args)
             lmi.Debug.describeField(object);
     }
