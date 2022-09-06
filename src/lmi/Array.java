@@ -2,9 +2,10 @@
 // this class mimic Swift::Array
 package lmi;
 
+import java.util.ArrayList;
 import java.util.function.Predicate;
 
-public class Array<E> extends java.util.ArrayList<E> {
+public class Array<E> extends ArrayList<E> {
     // Constructor
     public Array() { super(); }
     public Array(int capacity) { super(capacity); }

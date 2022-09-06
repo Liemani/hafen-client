@@ -6,10 +6,9 @@ import haven.Coord;
 
 // constant
 import lmi.Constant.*;
-import lmi.Constant.StatusCode;
 import lmi.Constant.Action;
 
-import static lmi.Constant.StatusCode.*;
+import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.Action.*;
 import static lmi.Constant.Action.Custom.*;
 import static lmi.Constant.SelfAction.*;
@@ -62,34 +61,32 @@ public class Self {
             .a;
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_MOVE
-    public static StatusCode move(Coord coord) {
-        if (sendClickMessage_(coord) == SC_INTERRUPTED) return SC_INTERRUPTED;
-        return Self.gob().waitMove(coord);
+    /// - Throws:
+    ///     - ET_MOVE
+    public static void move(Coord coord) {
+        _sendClickMessage(coord);
+        Self.gob().waitMove(coord);
     }
 
     // etc
-    public static StatusCode moveNorth() {
-        Coord north = Self.location().north();
-        return move(north);
+    public static void moveNorth() {
+        final Coord north = Self.location().north();
+        Self.move(north);
     }
 
-    public static StatusCode moveEast() {
-        Coord east = Self.location().east();
-        return move(east);
+    public static void moveEast() {
+        final Coord east = Self.location().east();
+        Self.move(east);
     }
 
-    public static StatusCode moveWest() {
-        Coord west = Self.location().west();
-        return move(west);
+    public static void moveWest() {
+        final Coord west = Self.location().west();
+        Self.move(west);
     }
 
-    public static StatusCode moveSouth() {
-        Coord south = Self.location().south();
-        return move(south);
+    public static void moveSouth() {
+        final Coord south = Self.location().south();
+        Self.move(south);
     }
 
     public static double distance(Gob gob) {
@@ -100,148 +97,101 @@ public class Self {
         return Self.gob().distance(coord);
     }
 
-    public static StatusCode moveCenter() {
-        Coord tileCenter = Self.location().tileCenter();
-        return move(tileCenter);
+    public static void moveCenter() {
+        final Coord tileCenter = Self.location().tileCenter();
+        Self.move(tileCenter);
     }
 
     // carry
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_LIFT
-    public static StatusCode lift(Gob gob) {
-        if (sendCarryMessage_() == SC_INTERRUPTED) return SC_INTERRUPTED;
-        if (waitCursorChange_(RN_HAND) == SC_INTERRUPTED) return SC_INTERRUPTED;
-        if (WidgetMessageHandler.actionClick(gob) == SC_INTERRUPTED) return SC_INTERRUPTED;
-        Self.gob().waitMove();
-        return Self.gob().waitLift(gob);
+    /// - Throws:
+    ///     - ET_LIFT
+    public static void lift(Gob gob) {
+        _sendCarryMessage();
+        _waitCursorChange(RN_HAND);
+        WidgetMessageHandler.actionClick(gob);
+        try {
+            Self.gob().waitMove();
+        } catch (LMIException e) { if (e.type() == ET_INTERRUPTED) throw e; }
+        Self.gob().waitLift(gob);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_FAILED_PUT
-    public static StatusCode put(Coord coord) {
-        if (put_(coord) == SC_INTERRUPTED) return SC_INTERRUPTED;
-        Self.gob().waitMove();
-        return Self.gob().waitPut();
+    /// - Throws:
+    ///     - ET_PUT
+    public static void put(Coord coord) {
+        _put(coord);
+        try {
+            Self.gob().waitMove();
+        } catch (LMIException e) { if (e.type() == ET_INTERRUPTED) throw e; }
+        Self.gob().waitPut();
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode waitCursorChange_(String cursor) {
+    private static void _waitCursorChange(String cursor) {
         while (true) {
-            if (isCursorChanged_(cursor)) return SC_SUCCEEDED;
-            switch (WaitManager.waitTimeOut(A_CHANGE_CURSOR, TO_TEMPORARY)) {
-                case SC_SUCCEEDED: return SC_SUCCEEDED;
-                case SC_INTERRUPTED: return SC_INTERRUPTED;
-                case SC_TIME_OUT: break;
-                default:
-                    new Exception().printStackTrace();
-                    return SC_INTERRUPTED;
+            if (_isCursorChanged(cursor)) return;
+            try {
+                WaitManager.waitTimeOut(A_CHANGE_CURSOR, TO_TEMPORARY);
+                break;
+            } catch (LMIException e) {
+                if (e.type() != ET_TIME_OUT) throw e;
             }
         }
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static boolean isCursorChanged_(String cursor) {
+    private static boolean _isCursorChanged(String cursor) {
         return WidgetManager.cursor().get().name.endsWith(cursor);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode dig_() {
-        return sendActionMessage_(A_DIG);
+    private static void _dig() {
+        Self._sendActionMessage(A_DIG);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode mine_() {
-        return sendActionMessage_(A_MINE);
+    private static void _mine() {
+        Self._sendActionMessage(A_MINE);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode sendCarryMessage_() {
-        return sendActionMessage_(A_CARRY);
+    private static void _sendCarryMessage() {
+        Self._sendActionMessage(A_CARRY);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode destroy_() {
-        return sendActionMessage_(A_DESTROY);
+    private static void _destroy() {
+        Self._sendActionMessage(A_DESTROY);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode fish_() {
-        return sendActionMessage_(A_FISH);
+    private static void _fish() {
+        Self._sendActionMessage(A_FISH);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode inspect_() {
-        return sendActionMessage_(A_INSPECT);
+    private static void _inspect() {
+        Self._sendActionMessage(A_INSPECT);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode repair_() {
-        return sendActionMessage_(A_REPAIR);
+    private static void _repair() {
+        Self._sendActionMessage(A_REPAIR);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode crime_() {
-        return sendActionMessage_(A_CRIME);
+    private static void _crime() {
+        Self._sendActionMessage(A_CRIME);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode swim_() {
-        return sendActionMessage_(A_SWIM);
+    private static void _swim() {
+        Self._sendActionMessage(A_SWIM);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode tracking_() {
-        return sendActionMessage_(A_TRACKING);
+    private static void _tracking() {
+        Self._sendActionMessage(A_TRACKING);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode aggro_() {
-        return sendActionMessage_(A_AGGRO);
+    private static void _aggro() {
+        Self._sendActionMessage(A_AGGRO);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode shoot_() {
-        return sendActionMessage_(A_SHOOT);
+    private static void _shoot() {
+        Self._sendActionMessage(A_SHOOT);
     }
 
     // send message shadow
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode sendClickMessage_(Coord coord) {
-        return WidgetMessageHandler.sendClickMessage(
+    private static void _sendClickMessage(Coord coord) {
+        WidgetMessageHandler.sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 coord,
@@ -249,24 +199,15 @@ public class Self {
                 IM_NONE);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode sendActionMessage_(String action) {
-        return WidgetMessageHandler.sendActionMessage(WidgetManager.menuGrid(), action);
+    private static void _sendActionMessage(String action) {
+        WidgetMessageHandler.sendActionMessage(WidgetManager.menuGrid(), action);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode put_(Coord coord) {
-        return WidgetMessageHandler.put(coord);
+    private static void _put(Coord coord) {
+        WidgetMessageHandler.put(coord);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode sendCancelActionMessage_() {
-        return WidgetMessageHandler.sendCancelActionMessage();
+    private static void _sendCancelActionMessage() {
+        WidgetMessageHandler.sendCancelActionMessage();
     }
 }

@@ -1,33 +1,31 @@
 package lmi;
 
-import lmi.Constant.StatusCode;
 import lmi.Constant.Action;
-
-import static lmi.Constant.StatusCode.*;
+import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.Action.Custom.*;
 import static lmi.Constant.TimeOut.*;
 
 public class WaitManager {
     // property
-    private static Object subject_ = null;
-    private static String action_ = null;
-    private static Action.Custom customAction_ = AC_NONE;
+    private static Object _subject = null;
+    private static String _action = null;
+    private static Action.Custom _customAction = AC_NONE;
 
     // notify
     public static void notifyAction(Object subject, String action) {
         synchronized (WaitManager.class) {
-            if (!equals_(subject, action)) return;
+            if (!_equals(subject, action)) return;
 
-            notify_();
+            _notify();
         }
         lmi.Util.debugPrint("action: " + action);
     }
 
     public static void notifyAction(Object subject, Action.Custom customAction) {
         synchronized (WaitManager.class) {
-            if (!equals_(subject, customAction)) return;
+            if (!_equals(subject, customAction)) return;
 
-            notify_();
+            _notify();
         }
         lmi.Util.debugPrint("custom action: " + customAction);
     }
@@ -41,116 +39,99 @@ public class WaitManager {
     }
 
     // wait
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    public static StatusCode waitAction(String action) {
-        action_ = action;
-        return wait_();
+    public static void waitAction(String action) {
+        _action = action;
+        _wait();
     }
 
-    public static StatusCode waitAction(Action.Custom customAction) {
-        customAction_ = customAction;
-        return wait_();
+    public static void waitAction(Action.Custom customAction) {
+        _customAction = customAction;
+        _wait();
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_TIME_OUT
-    public static StatusCode waitTimeOut(Object subject, String action, long timeOut) {
-        init_(subject, action);
-        return waitTimeOut_(timeOut);
+    /// - Throws:
+    ///     - ET_TIME_OUT
+    public static void waitTimeOut(Object subject, String action, long timeOut) {
+        _init(subject, action);
+        _waitTimeOut(timeOut);
     }
 
-    public static StatusCode waitTimeOut(Object subject, Action.Custom customAction, long timeOut) {
-        init_(subject, customAction);
-        return waitTimeOut_(timeOut);
+    public static void waitTimeOut(String action, long timeOut) {
+        WaitManager.waitTimeOut(null, action, timeOut);
     }
 
-    public static StatusCode waitTimeOut(String action, long timeOut) {
-        return waitTimeOut(null, action, timeOut);
+    public static void waitTimeOut(Object subject, Action.Custom customAction, long timeOut) {
+        _init(subject, customAction);
+        _waitTimeOut(timeOut);
     }
 
-    public static StatusCode waitTimeOut(Action.Custom customAction, long timeOut) {
-        return waitTimeOut(null, customAction, timeOut);
+    public static void waitTimeOut(Action.Custom customAction, long timeOut) {
+        WaitManager.waitTimeOut(null, customAction, timeOut);
     }
 
     // private methods
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    ///     - SC_TIME_OUT
-    private static StatusCode waitTimeOut_(long timeOut) {
+    /// - Throws:
+    ///     - ET_TIME_OUT
+    private static void _waitTimeOut(long timeOut) {
         final long startTime = System.currentTimeMillis();
-        if (wait_(timeOut) == SC_INTERRUPTED) return SC_INTERRUPTED;
+        _wait(timeOut);
         final long endTime = System.currentTimeMillis();
-        if (startTime + timeOut > endTime)
-            return SC_SUCCEEDED;
-        else
-            return SC_TIME_OUT;
+
+        if (endTime - startTime >= timeOut)
+            throw new LMIException(ET_TIME_OUT);
     }
 
-    private static void init_(Object subject, String action) {
-        subject_ = subject;
-        action_ = action;
+    private static void _init(Object subject, String action) {
+        _subject = subject;
+        _action = action;
     }
 
-    private static void init_(Object subject, Action.Custom customAction) {
-        subject_ = subject;
-        customAction_ = customAction;
+    private static void _init(Object subject, Action.Custom customAction) {
+        _subject = subject;
+        _customAction = customAction;
     }
 
     // clear
-    private static void clear_() {
-        subject_ = null;
-        action_ = null;
-        customAction_ = AC_NONE;
+    private static void _clear() {
+        _subject = null;
+        _action = null;
+        _customAction = AC_NONE;
     }
 
     // equal
-    private static boolean equals_(Object subject, String action) {
-        return subjectEquals_(subject) && actionEquals_(action);
+    private static boolean _equals(Object subject, String action) {
+        return _subjectEquals(subject) && _actionEquals(action);
     }
 
-    private static boolean equals_(Object subject, Action.Custom customAction) {
-        return subjectEquals_(subject) && actionEquals_(customAction);
+    private static boolean _equals(Object subject, Action.Custom customAction) {
+        return _subjectEquals(subject) && _actionEquals(customAction);
     }
 
-    private static boolean subjectEquals_(Object subject) { return subject == subject_; }
+    private static boolean _subjectEquals(Object subject) { return subject == _subject; }
 
-    private static boolean actionEquals_(String action) {
-        if (action_ == null) return false;
-        return action.contentEquals(action_);
+    private static boolean _actionEquals(String action) {
+        if (_action == null) return false;
+        return action.contentEquals(_action);
     }
 
-    private static boolean actionEquals_(Action.Custom customAction) { return customAction == customAction_; }
+    private static boolean _actionEquals(Action.Custom customAction) { return customAction == _customAction; }
 
     // wrap wait
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode wait_(long timeOut) {
+    private static void _wait(long timeOut) {
         synchronized (WaitManager.class) {
             try {
                 WaitManager.class.wait(timeOut);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                clear_();
-                return SC_INTERRUPTED;
-            }
-            clear_();
+                throw new LMIException(ET_INTERRUPTED);
+            } finally { _clear(); }
         }
-        return SC_SUCCEEDED;
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode wait_() { return wait_(TO_NONE); }
+    private static void _wait() { _wait(TO_NONE); }
 
     // wrap notify
-    private static void notify_() {
+    private static void _notify() {
         WaitManager.class.notify();
     }
 }

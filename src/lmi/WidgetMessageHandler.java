@@ -5,7 +5,6 @@ import haven.Gob;
 import haven.Coord;
 
 // import constant
-import lmi.Constant.StatusCode;
 import static lmi.Constant.*;
 import static lmi.Constant.Input.Mouse.*;
 import static lmi.Constant.Input.Modifier.*;
@@ -15,12 +14,9 @@ import static lmi.Constant.Action.*;
 
 public class WidgetMessageHandler {
     // public method
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    public static StatusCode actionClick(Gob gob) {
+    public static void actionClick(Gob gob) {
         Coord gobLocationInCoord = gob.location();
-        return WidgetMessageHandler.sendClickMessage(
+        WidgetMessageHandler.sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 gobLocationInCoord,
@@ -33,12 +29,9 @@ public class WidgetMessageHandler {
                 MI_NONE);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    public static StatusCode interact(Gob gob, int meshId) {
+    public static void interact(Gob gob, int meshId) {
         Coord gobLocationInCoord = gob.location();
-        return sendClickMessage(
+        WidgetMessageHandler.sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 gobLocationInCoord,
@@ -51,11 +44,8 @@ public class WidgetMessageHandler {
                 meshId);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    public static StatusCode put(Coord location) {
-        return sendClickMessage(
+    public static void put(Coord location) {
+        WidgetMessageHandler.sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
                 location,
@@ -63,25 +53,27 @@ public class WidgetMessageHandler {
                 IM_NONE);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    public static StatusCode selectCharacter(haven.Charlist widget, String name) {
-        return sendSelectCharacterMessage(widget, name);
+    public static void selectCharacter(haven.Charlist widget, String name) {
+        WidgetMessageHandler.sendSelectCharacterMessage(widget, name);
+    }
+
+    static void sendCancelActionMessage() {
+        WidgetMessageHandler.sendClickMessage(
+                ObjectShadow.mapView(),
+                Util.mapViewCenter(),
+                Self.location(),
+                IM_RIGHT,
+                IM_NONE);
     }
 
     // package method
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    static StatusCode sendClickMessage(
+    static void sendClickMessage(
             haven.MapView widget,
             Coord clickedMapViewPoint,
             Coord clickedMapPoint,
             int mouseButton,
             int modifiers) {
-        return wdgmsg_(
-                widget,
+        widget.sendMessage(
                 A_CLICK,
                 clickedMapViewPoint,
                 clickedMapPoint,
@@ -89,10 +81,7 @@ public class WidgetMessageHandler {
                 modifiers);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    static StatusCode sendClickMessage(
+    static void sendClickMessage(
             haven.MapView widget,
             Coord clickedMapViewPoint,
             Coord clickedMapPoint,
@@ -103,8 +92,7 @@ public class WidgetMessageHandler {
             Coord gobLocation,
             int overlayId,
             int meshId) {
-        return wdgmsg_(
-                widget,
+        widget.sendMessage(
                 A_CLICK,
                 clickedMapViewPoint,
                 clickedMapPoint,
@@ -117,59 +105,19 @@ public class WidgetMessageHandler {
                 meshId);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    static StatusCode sendActionMessage(haven.MenuGrid widget, String action) {
-        return wdgmsg_(widget, A_ACT, action, 0);
+    static void sendActionMessage(haven.MenuGrid widget, String action) {
+        widget.sendMessage(A_ACT, action, 0);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    static StatusCode sendCancelActionMessage() {
-        return sendClickMessage(
-                ObjectShadow.mapView(),
-                Util.mapViewCenter(),
-                Self.location(),
-                IM_RIGHT,
-                IM_NONE);
+    static void sendChoosePetalMessage(haven.FlowerMenu widget, int index) {
+        widget.sendMessage(A_CLOSE_FLOWER_MENU, index, 0);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    static StatusCode sendChoosePetalMessage(haven.FlowerMenu widget, int index) {
-        return wdgmsg_(
-                widget,
-                A_CLOSE_FLOWER_MENU,
-                index,
-                0);
+    static void sendCloseFlowerMenuMessage(haven.FlowerMenu widget) {
+        widget.sendMessage(A_CLOSE_FLOWER_MENU, -1);
     }
 
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    static StatusCode sendCloseFlowerMenuMessage(haven.FlowerMenu widget) {
-        return wdgmsg_(
-                widget,
-                A_CLOSE_FLOWER_MENU,
-                -1);
-    }
-
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    static StatusCode sendSelectCharacterMessage(haven.Charlist widget, String name) {
-        return wdgmsg_(widget, A_SELECT_CHARACTER, name);
-    }
-
-    // private method
-    /// - Returns:
-    ///     - SC_SUCCEEDED
-    ///     - SC_INTERRUPTED
-    private static StatusCode wdgmsg_(haven.Widget widget, String action, Object... args) {
-        widget.wdgmsg(action, args);
-        return WaitManager.waitAction(action);
+    static void sendSelectCharacterMessage(haven.Charlist widget, String name) {
+        widget.sendMessage(A_SELECT_CHARACTER, name);
     }
 }

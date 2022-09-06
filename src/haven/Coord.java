@@ -259,9 +259,6 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
     }
 
     // lmi custom
-    // Static Value
-    public static final Coord zero = new Coord(0, 0);
-
     // initializer
     public void init(int x, int y) { this.x = x; this.y = y; }
 
@@ -271,6 +268,8 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
                 (int)Math.floor(coord2d.x * COORD_PER_COORD2D),
                 (int)Math.floor(coord2d.y * COORD_PER_COORD2D));
     }
+
+    public static Coord zero() { return Coord.of(0, 0); }
 
     // Convert To Haven Coordinate
     public haven.Coord2d toCoord2d() {

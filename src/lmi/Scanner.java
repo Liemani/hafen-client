@@ -4,20 +4,20 @@ import java.io.InputStream;
 
 public class Scanner {
     // fields
-    private static java.util.Scanner scanner_;
+    private static java.util.Scanner _scanner;
 
     // public methods
     public static String nextLine() {
-        return scanner_.nextLine();
+        return _scanner.nextLine();
     }
 
     public static String nextLineWithPrompt(String prompt) {
         System.out.print(prompt + " % ");
-        return scanner_.nextLine();
+        return _scanner.nextLine();
     }
 
     // package methods
     static void init(InputStream inputStream) {
-        scanner_ = new java.util.Scanner(inputStream);
+        _scanner = new java.util.Scanner(inputStream);
     }
 }
