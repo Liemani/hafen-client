@@ -226,7 +226,7 @@ class Command {
 
     static Void moveCenter() {
         final StatusCode result = Self.moveCenter();
-        Util.debugPrint(Command.class, "result: " + result);
+        Util.debugPrint("result: " + result);
         return null;
     }
 
@@ -239,10 +239,10 @@ class Command {
     static Void describeClickedGob() {
         Gob gob = ClickManager.getGob();
 
-        Util.debugPrint(Command.class, "resource name: " + gob.resourceName());
-        Util.debugPrint(Command.class, "location: " + gob.location());
-        Util.debugPrint(Command.class, "distance: " + Self.distance(gob));
-        Util.debugPrint(Command.class, "removed: " + gob.removed);
+        Util.debugPrint("resource name: " + gob.resourceName());
+        Util.debugPrint("location: " + gob.location());
+        Util.debugPrint("distance: " + Self.distance(gob));
+        Util.debugPrint("removed: " + gob.removed);
 
         return null;
     }
@@ -287,18 +287,18 @@ class Command {
     static Void move() {
         final Coord destination = Self.location().offset(TILE_IN_COORD * 3, TILE_IN_COORD * 3);
         final Constant.StatusCode result = Self.move(destination);
-        Util.debugPrint(Command.class, "result: " + result);
+        Util.debugPrint("result: " + result);
         return null;
     }
 
     static Void moveNorthTenTimes() {
         {
             final StatusCode result = Self.moveCenter();
-            Util.debugPrint(Command.class, "result: " + result);
+            Util.debugPrint("result: " + result);
         }
         for (int count = 0; count < 10; ++count) {
             final StatusCode result = Self.moveNorth();
-            Util.debugPrint(Command.class, "result: " + result);
+            Util.debugPrint("result: " + result);
         }
         return null;
     }
@@ -326,7 +326,7 @@ class Command {
     static Void describeSelfPose() {
         Array<String> poseArray = Self.gob().poseArray();
         if (poseArray == null)
-            Util.debugPrint(Command.class, "no pose");
+            Util.debugPrint("no pose");
         for (String pose : poseArray)
             System.out.println("[pose name] " + pose);
         return null;
@@ -336,7 +336,7 @@ class Command {
         String action = lmi.Scanner.nextLineWithPrompt("enter action");
         Gob closestGob = lmi.api.Util.closestGob();
         final Constant.StatusCode result = FlowerMenuHandler.choose(closestGob, MI_DEFAULT, action);
-        Util.debugPrint(Command.class, "FlowerMenuHandler.choose() result " + result);
+        Util.debugPrint("FlowerMenuHandler.choose() result " + result);
         Self.moveNorth();
         return null;
     }
@@ -472,8 +472,8 @@ class Command {
 
     static Void getArea() {
         final Rect area = ClickManager.getArea();
-        Util.debugPrint(Command.class, "origin: " + area.origin);
-        Util.debugPrint(Command.class, "size: " + area.size);
+        Util.debugPrint("origin: " + area.origin);
+        Util.debugPrint("size: " + area.size);
         return null;
     }
 

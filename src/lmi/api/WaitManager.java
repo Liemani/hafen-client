@@ -21,7 +21,7 @@ public class WaitManager {
 
             notify_();
         }
-        lmi.Util.debugPrint(WaitManager.class, "action: " + action);
+        lmi.Util.debugPrint("action: " + action);
     }
 
     public static void notifyAction(Object subject, Action.Custom customAction) {
@@ -30,7 +30,7 @@ public class WaitManager {
 
             notify_();
         }
-        lmi.Util.debugPrint(WaitManager.class, "custom action: " + customAction);
+        lmi.Util.debugPrint("custom action: " + customAction);
     }
 
     public static void notifyAction(String action) {

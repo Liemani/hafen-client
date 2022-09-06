@@ -132,27 +132,24 @@ public class Util {
     }
 
     // etc
-    public static String currentMethod() {
-        return new Throwable()
-            .getStackTrace()[2]
-            .getMethodName();
+    public static String targetStack() {
+        StackTraceElement targetStack = new Throwable().getStackTrace()[2];
+        return targetStack.getClassName() + "::" + targetStack.getMethodName();
     }
 
-    public static void debugPrint(Class classObject, String description) {
+    public static void debugPrint(String description) {
         final StringBuilder fullDescription = new StringBuilder();
 
-        fullDescription.append("[" + classObject.getName() + "::" + currentMethod() + "()]");
+        fullDescription.append("[" + Util.targetStack() + "()]");
         if (description != null)
             fullDescription.append(" { " + description + " }");
 
         System.out.println(fullDescription.toString());
     }
 
-    public static void debugPrint(Class classObject) {
-        System.out.println("[" + classObject.getName() + "::" + currentMethod() + "()]");
+    public static void debugPrint() {
+        System.out.println("[" + Util.targetStack() + "()]");
     }
 
-    public static int stoi(String string) {
-        return Integer.parseInt(string);
-    }
+    public static int stoi(String string) { return Integer.parseInt(string); }
 }
