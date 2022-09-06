@@ -314,10 +314,10 @@ public class Composite extends Drawable {
 
     // lmi custom
     // field
-    private lmi.collection.Array<String> poseArray_ = null;
+    private lmi.Array<String> poseArray_ = null;
 
     // public method
-    public lmi.collection.Array<String> poseArray() { return poseArray_; }
+    public lmi.Array<String> poseArray() { return poseArray_; }
 
     // private meethod
     private void poseDidChanged_(Collection<ResData> poseResourceDataCollection) {
@@ -326,7 +326,7 @@ public class Composite extends Drawable {
     }
 
     private void setPoseArray_(Collection<ResData> poseResourceDataCollection) {
-        poseArray_ = new lmi.collection.Array<String>(poseResourceDataCollection.size());
+        poseArray_ = new lmi.Array<String>(poseResourceDataCollection.size());
         for (ResData resourceData : poseResourceDataCollection)
             poseArray_.append(resourceData.res.get().name);
     }

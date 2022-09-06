@@ -1,6 +1,6 @@
 // https://developer.apple.com/documentation/swift/dictionary/
 // this class mimic Swift::Dictionary
-package lmi.collection;
+package lmi;
 
 public class Dictionary<Key, Value> extends java.util.TreeMap<Key, Value> {
     // Accessing Keys and Values

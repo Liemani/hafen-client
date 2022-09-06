@@ -1,6 +1,4 @@
-package lmi.api;
-
-import lmi.*;
+package lmi;
 
 public class WidgetManager {
     public static haven.GItem cursorGItem() {

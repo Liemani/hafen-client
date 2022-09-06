@@ -1,8 +1,7 @@
-package lmi.api;
+package lmi;
 
 import haven.Gob;
 
-import lmi.*;
 import lmi.Constant.StatusCode;
 import lmi.Constant.Action;
 import static lmi.Constant.StatusCode.*;

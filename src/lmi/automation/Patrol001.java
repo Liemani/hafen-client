@@ -1,7 +1,8 @@
 package lmi.automation;
 
-import lmi.collection.Array;
+import lmi.Array;
 
+import lmi.Self;
 import static lmi.Constant.*;
 
 public class Patrol001 implements Runnable {
@@ -21,8 +22,8 @@ public class Patrol001 implements Runnable {
     // private methods
     private void willRun() {
         clearPath();
-        path_.append(lmi.api.Self.location());
-        path_.append(lmi.api.Self.location().add(0, TILE_IN_COORD));
+        path_.append(Self.location());
+        path_.append(Self.location().add(0, TILE_IN_COORD));
     }
 
     private void clearPath() {
@@ -33,7 +34,7 @@ public class Patrol001 implements Runnable {
 
     public void patrolPath() throws InterruptedException {
         for (haven.Coord location : path_) {
-            lmi.api.Self.move(location);
+            Self.move(location);
             Thread.sleep(1000);
         }
     }

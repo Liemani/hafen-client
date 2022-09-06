@@ -1,9 +1,8 @@
-package lmi.api;
+package lmi;
 
+// import haven package
 import haven.Gob;
 import haven.Coord;
-
-import lmi.*;
 
 // constant
 import lmi.Constant.*;

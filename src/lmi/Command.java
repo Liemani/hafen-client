@@ -11,11 +11,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-// import lmi package
-import lmi.api.*;
-import lmi.collection.Array;
-import lmi.graphic.Rect;
-
 // constant
 import lmi.Constant.StatusCode;
 import static lmi.Constant.StatusCode.*;
@@ -215,7 +210,7 @@ class Command {
 
     static Void describeAllGob() {
         int count = 0;
-        java.util.Iterator<Gob> iterator = lmi.api.Util.iterator();
+        java.util.Iterator<Gob> iterator = Util.iterator();
         while (iterator.hasNext()) {
             ++count;
             Gob gob = iterator.next();
@@ -248,7 +243,7 @@ class Command {
     }
 
     static Void describeClosestGobOverlay() {
-        Gob closestGob = lmi.api.Util.closestGob();
+        Gob closestGob = Util.closestGob();
         System.out.println("[closest gob] " + closestGob.resourceName());
         for (Gob.Overlay overlay : closestGob.ols) {
             try {
@@ -263,7 +258,7 @@ class Command {
     }
 
     static Void describeClosestGobAttribute() {
-        Gob closestGob = lmi.api.Util.closestGob();
+        Gob closestGob = Util.closestGob();
         java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> attributeMap = closestGob.attributeMap();
         String resourceName = closestGob.resourceName();
         System.out.println("[resource name] " + resourceName);
@@ -304,7 +299,7 @@ class Command {
     }
 
     static Void describeClosestGobSdt() {
-        Gob closestGob = lmi.api.Util.closestGob();
+        Gob closestGob = Util.closestGob();
         final haven.Resource resource = closestGob.resource();
         if(resource == null) {
             System.out.println("[resource is null]");
@@ -334,7 +329,7 @@ class Command {
 
     static Void gatherClosestGob() {
         String action = lmi.Scanner.nextLineWithPrompt("enter action");
-        Gob closestGob = lmi.api.Util.closestGob();
+        Gob closestGob = Util.closestGob();
         final Constant.StatusCode result = FlowerMenuHandler.choose(closestGob, MI_DEFAULT, action);
         Util.debugPrint("FlowerMenuHandler.choose() result " + result);
         Self.moveNorth();
