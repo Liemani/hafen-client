@@ -11,9 +11,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import lmi.automation.*;
+
 // constant
-import lmi.Constant.StatusCode;
-import static lmi.Constant.StatusCode.*;
+import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.MeshId.*;
 import static lmi.Constant.gfx.borka.*;
 import static lmi.Constant.BoundingBox.*;
@@ -24,7 +25,7 @@ class Command {
     private static class CommandMap extends TreeMap<String, Method> {};
 
     // fields
-    private static CommandMap map_;
+    private static CommandMap _map;
 
     // automation command
     static Void automationInterrupt() {
@@ -33,32 +34,32 @@ class Command {
     }
 
     static Void automationConnect() {
-        AutomationThread.start(new lmi.automation.Connect());
+        AutomationThread.start(new Connect());
         return null;
     }
 
     static Void automationPatrol000() {
-        AutomationThread.start(new lmi.automation.Patrol000());
+        AutomationThread.start(new Patrol000());
         return null;
     }
 
     static Void automationPatrol001() {
-        AutomationThread.start(new lmi.automation.Patrol001());
+        AutomationThread.start(new Patrol001());
         return null;
     }
 
     static Void automationPatrol002() {
-        AutomationThread.start(new lmi.automation.Patrol002());
+        AutomationThread.start(new Patrol002());
         return null;
     }
 
     static Void automationTest() {
-        AutomationThread.start(new lmi.automation.Test());
+        AutomationThread.start(new Test());
         return null;
     }
 
     static Void automationCleanLog() {
-        AutomationThread.start(new lmi.automation.CleanLog());
+        AutomationThread.start(new CleanLog());
         return null;
     }
 
@@ -140,22 +141,22 @@ class Command {
     // non-command methods
     // all methods with default access modifier will count on as executable command
     public static void init() {
-        map_ = new CommandMap();
+        _map = new CommandMap();
         Method methodArray[] = Command.class.getDeclaredMethods();
         for (Method method : methodArray) {
             if (!Util.methodHasModifier(method, Modifier.PUBLIC)
                     && !Util.methodHasModifier(method, Modifier.PRIVATE)) {
-                map_.put(method.getName(), method);
+                _map.put(method.getName(), method);
             }
         }
     }
 
     public static Method getCommandByString(String commandString) {
-        return map_.get(commandString);
+        return _map.get(commandString);
     }
 
     public static Set<String> getCommandStringSet() {
-        return map_.keySet();
+        return _map.keySet();
     }
 
     // test command
@@ -190,12 +191,10 @@ class Command {
 
     static Void jIterate() {
         while (true) {
-            Coord destination = Self.location().add(0, 1);
-            if (Self.move(destination) != SC_SUCCEEDED) break;
-            Coord currentLocation = Self.location();
-            System.out.println("current location: " + currentLocation);
+            final Coord destination = Self.location().add(0, 1);
+            Self.move(destination);
+            System.out.println("current location: " + Self.location());
         }
-        return null;
     }
 
     static Void k() {
@@ -209,19 +208,17 @@ class Command {
     }
 
     static Void describeAllGob() {
-        int count = 0;
-        java.util.Iterator<Gob> iterator = Util.iterator();
-        while (iterator.hasNext()) {
-            ++count;
-            Gob gob = iterator.next();
+        int count = 1;
+        Array<Gob> gobArray = GobManager.gobArray();
+        for (Gob gob : gobArray) {
             System.out.println("[" + count + "] { virtual: " + gob.virtual + ", class: " + gob.getClass() + ", resource name: " + gob.resourceName() + " }");
+            ++count;
         }
         return null;
     }
 
     static Void moveCenter() {
-        final StatusCode result = Self.moveCenter();
-        Util.debugPrint("result: " + result);
+        Self.moveCenter();
         return null;
     }
 
@@ -242,81 +239,75 @@ class Command {
         return null;
     }
 
-    static Void describeClosestGobOverlay() {
-        Gob closestGob = Util.closestGob();
-        System.out.println("[closest gob] " + closestGob.resourceName());
-        for (Gob.Overlay overlay : closestGob.ols) {
-            try {
-                System.out.println(overlay.res.get().name);
-                for (byte b : overlay.sdt.rbuf)
-                    System.out.print(" " + b);
-            } catch (NullPointerException e) {
-                System.out.println("[describeClosestGobOverlay() null pointer exception has occured]");
-            }
-        }
-        return null;
-    }
+//      static Void describeClosestGobOverlay() {
+//          Gob closestGob = Util.closestGob();
+//          System.out.println("[closest gob] " + closestGob.resourceName());
+//          for (Gob.Overlay overlay : closestGob.ols) {
+//              try {
+//                  System.out.println(overlay.res.get().name);
+//                  for (byte b : overlay.sdt.rbuf)
+//                      System.out.print(" " + b);
+//              } catch (NullPointerException e) {
+//                  System.out.println("[describeClosestGobOverlay() null pointer exception has occured]");
+//              }
+//          }
+//          return null;
+//      }
 
-    static Void describeClosestGobAttribute() {
-        Gob closestGob = Util.closestGob();
-        java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> attributeMap = closestGob.attributeMap();
-        String resourceName = closestGob.resourceName();
-        System.out.println("[resource name] " + resourceName);
-        for (haven.GAttrib attribute : attributeMap.values()) {
-            if (attribute instanceof haven.GobIcon
-                    || attribute instanceof haven.Drawable
-                    || attribute instanceof haven.KinInfo
-                    || attribute instanceof haven.GobHealth) {
-                if (attribute instanceof haven.ResDrawable) {
-                    Debug.describeField(attribute);
-                } else {
-                    Debug.describeClassNameHashCodeWithTag("[attribute] ", attribute);
-                }
-            } else {
-                Debug.describeField(attribute);
-            }
-        }
-        return null;
-    }
+//      static Void describeClosestGobAttribute() {
+//          Gob closestGob = Util.closestGob();
+//          java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> attributeMap = closestGob.attributeMap();
+//          String resourceName = closestGob.resourceName();
+//          System.out.println("[resource name] " + resourceName);
+//          for (haven.GAttrib attribute : attributeMap.values()) {
+//              if (attribute instanceof haven.GobIcon
+//                      || attribute instanceof haven.Drawable
+//                      || attribute instanceof haven.KinInfo
+//                      || attribute instanceof haven.GobHealth) {
+//                  if (attribute instanceof haven.ResDrawable) {
+//                      Debug.describeField(attribute);
+//                  } else {
+//                      Debug.describeClassNameHashCodeWithTag("[attribute] ", attribute);
+//                  }
+//              } else {
+//                  Debug.describeField(attribute);
+//              }
+//          }
+//          return null;
+//      }
 
     static Void move() {
         final Coord destination = Self.location().offset(TILE_IN_COORD * 3, TILE_IN_COORD * 3);
-        final Constant.StatusCode result = Self.move(destination);
-        Util.debugPrint("result: " + result);
+        Self.move(destination);
         return null;
     }
 
     static Void moveNorthTenTimes() {
-        {
-            final StatusCode result = Self.moveCenter();
-            Util.debugPrint("result: " + result);
-        }
-        for (int count = 0; count < 10; ++count) {
-            final StatusCode result = Self.moveNorth();
-            Util.debugPrint("result: " + result);
-        }
+        Self.moveCenter();
+        for (int count = 0; count < 10; ++count)
+            Self.moveNorth();
         return null;
     }
 
-    static Void describeClosestGobSdt() {
-        Gob closestGob = Util.closestGob();
-        final haven.Resource resource = closestGob.resource();
-        if(resource == null) {
-            System.out.println("[resource is null]");
-            return null;
-        }
-        haven.ResDrawable resourceDrawable = (haven.ResDrawable)closestGob.attribute(haven.ResDrawable.class);
-        byte[] buffer = haven.LMI.resourceDrawableBuffer(resourceDrawable);
-        if (buffer == null) {
-            System.out.println("[buffer is null]");
-            return null;
-        }
-        System.out.print("[buffer] length: " + buffer.length);
-        for (byte b : buffer)
-            System.out.print(" " + b);
-        System.out.println();
-        return null;
-    }
+//      static Void describeClosestGobSdt() {
+//          Gob closestGob = Util.closestGob();
+//          final haven.Resource resource = closestGob.resource();
+//          if(resource == null) {
+//              System.out.println("[resource is null]");
+//              return null;
+//          }
+//          haven.ResDrawable resourceDrawable = (haven.ResDrawable)closestGob.attribute(haven.ResDrawable.class);
+//          byte[] buffer = haven.LMI.resourceDrawableBuffer(resourceDrawable);
+//          if (buffer == null) {
+//              System.out.println("[buffer is null]");
+//              return null;
+//          }
+//          System.out.print("[buffer] length: " + buffer.length);
+//          for (byte b : buffer)
+//              System.out.print(" " + b);
+//          System.out.println();
+//          return null;
+//      }
 
     static Void describeSelfPose() {
         Array<String> poseArray = Self.gob().poseArray();
@@ -327,14 +318,13 @@ class Command {
         return null;
     }
 
-    static Void gatherClosestGob() {
-        String action = lmi.Scanner.nextLineWithPrompt("enter action");
-        Gob closestGob = Util.closestGob();
-        final Constant.StatusCode result = FlowerMenuHandler.choose(closestGob, MI_DEFAULT, action);
-        Util.debugPrint("FlowerMenuHandler.choose() result " + result);
-        Self.moveNorth();
-        return null;
-    }
+//      static Void gatherClosestGob() {
+//          String action = lmi.Scanner.nextLineWithPrompt("enter action");
+//          Gob closestGob = Util.closestGob();
+//          FlowerMenuHandler.choose(closestGob, MI_DEFAULT, action);
+//          Self.moveNorth();
+//          return null;
+//      }
 
     static Void investigateGobBoundingBoxWidth() {
         System.out.println("click gob of standard!");
@@ -352,20 +342,23 @@ class Command {
         int variant = start;
         while (true) {
             final Coord variantPoint = standardPoint.add(variant, 0);
-            if (carryWidth_(variantGob, variantPoint) != SC_SUCCEEDED) break;
+            try {
+                _carryWidth(variantGob, variantPoint);
+            } catch (LMIException e) {
+                break;
+            }
             System.out.println("succeeded coord: " + variantPoint);
             --variant;
         }
 
         System.out.println("failed variant is " + variant);
-
         return null;
     }
 
-    private static StatusCode carryWidth_(Gob gob, Coord putPoint) {
+    private static void _carryWidth(Gob gob, Coord putPoint) {
         Self.lift(gob);
         Self.move(putPoint.add(0, TILE_IN_COORD * 2));
-        return Self.put(putPoint);
+        Self.put(putPoint);
     }
 
     static Void investigateGobBoundingBoxHeight() {
@@ -384,7 +377,11 @@ class Command {
         int variant = start;
         while (true) {
             final Coord variantPoint = standardPoint.add(0, variant);
-            if (carryHeight_(variantGob, variantPoint) != SC_SUCCEEDED) break;
+            try {
+                _carryHeight(variantGob, variantPoint);
+            } catch (LMIException e) {
+                break;
+            }
             System.out.println("succeeded coord: " + variantPoint);
             --variant;
         }
@@ -394,9 +391,9 @@ class Command {
         return null;
     }
 
-    private static StatusCode carryHeight_(Gob gob, Coord putPoint) {
+    private static void _carryHeight(Gob gob, Coord putPoint) {
         Self.lift(gob);
-        return Self.put(putPoint);
+        Self.put(putPoint);
     }
 
     static Void investigateSelfBoundingBoxWidthOnce() {
@@ -406,11 +403,7 @@ class Command {
         String variantString = lmi.Scanner.nextLineWithPrompt("enter variant");
         final int variant = Util.stoi(variantString);
 
-
-        if (checkSelfVariantWidth(standardGob, variant) == SC_SUCCEEDED)
-            System.out.println("succeeded");
-        else
-            System.out.println("failed");
+        _checkSelfVariantWidth(standardGob, variant);
 
         return null;
     }
@@ -422,7 +415,11 @@ class Command {
         final int start = 512;
         int variant = start;
         while (true) {
-            if (checkSelfVariantWidth(standardGob, variant) != SC_SUCCEEDED) break;
+            try {
+                _checkSelfVariantWidth(standardGob, variant);
+            } catch (LMIException e) {
+                break;
+            }
             variant -= 1;
         }
 
@@ -431,18 +428,15 @@ class Command {
         return null;
     }
 
-    private static StatusCode checkSelfVariantWidth(Gob standardGob, int variant) {
+    private static void _checkSelfVariantWidth(Gob standardGob, int variant) {
         final Coord variantPoint = standardGob.location().add(variant, 0);
         Coord firstStep = variantPoint.north();
 
         Self.move(firstStep);
-        final StatusCode result = Self.move(variantPoint);
-        if (result != SC_SUCCEEDED) return result;
+        Self.move(variantPoint);
 
-        final double distance = standardGob.distance(Self.gob());
-        System.out.println("succeeded coord: " + variantPoint + ", distance: " + distance);
-
-        return SC_SUCCEEDED;
+        System.out.println("succeeded coord: " + variantPoint
+                + ", distance: " + Self.distance(standardGob));
     }
 
     static Void test3() {
@@ -477,6 +471,11 @@ class Command {
         Array<Gob> gobArray = ClickManager.getGobArrayInArea();
         for (Gob gob : gobArray)
             System.out.println("resource name: " + gob.resourceName());
+        return null;
+    }
+
+    static Void printAutomationStackTrace() {
+        AutomationThread.printStackTrace();
         return null;
     }
 }

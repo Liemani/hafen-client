@@ -1,9 +1,11 @@
 package lmi;
 
+// import java.util package
+import java.util.ArrayList;
+
+// import haven package
 import haven.Gob;
 import haven.Coord;
-
-import lmi.Constant.Action;
 
 // constant
 import static lmi.Constant.Action.*;
@@ -117,5 +119,9 @@ public class Delegate {
         final String command = MessageHandler.getAction(message);
         Util.debugPrint("command: " + command);
         WaitManager.notifyAction(command);
+    }
+
+    public static void gobArrayCopyed(ArrayList<Gob> array) {
+        GobManager.setGobArray(array);
     }
 }

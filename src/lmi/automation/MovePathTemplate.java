@@ -1,40 +1,42 @@
 package lmi.automation;
 
+// import haven package
+import haven.Coord;
+
+// import lmi pacakge
 import lmi.Array;
+import lmi.LMIException;
 
 public class MovePathTemplate implements Runnable {
-    private Array<haven.Coord2d> path_;
+    private Array<Coord> _path;
 
     public void run() {
-        willRun();
-        main();
-        didRun();
+        LMIException result = null;
+        try {
+            _willRun();
+            _main();
+        } catch (LMIException e) {
+            result = e;
+        }
+        _didRun(result);
     }
 
     // private methods
-    private void willRun() {
-        clearPath();
+    private void _willRun() {
+        _path = new Array<Coord>();
         // set your path here...
         // example:
-        //  path_.append(Player.location());
+        //  _path.append(ClickManager.getCoord());
     }
 
-    private void clearPath() {
-        if (path_ == null)
-            path_ = new Array<haven.Coord2d>();
-        path_.removeAll();
-    }
-
-    private void main() {
+    private void _main() {
         // compose your move automation code here...
         // example:
-        //  for (haven.Coord2d point : path_) {
-        //      Player.mapClickLeftMouseButton(point, 0);
-        //      Thread.sleep(1000);
-        //  }
+        //  for (Coord point : _path)
+        //      Player.move(point);
     }
 
-    private void didRun() {
+    private void _didRun(LMIException e) {
         System.out.println("[automation is terminating]");
     }
 }

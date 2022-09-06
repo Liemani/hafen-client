@@ -3,24 +3,34 @@ package lmi;
 import static lmi.Constant.TimeOut.*;
 
 class AutomationThread {
-    static Thread thread_;
+    private static Thread _thread;
+    private static Runnable _runnable;
 
     static void start(Runnable runnable) {
-        if (thread_ != null)
-            thread_.interrupt();
+        if (_thread != null)
+            _thread.interrupt();
+
         try {
-            while (thread_ != null);
-                Thread.sleep(TO_TEMPORARY);
-        } catch (InterruptedException e) { System.out.println("thread interrupted before run"); }
-        thread_ = new Thread(() -> {
-                runnable.run();
-                thread_ = null;
-                System.out.println("[automation is terminating]");
-                });
-        thread_.start();
+            while (_thread != null)
+                Thread.sleep(TO_GENERAL);
+        } catch (InterruptedException e) {
+            System.out.println("thread interrupted before run");
+            return;
+        }
+
+        _runnable = runnable;
+        _thread = new Thread(_mainRunnable);
+        _thread.start();
     }
 
-    static void interrupt() {
-        thread_.interrupt();
-    }
+    // main runnable
+    private static final Runnable _mainRunnable = () -> {
+        _runnable.run();
+        _thread = null;
+        System.out.println("[automation is terminating]");
+    };
+
+    // package method
+    static void interrupt() { _thread.interrupt(); }
+    static void printStackTrace() { _thread.dumpStack(); }
 }

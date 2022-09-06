@@ -4,6 +4,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.function.Predicate;
+
 import haven.Gob;
 import haven.Coord;
 
@@ -136,12 +140,15 @@ public class Util {
         return stringEndOffset - stringOffset;
     }
 
+    public static int stoi(String string) { return Integer.parseInt(string); }
+
     // etc
     public static String targetStack() {
         StackTraceElement targetStack = new Throwable().getStackTrace()[2];
         return targetStack.getClassName() + "::" + targetStack.getMethodName();
     }
 
+    // Debug Print
     public static void debugPrint(String description) {
         final StringBuilder fullDescription = new StringBuilder();
 
@@ -152,87 +159,20 @@ public class Util {
         System.out.println(fullDescription.toString());
     }
 
+    public static void debugPrint(Object object) {
+        Util.debugPrint(object.toString());
+    }
+
     public static void debugPrint() {
         System.out.println("[" + Util.targetStack() + "()]");
     }
 
-    public static int stoi(String string) { return Integer.parseInt(string); }
-
     // TODO 화면 사이즈가 바뀌면 이 값도 바꿔주도록 하자
     // 아마 frame에 sizeChanged() 같은 event가 있을 것 같다
-    private static Coord mapViewCenter_;
-
-    public static Coord mapViewCenter() {
-        return Util.mapViewCenter_;
-    }
+    private static Coord _mapViewCenter;
+    public static Coord mapViewCenter() { return _mapViewCenter; }
 
     public static void initMapViewCenterByMapView(haven.MapView mapView) {
-        mapViewCenter_ = mapView.sz.div(2);
-    }
-
-    // TODO re-implement
-    public static void waitHourGlassFailable() throws InterruptedException {
-        final long startTime = System.currentTimeMillis();
-        final long timeoutLimit = startTime + TO_GENERAL;
-        while (lmi.ObjectShadow.gameUI().prog == null) {
-            Thread.sleep(TO_TEMPORARY);
-            long currentTime = System.currentTimeMillis();
-            if (currentTime > timeoutLimit)
-                break;
-        }
-        while (lmi.ObjectShadow.gameUI().prog != null)
-            Thread.sleep(TO_TEMPORARY);
-    }
-
-    public static void newWidget(haven.Widget widget) {
-        if (widget.getClass() == haven.FlowerMenu.class) {
-            FlowerMenuHandler.setWidget((haven.FlowerMenu)widget);
-        }
-    }
-
-//      iter = oc.iterator();
-//      while(iter.hasNext()) {
-//          System.out.println(iter.next());
-//      }
-    public static java.util.Iterator<Gob> iterator() { return ObjectShadow.objectCache().iterator(); }
-
-    // find gob
-    public static Gob closestGob() {
-        java.util.Iterator<Gob> iterator;
-        Gob gob = null;
-        while (true) {
-            try {
-                iterator = Util.iterator();
-                gob = closestGob(iterator);
-                break;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        return gob;
-    }
-
-    private static Gob closestGob(java.util.Iterator<Gob> iterator) {
-        Gob gob;
-        double distance;
-
-        Gob closestGob = null;
-        double closestDistance = 1100.0;
-
-        while (iterator.hasNext()) {
-            gob = iterator.next();
-            if (gob.getClass() != Gob.class)
-                continue;
-            if (Self.gob().isAt(gob.location()))
-                continue;
-            distance = Self.gob().distance(gob);
-            if (distance < closestDistance) {
-                closestGob = gob;
-                closestDistance = distance;
-            }
-        }
-
-        return closestGob;
+        _mapViewCenter = mapView.sz.div(2);
     }
 }

@@ -117,6 +117,7 @@ public class OCache implements Iterable<Gob> {
 	    for(Gob g : this)
 		copy.add(g);
 	}
+    lmi.Delegate.gobArrayCopyed(copy);
 	Consumer<Gob> task = g -> {
 	    synchronized(g) {
 		g.ctick(dt);
