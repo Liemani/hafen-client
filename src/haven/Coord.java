@@ -260,7 +260,8 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
 
     // lmi custom
     // initializer
-    public void init(int x, int y) { this.x = x; this.y = y; }
+    public Coord init(int x, int y) { this.x = x; this.y = y; return this; }
+    public Coord init(Coord coord) { this.x = coord.x; this.y = coord.y; return this; }
 
     // Factory
     public static Coord of(haven.Coord2d coord2d) {

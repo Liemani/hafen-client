@@ -1,5 +1,8 @@
 package lmi;
 
+// import haven
+import haven.Coord;
+
 public class Constant {
     public static class Action {
         public static final String A_ACT = "act";
@@ -105,10 +108,11 @@ public class Constant {
 
     public static class TimeOut {
         public static final long TO_MAX = Long.MAX_VALUE;
-        public static final long TO_FAIL = 2000;
-        public static final long TO_GENERAL = 1000;
-        public static final long TO_TEMPORARY = 500;
         public static final long TO_NONE = 0;
+        public static final long TO_TEMPORARY = 500;
+        public static final long TO_GENERAL = 1000;
+        public static final long TO_RETRY = 5000;
+        public static final long TO_WAIT = 60000;
     }
 
     public static class MeshId {
@@ -119,8 +123,10 @@ public class Constant {
     public static class BoundingBox {
         public static final int BW_LOG = 352;
         public static final int BH_LOG = 1656;
+        public static final Coord BB_LOG = Coord.of(BW_LOG, BH_LOG);
         public static final int BW_BODY = 512;
         public static final int BH_BODY = 512;
+        public static final Coord BB_BODY = Coord.of(BW_BODY, BH_BODY);
     }
 
     public static class gfx {

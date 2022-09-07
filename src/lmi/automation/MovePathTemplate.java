@@ -1,6 +1,6 @@
 package lmi.automation;
 
-// import haven package
+// import haven
 import haven.Coord;
 
 // import lmi pacakge

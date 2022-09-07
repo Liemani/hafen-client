@@ -4,6 +4,7 @@ package lmi;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 public class Array<E> extends ArrayList<E> {
     // Constructor
@@ -58,4 +59,17 @@ public class Array<E> extends ArrayList<E> {
     // assume: the collection is not empty
     public E removeLast() { return remove(count() - 1); }
     public void removeAll() { super.clear(); }
+
+    // Transforming an Array
+    public Array<E> compactMap(UnaryOperator<E> transform) {
+        Array<E> resultArray = new Array<E>();
+
+        for (E e : this) {
+            final E result = transform.apply(e);
+            if (result != null)
+                resultArray.append(result);
+        }
+
+        return resultArray;
+    }
 }
