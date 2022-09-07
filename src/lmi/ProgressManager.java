@@ -23,7 +23,7 @@ public class ProgressManager {
                 ProgressManager._waitProgressAdded();
             } catch (LMIException e) {
                 if (e.type() != ET_PROGRESS_OPEN) throw e;
-                else break;
+                break;
             }
         }
     }
@@ -39,7 +39,7 @@ public class ProgressManager {
             WaitManager.waitTimeOut(AC_PROGRESS_DID_ADDED, TO_TEMPORARY);
         } catch (LMIException e) {
             if (e.type() != ET_TIME_OUT) throw e;
-            else if (!_isProgressing()) throw new LMIException(ET_PROGRESS_OPEN);
+            if (!_isProgressing()) throw new LMIException(ET_PROGRESS_OPEN);
         }
     }
 

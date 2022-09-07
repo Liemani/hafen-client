@@ -4,25 +4,32 @@ package lmi.automation;
 import haven.Gob;
 import haven.Coord;
 
-// import lmi package
+// import lmi
 import lmi.*;
 
 // import constant
 import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.gfx.terobjs.trees.*;
 import static lmi.Constant.BoundingBox.*;
+import static lmi.Constant.TimeOut.*;
 
 public class CleanLog implements Runnable {
-    private Rect _logGetArea;
-    private Rect _logDumpArea;
+    private Rect _input;
+    private Rect _output;
+
+    private Coord _origin;
 
     private Coord _matrixSize;
-    private Coord _matrixCoord;
-    private Coord _targetCoord;
+    private Coord _previousMatrix;
+    private Coord _currentMatrix;
+    private Coord _targetPutCoord;
+    private Coord _targetMoveCoord;
+
     private Coord _moveCoord;
 
     private Array<Gob> _logArrayToCarry;
 
+    // Run
     public void run() {
         LMIException result = null;
         try {
@@ -37,10 +44,10 @@ public class CleanLog implements Runnable {
     // private methods
     private void _willRun() {
         System.out.println("정리할 log가 있는 곳을 선택해주세요");
-        _logGetArea = ClickManager.getArea();
+        _input = ClickManager.getArea();
 
         System.out.println("로그를 정리해 놓을 곳을 선택해주세요");
-        _logDumpArea = ClickManager.getArea();
+        _output = ClickManager.getArea();
 
         _checkAreaException();
         _init();
@@ -53,84 +60,110 @@ public class CleanLog implements Runnable {
     }
 
     private void _tooSmallAreaException() {
-        if (_logDumpArea.size.y < BH_LOG)
+        if (_output.width() < BW_LOG || _output.height() < BH_LOG)
             throw new LMIException(ET_NO_SPACE_LEFT);
     }
 
     // Initialize
     private void _init() {
+        _initOrigin();
         _initMatrixSize();
-        _initMatrixCoord();
-        _initTargetCoord();
+        _initPreviousMatrix();
+        _initMatrix();
+        _initTargetPutCoord();
+        _initTargetMoveCoord();
+        _initMoveCoord();
+    }
+
+    private void _initOrigin() {
+        _origin = Coord.of(_output.maxX(), _output.maxY())
+            .assignAdd(BB_BODY.divide(2));
     }
 
     private void _initMatrixSize() {
-        final int x = _logDumpArea.width() / BW_LOG;
         final int rowSet = BH_LOG + BH_BODY + BH_LOG;
-        final int y = (_logDumpArea.height() / rowSet) * 2
-            + ((_logDumpArea.height() % rowSet >= BH_LOG) ? 1 : 0);
+        final int x = _output.width() / BW_LOG;
+        final int y = (_output.height() / rowSet) * 2
+            + ((_output.height() % rowSet >= BH_LOG) ? 1 : 0);
         _matrixSize = Coord.of(x, y);
     }
 
-    private void _initMatrixCoord() {
-        _matrixCoord = Coord.zero();
+    private void _initPreviousMatrix() { _previousMatrix = new Coord(); }
+    private void _initMatrix() { _currentMatrix = Coord.zero(); }
+
+    private void _initTargetPutCoord() {
+        _targetPutCoord = new Coord();
+        _calculateTargetPutCoord();
     }
 
-    private void _initTargetCoord() {
-        _targetCoord = _targetCoord();
+    private void _initTargetMoveCoord() {
+        _targetMoveCoord = new Coord();
+        _calculateTargetMoveCoord();
     }
 
+    private void _initMoveCoord() { _moveCoord = Coord.of(_origin); }
+
+    // Main
     private void _main() {
-        while (true) {
-            _loop();
-        }
-    }
+        if (_coordIsPossessed(_targetPutCoord))
+            _calculateNextCoord();
 
-    private void _loop() {
-        final Gob logToCarry = _findLogToCarry();
-        Self.lift(logToCarry);
-
-        while (true) {
-            if (!_coordIsPossessed(_targetCoord)) break;
-            _setNextTargetCoord();
-        }
-
-        _moveCoord = Coord.of(_logDumpArea.maxX(), _logDumpArea.maxY())
-            .assignAdd(BW_BODY / 2, BH_BODY / 2);
-        _moveAgain(_moveCoord);
-
-        _put();
-
-        _moveCoord.x = _logDumpArea.maxX() + BW_BODY / 2;
-        _moveAgain(_moveCoord);
-
-        _moveCoord.y = _logDumpArea.maxY() + BH_BODY / 2;
-        _moveAgain(_moveCoord);
-    }
-
-    private void _moveAgain(Coord coord) {
         while (true) {
             try {
-                Self.move(coord);
-                break;
+                _loop();
             } catch (LMIException e) {
-                if (e.type() != ET_MOVE) throw e;
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException ee) {
-                    throw new LMIException(ET_INTERRUPTED);
-                }
+                if (e.type() != ET_NO_WORK_TO_DO) throw e;
+                System.out.println("추가 log가 오길 기다려요");
+                Util.sleep(TO_WAIT);
             }
         }
     }
 
+    private void _loop() {
+        _forceMove(_origin);
+        _forceLift(_findLogToCarry());
+        _forceMove(_origin);
+        while (true) {
+            _forceMove(_moveCoord.init(_moveCoord.x, _targetMoveCoord.y));
+            while (true) {
+                _forceMove(_moveCoord.init(_targetMoveCoord.x, _moveCoord.y));
+                try {
+                    Self.put(_targetPutCoord);
+                    _calculateNextCoord();
+                    break;
+                } catch (LMIException e) {
+                    if (e.type() != ET_PUT) throw e;
+                    _calculateNextCoord();
+                    if (_currentMatrix.y != _previousMatrix.y) {
+                        _forceMove(_moveCoord.init(_origin.x, _moveCoord.y));
+                        break;
+                    }
+                }
+            }
+            if (!Self.gob().isLifting()) break;
+        }
+        _forceMove(_moveCoord.init(_origin.x, _moveCoord.y));
+        _forceMove(_origin);
+    }
+
+    private void _forceMove(Coord coord) { Self.forceMove(coord, TO_RETRY); }
+    private void _forceLift(Gob gob) { Self.forceLift(gob, TO_RETRY); }
+
     /// - Throws
     ///     - ET_NO_WORK_TO_DO
     private Gob _findLogToCarry() {
-        final Array<Gob> gobArrayInGetArea = GobManager.gobArrayInArea(_logGetArea);
-        gobArrayInGetArea.removeAllWhere(gob -> !gob.resourceName().endsWith(RN_LOG));
-        _logArrayToCarry = gobArrayInGetArea;
-        // TODO map? 등을 호출해서 새로운 array를 생성하여 반환
+        _logArrayToCarry = GobManager.gobArrayInArea(_input)
+            .compactMap(gob -> {
+                    final String resourceName = gob.resourceName();
+                    if (resourceName == null) {
+                        Util.debugPrint("gob: " + gob);
+                        Util.debugPrint("gob is virtual: " + gob.virtual);
+                        Util.debugPrint("class name of gob: " + gob.getClass().getName());
+                        for (haven.GAttrib attribute : gob.attributeMap().values())
+                            Util.debugPrint("name of attribute" + attribute.getClass().getName());
+                    }
+                    return resourceName.endsWith(RN_LOG) ? gob : null;
+                    });
 
         if (_logArrayToCarry.isEmpty())
             throw new LMIException(ET_NO_WORK_TO_DO);
@@ -140,27 +173,41 @@ public class CleanLog implements Runnable {
 
     /// - Throws
     ///     - ET_NO_SPACE_LEFT
-    private void _setNextRowColumnCoord() {
-        ++_matrixCoord.x;
-        if (_matrixCoord.x == _matrixSize.x) {
-            _matrixCoord.x = 0;
-            ++_matrixCoord.y;
+    private void _calculateNextCoord() {
+        while (true) {
+            _calculateNextMatrix();
+            _calculateTargetPutCoord();
+            _calculateTargetMoveCoord();
+            if (!_coordIsPossessed(_targetPutCoord)) break;
+        }
+    }
+
+    /// - Throws
+    ///     - ET_NO_SPACE_LEFT
+    private void _calculateNextMatrix() {
+        _previousMatrix.init(_currentMatrix);
+
+        ++_currentMatrix.x;
+        if (_currentMatrix.x == _matrixSize.x) {
+            _currentMatrix.x = 0;
+            ++_currentMatrix.y;
         }
 
-        if (_matrixCoord.y == _matrixSize.y)
+        if (_currentMatrix.y == _matrixSize.y)
             throw new LMIException(ET_NO_SPACE_LEFT);
     }
 
-    private Coord _targetCoord() {
-        int x = _logDumpArea.minX() + _matrixCoord.x * BW_LOG + BW_LOG / 2;
-        int y = _logDumpArea.minY() + _matrixCoord.y * BH_LOG + BH_LOG / 2
-            + ((_matrixCoord.y + 1) / 2) * BH_BODY;
-        return Coord.of(x, y);
+    private void _calculateTargetPutCoord() {
+        _targetPutCoord.init(_output.origin)
+            .assignAdd(_currentMatrix.multiply(BB_LOG))
+            .assignAdd(BB_LOG.divide(2))
+            .assignAdd(0, ((_currentMatrix.y + 1) / 2) * BH_BODY);
     }
 
-    private void _setNextTargetCoord() {
-        _setNextRowColumnCoord();
-        _targetCoord = _targetCoord();
+    private void _calculateTargetMoveCoord() {
+        _targetMoveCoord.init(_targetPutCoord);
+        _targetMoveCoord.y += ((BH_LOG + BH_BODY) / 2)
+            * ((_currentMatrix.y % 2 == 0) ? 1 : -1);
     }
 
     private boolean _coordIsPossessed(Coord coord) {
@@ -172,45 +219,21 @@ public class CleanLog implements Runnable {
         return false;
     }
 
-    private void _put() {
-        while (true) {
-            if (Self.location().y - BH_BODY != _moveCoord.y) {
-                _moveCoord.x = _logDumpArea.maxX() + BW_BODY / 2;
-                _moveAgain(_moveCoord);
-
-                _moveCoord.y = _targetCoord.y + BH_LOG / 2 + BH_BODY / 2;
-                _moveAgain(_moveCoord);
-            }
-
-            _moveCoord.x = _targetCoord.x;
-            _moveAgain(_moveCoord);
-
-            try {
-                Self.put(_targetCoord);
-                return;
-            } catch (LMIException e) {
-                if (e.type() != ET_PUT) throw e;
-            } finally {
-                _setNextTargetCoord();
-            }
-        }
-    }
-
     private void _didRun(LMIException e) {
         if (e == null) {
-            System.out.println("모든 log를 정리했어요");
+            System.out.println("모든 log를 다 정리했어요");
             return;
         }
 
         switch (e.type()) {
             case ET_INTERRUPTED:
-                System.out.println("작업을 중단했어요");
+                System.out.println("작업이 중단됐어요");
                 break;
             case ET_NO_SPACE_LEFT:
-                System.out.println("log를 정리할 공간 더 이상 없어요");
+                System.out.println("log를 정리할 남은 공간이 없어요");
                 break;
             case ET_NO_WORK_TO_DO:
-                System.out.println("더 정리할 log가 없어요");
+                System.out.println("모든 log를 다 정리했어요");
                 break;
             default:
                 throw e;

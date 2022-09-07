@@ -1,6 +1,6 @@
 package lmi;
 
-// ipmort haven package
+// ipmort haven
 import haven.Gob;
 import haven.Coord;
 

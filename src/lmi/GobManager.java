@@ -1,10 +1,10 @@
 package lmi;
 
-// import java.util package
+// import java.util
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
-// import haven package
+// import haven
 import haven.Gob;
 import haven.Coord;
 
@@ -50,7 +50,7 @@ public class GobManager {
             WaitManager.waitTimeOut(_gob, AC_MOVE_DID_BEGIN, TO_TEMPORARY);
         } catch (LMIException e) {
             if (e.type() != ET_TIME_OUT) throw e;
-            else if (!_isMoving()) throw new LMIException(ET_MOVE);
+            if (!_isMoving()) throw new LMIException(ET_MOVE);
         }
     }
 
@@ -75,7 +75,7 @@ public class GobManager {
             WaitManager.waitTimeOut(_gob, AC_DID_LIFT, TO_TEMPORARY);
         } catch (LMIException e) {
             if (e.type() != ET_TIME_OUT) throw e;
-            else if (!_gob.isLifting(gob)) throw new LMIException(ET_LIFT);
+            if (!_gob.isLifting(gob)) throw new LMIException(ET_LIFT);
         }
     }
 
@@ -87,7 +87,7 @@ public class GobManager {
             WaitManager.waitTimeOut(_gob, AC_DID_PUT, TO_TEMPORARY);
         } catch (LMIException e) {
             if (e.type() != ET_TIME_OUT) throw e;
-            else if (_gob.isLifting()) throw new LMIException(ET_PUT);
+            if (_gob.isLifting()) throw new LMIException(ET_PUT);
         }
     }
 

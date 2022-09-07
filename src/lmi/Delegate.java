@@ -1,9 +1,9 @@
 package lmi;
 
-// import java.util package
+// import java.util
 import java.util.ArrayList;
 
-// import haven package
+// import haven
 import haven.Gob;
 import haven.Coord;
 

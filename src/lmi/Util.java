@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import haven.Gob;
 import haven.Coord;
 
+import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.TimeOut.*;
 
 public class Util {
@@ -174,5 +175,13 @@ public class Util {
 
     public static void initMapViewCenterByMapView(haven.MapView mapView) {
         _mapViewCenter = mapView.sz.div(2);
+    }
+
+    public static void sleep(long microseconds) {
+        try {
+            Thread.sleep(microseconds);
+        } catch (InterruptedException e) {
+            throw new LMIException(ET_INTERRUPTED);
+        }
     }
 }
