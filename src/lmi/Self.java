@@ -1,6 +1,6 @@
 package lmi;
 
-// import haven package
+// import haven
 import haven.Gob;
 import haven.Coord;
 
@@ -66,6 +66,30 @@ public class Self {
     public static void move(Coord coord) {
         _sendClickMessage(coord);
         Self.gob().waitMove(coord);
+    }
+
+    public static void forceMove(Coord coord, long microseconds) {
+        while (true) {
+            try {
+                Self.move(coord);
+                break;
+            } catch (LMIException e) {
+                if (e.type() != ET_MOVE) throw e;
+            }
+            Util.sleep(microseconds);
+        }
+    }
+
+    public static void forceLift(Gob gob, long microseconds) {
+        while (true) {
+            try {
+                Self.lift(gob);
+                break;
+            } catch (LMIException e) {
+                if (e.type() != ET_LIFT) throw e;
+            }
+            Util.sleep(microseconds);
+        }
     }
 
     // etc

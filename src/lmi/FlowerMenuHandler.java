@@ -53,7 +53,7 @@ public class FlowerMenuHandler {
             WaitManager.waitTimeOut(AC_FLOWER_MENU_DID_ADDED, TO_TEMPORARY);
         } catch (LMIException e) {
             if (e.type() != ET_TIME_OUT) throw e;
-            else if (!_isAdded()) throw new LMIException(ET_FLOWER_MENU_OPEN);
+            if (!_isAdded()) throw new LMIException(ET_FLOWER_MENU_OPEN);
         }
     }
 

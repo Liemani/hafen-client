@@ -1,6 +1,6 @@
 package lmi;
 
-// import haven package
+// import haven
 import haven.Coord;
 
 // import constant
