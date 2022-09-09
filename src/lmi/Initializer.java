@@ -1,29 +1,46 @@
 package lmi;
 
+import haven.*;
+
 public class Initializer {
     public static void init() {
+        Console.setscmd("lmi", new MainCommand());
         Scanner.init(System.in);
         Command.init();
         ObjectFinder.init();
         ObjectShadow.init();
-        new Thread(new lmi.MainRunnable()).start();
         Debug.init();
+        ClickManager.init();
+        WaitManager.init();
     }
 
-    // set lmi.ObjectShadow
-    public static void initMainFrame(haven.MainFrame mainFrame) { ObjectShadow.setMainFrame(mainFrame); }
+    // set ObjectShadow
+    // MainFrame::MainFrame()
+    // MainFrame::run()
+    // JOGLPanel::JOGLPanel()
+    // JOGLPanel::JOGLPanel()
+    // Bootstrap::Bootstrap(), RemoteUI::RemoteUI()
+    // UI::UI()
+    // RootWidget::RootWidget()
+    // GameUI::GameUI()
+    // MapView::MapView()
+    // Session::Session()
+    // Charlist::Charlist()
+    // IMeter::IMeter()
+    // Glob::Glob()
+    public static void initMainFrame(MainFrame mainFrame) { ObjectShadow.setMainFrame(mainFrame); }
     public static void initMainThread(Thread mainThread) { ObjectShadow.setMainThread(mainThread); }
-    public static void initJOGLPanel(haven.JOGLPanel joglPanel) { ObjectShadow.setJOGLPanel(joglPanel); }
-    public static void initDispatcher(haven.UIPanel.Dispatcher dispatcher) { ObjectShadow.setDispatcher(dispatcher); }
-    public static void initUIRunner(haven.UI.Runner uiRunner) { ObjectShadow.setUIRunner(uiRunner); }
-    public static void initUI(haven.UI ui) { ObjectShadow.setUI(ui); }
-    public static void initRootWidget(haven.RootWidget rootWidget) { ObjectShadow.setRootWidget(rootWidget); }
-    public static void initGameUI(haven.GameUI gameUI) { ObjectShadow.setGameUI(gameUI); }
-    public static void initMapView(haven.MapView mapView) { ObjectShadow.setMapView(mapView); }
-    public static void initSession(haven.Session session) { ObjectShadow.setSession(session); }
-    public static void initCharList(haven.Charlist characterList) { ObjectShadow.setCharacterList(characterList); }
-    public static void initGlob(haven.Glob glob) { ObjectShadow.setGlob(glob); }
-    public static void initObjectCache(haven.OCache objectCache) { ObjectShadow.setObjectCache(objectCache); }
+    public static void initJOGLPanel(JOGLPanel joglPanel) { ObjectShadow.setJOGLPanel(joglPanel); }
+    public static void initDispatcher(UIPanel.Dispatcher dispatcher) { ObjectShadow.setDispatcher(dispatcher); }
+    public static void initUIRunner(UI.Runner uiRunner) { ObjectShadow.setUIRunner(uiRunner); }
+    public static void initUI(UI ui) { ObjectShadow.setUI(ui); }
+    public static void initRootWidget(RootWidget rootWidget) { ObjectShadow.setRootWidget(rootWidget); }
+    public static void initGameUI(GameUI gameUI) { ObjectShadow.setGameUI(gameUI); }
+    public static void initMapView(MapView mapView) { ObjectShadow.setMapView(mapView); }
+    public static void initSession(Session session) { ObjectShadow.setSession(session); }
+    public static void initCharList(Charlist characterList) { ObjectShadow.setCharacterList(characterList); }
+    public static void initGlob(Glob glob) { ObjectShadow.setGlob(glob); }
+    public static void initObjectCache(OCache objectCache) { ObjectShadow.setObjectCache(objectCache); }
 
-    public static void initGaugeArray(haven.IMeter gauge) { ObjectShadow.setGaugeArray(gauge); }
+    public static void initGaugeArray(IMeter gauge) { ObjectShadow.setGaugeArray(gauge); }
 }

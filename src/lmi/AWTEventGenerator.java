@@ -192,7 +192,7 @@ public class AWTEventGenerator {
         AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_C);
         AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
         AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_A);
-        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_T);
+        AWTEventGenerator.generateKeyPushUpGeneralKey(java.awt.event.KeyEvent.VK_S);
         return null;
     }
 
@@ -204,5 +204,10 @@ public class AWTEventGenerator {
     static Void typeTab() {
         AWTEventGenerator.generateKeyPushUpSpecialKey(java.awt.event.KeyEvent.VK_TAB);
         return null;
+    }
+
+    static boolean isESC(java.awt.event.KeyEvent keyEvent) {
+        return (keyEvent.getModifiers() == 0
+            && keyEvent.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE);
     }
 }

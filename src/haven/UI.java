@@ -386,6 +386,7 @@ public class UI {
     private Grab[] c(Collection<Grab> g) {return(g.toArray(new Grab[0]));}
 
     public void keydown(KeyEvent ev) {
+        if (lmi.Delegate.keyDidDown(ev)) return;
 	setmods(ev);
 	for(Grab g : c(keygrab)) {
 	    if(g.wdg.keydown(ev))

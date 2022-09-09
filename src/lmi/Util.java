@@ -184,4 +184,13 @@ public class Util {
             throw new LMIException(ET_INTERRUPTED);
         }
     }
+
+    // print GameUI message
+    public static void printErrorMessage(String message) {
+        ObjectShadow.gameUI().error(message);
+    }
+
+    public static void printAlertMessage(String message) {
+        ObjectShadow.gameUI().alert(message);
+    }
 }

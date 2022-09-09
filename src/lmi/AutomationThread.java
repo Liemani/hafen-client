@@ -25,12 +25,24 @@ class AutomationThread {
 
     // main runnable
     private static final Runnable _mainRunnable = () -> {
-        _runnable.run();
+        try {
+            _runnable.run();
+        } catch (Exception e) {
+            Util.debugPrint(e);
+            e.printStackTrace();
+        }
         _thread = null;
         System.out.println("[automation is terminating]");
     };
 
     // package method
+    static boolean isRunning() { return _thread != null; }
     static void interrupt() { _thread.interrupt(); }
-    static void printStackTrace() { _thread.dumpStack(); }
+
+    static void printStackTrace() {
+        if (_thread == null)
+            Util.debugPrint("_thread is null");
+        else
+            _thread.dumpStack();
+    }
 }

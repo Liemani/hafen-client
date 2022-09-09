@@ -1743,4 +1743,14 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public Map<String, Console.Command> findcmds() {
 	return(cmdmap);
     }
+
+    // lmi custom
+    public void alert(String msg) {
+	msg(msg, Color.WHITE, Color.WHITE);
+	double now = Utils.rtime();
+	if(now - lasterrsfx > 0.1) {
+	    ui.sfx(errsfx);
+	    lasterrsfx = now;
+	}
+    }
 }

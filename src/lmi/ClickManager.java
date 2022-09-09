@@ -4,49 +4,49 @@ package lmi;
 import haven.Gob;
 import haven.Coord;
 
+import lmi.Constant.Action;
+
 // import constant
 import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.Action.Custom.*;
 
 public class ClickManager {
     // field
-    private static boolean _isWatingInput = false;
-    private static haven.ClickData _clickData = null;
-    private static Coord _clickPoint = null;
+    private static boolean _isWaiting;
+    private static haven.ClickData _clickData;
+    private static Coord _clickPoint;
+
+    static void init() { _clear(); }
 
     // getter setter
-    public static boolean isWatingInput() { return _isWatingInput; }
+    public static boolean isWaiting() { return _isWaiting; }
     public static void setClickData(haven.ClickData clickData) { _clickData = clickData; }
     public static void setClickPoint(Coord clickPoint) { _clickPoint = clickPoint; }
-    private static void _clear() { _isWatingInput = false; _clickData = null; _clickPoint = null; }
+    public static void _clear() { _isWaiting = false; _clickData = null; _clickPoint = null; }
 
     // public method
     public static Gob getGob() {
-        _isWatingInput = true;
-        WaitManager.waitAction(AC_DID_OBJECT_CLICK);
+        _isWaiting = true;
+        _waitAction(AC_DID_OBJECT_CLICK);
 
         final haven.Clickable clickable = _clickData.ci;
+        Gob clickedGob = null;
         if (clickable.getClass() == Gob.GobClick.class) {
             final Gob.GobClick gobClick = (Gob.GobClick)clickable;
-            final Gob clickedGob = gobClick.gob;
-
-            _clear();
-            return clickedGob;
+            clickedGob = gobClick.gob;
         } else if (clickable.getClass() == haven.Composited.CompositeClick.class) {
             final haven.Composited.CompositeClick compositeClick = (haven.Composited.CompositeClick)clickable;
             final Gob.GobClick gobClick = compositeClick.gi;
-            final Gob clickedGob = gobClick.gob;
-
-            _clear();
-            return clickedGob;
+            clickedGob = gobClick.gob;
         }
 
-        return null;
+        _clear();
+        return clickedGob;
     }
 
     public static Coord getCoord() {
-        _isWatingInput = true;
-        WaitManager.waitAction(AC_DID_CLICK);
+        _isWaiting = true;
+        _waitAction(AC_DID_CLICK);
 
         final Coord clickPoint = _clickPoint;
 
@@ -63,5 +63,14 @@ public class ClickManager {
     public static Array<Gob> getGobArrayInArea() {
         final Rect area = ClickManager.getArea();
         return GobManager.gobArrayInArea(area);
+    }
+
+    private static void _waitAction(Action.Custom action) {
+        try {
+            WaitManager.waitAction(action);
+        } catch(Exception e) {
+            _clear();
+            throw e;
+        }
     }
 }
