@@ -28,11 +28,6 @@ class Command {
     private static CommandMap _map;
 
     // automation command
-    static Void automationInterrupt() {
-        AutomationThread.interrupt();
-        return null;
-    }
-
     static Void automationConnect() {
         AutomationThread.start(new Connect());
         return null;
@@ -58,8 +53,8 @@ class Command {
         return null;
     }
 
-    static Void automationCleanLog() {
-        AutomationThread.start(new CleanLog());
+    static Void automationAlignLog() {
+        AutomationThread.start(new AlignLog());
         return null;
     }
 
@@ -476,6 +471,12 @@ class Command {
 
     static Void printAutomationStackTrace() {
         AutomationThread.printStackTrace();
+        return null;
+    }
+
+    static Void printStackTrace() {
+        Util.debugPrint("thread name: " + Thread.currentThread().getName());
+        new Exception().printStackTrace();
         return null;
     }
 }

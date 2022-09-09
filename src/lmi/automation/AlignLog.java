@@ -13,7 +13,7 @@ import static lmi.Constant.gfx.terobjs.trees.*;
 import static lmi.Constant.BoundingBox.*;
 import static lmi.Constant.TimeOut.*;
 
-public class CleanLog implements Runnable {
+public class AlignLog implements Runnable {
     private Rect _input;
     private Rect _output;
 
@@ -43,10 +43,10 @@ public class CleanLog implements Runnable {
 
     // private methods
     private void _willRun() {
-        System.out.println("정리할 log가 있는 곳을 선택해주세요");
+        Util.printAlertMessage("정리할 통나무가 있는 곳을 선택해주세요");
         _input = ClickManager.getArea();
 
-        System.out.println("로그를 정리해 놓을 곳을 선택해주세요");
+        Util.printAlertMessage("통나무를 정리해 놓을 곳을 선택해주세요");
         _output = ClickManager.getArea();
 
         _checkAreaException();
@@ -113,7 +113,7 @@ public class CleanLog implements Runnable {
                 _loop();
             } catch (LMIException e) {
                 if (e.type() != ET_NO_WORK_TO_DO) throw e;
-                System.out.println("추가 log가 오길 기다려요");
+                Util.printAlertMessage("추가 통나무를 기다려요");
                 Util.sleep(TO_WAIT);
             }
         }
@@ -221,19 +221,19 @@ public class CleanLog implements Runnable {
 
     private void _didRun(LMIException e) {
         if (e == null) {
-            System.out.println("모든 log를 다 정리했어요");
+            Util.printAlertMessage("모든 통나무를 다 정리했어요");
             return;
         }
 
         switch (e.type()) {
             case ET_INTERRUPTED:
-                System.out.println("작업이 중단됐어요");
+                Util.printAlertMessage("작업이 중단됐어요");
                 break;
             case ET_NO_SPACE_LEFT:
-                System.out.println("log를 정리할 남은 공간이 없어요");
+                Util.printAlertMessage("통나무를 정리할 남은 공간이 없어요");
                 break;
             case ET_NO_WORK_TO_DO:
-                System.out.println("모든 log를 다 정리했어요");
+                Util.printAlertMessage("모든 통나무를 다 정리했어요");
                 break;
             default:
                 throw e;
