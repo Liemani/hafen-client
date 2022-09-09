@@ -1,63 +1,65 @@
 package lmi;
 
+import haven.*;
+
 import static lmi.Constant.gfx.hud.meter.*;
 import static lmi.Constant.Gauge.Index.*;
 
 public class ObjectShadow {
     // Field
-    private static haven.MainFrame _mainFrame;   // haven.MainFrame::MainFrame()
-    private static Thread _mainThread;   // haven.MainFrame::run()
-    private static haven.JOGLPanel _joglPanel;   // haven.JOGLPanel::JOGLPanel()
-    private static haven.UIPanel.Dispatcher _dispatcher; // haven.JOGLPanel::JOGLPanel()
-    private static haven.UI.Runner _uiRunner;    // haven.Bootstrap::Bootstrap(), haven.RemoteUI::RemoteUI()
-    private static haven.UI _ui; // haven.UI::UI()
-    private static haven.RootWidget _rootWidget; // haven.RootWidget::RootWidget()
-    private static haven.GameUI _gameUI; // haven.GameUI::GameUI()
-    private static haven.MapView _mapView;   // haven.MapView::MapView()
-    private static haven.Session _session;   // haven.Session::Session()
-    private static haven.Charlist _characterList;    // haven.Charlist::Charlist()
-    private static haven.IMeter[] _gaugeWidgetArray;  // haven.IMeter::IMeter()
-    private static haven.Glob _glob;    // haven.Glob::Glob()
-    private static haven.OCache _objectCache;
+    private static MainFrame _mainFrame;
+    private static Thread _mainThread;
+    private static JOGLPanel _joglPanel;
+    private static UIPanel.Dispatcher _dispatcher;
+    private static UI.Runner _uiRunner;
+    private static UI _ui;
+    private static RootWidget _rootWidget;
+    private static GameUI _gameUI;
+    private static MapView _mapView;
+    private static Session _session;
+    private static Charlist _characterList;
+    private static IMeter[] _gaugeWidgetArray;
+    private static Glob _glob;
+    private static OCache _objectCache;
 
     // Initialize
-    static void init() { _gaugeWidgetArray = new haven.IMeter[3]; }
+    static void init() { _gaugeWidgetArray = new IMeter[3]; }
 
     // Getter
-    public static haven.MainFrame mainFrame() { return _mainFrame; }
+    public static MainFrame mainFrame() { return _mainFrame; }
     public static Thread mainThread() { return _mainThread; }
-    public static haven.JOGLPanel joglPanel() { return _joglPanel; }
-    public static haven.UIPanel.Dispatcher dispatcher() { return _dispatcher; }
-    public static haven.UI.Runner uiRunner() { return _uiRunner; }
-    public static haven.UI ui() { return _ui; }
-    public static haven.RootWidget rootWidget() { return _rootWidget; }
-    public static haven.GameUI gameUI() { return _gameUI; }
-    public static haven.MapView mapView() { return _mapView; }
-    public static haven.Session session() { return _session; }
-    public static haven.Charlist characterList() { return _characterList; }
-    public static haven.IMeter[] gaugeWidgetArray() { return _gaugeWidgetArray; }
-    public static haven.Glob glob() { return _glob; }
-    public static haven.OCache objectCache() { return _objectCache; }
+    public static JOGLPanel joglPanel() { return _joglPanel; }
+    public static UIPanel.Dispatcher dispatcher() { return _dispatcher; }
+    public static UI.Runner uiRunner() { return _uiRunner; }
+    public static UI ui() { return _ui; }
+    public static RootWidget rootWidget() { return _rootWidget; }
+    public static GameUI gameUI() { return _gameUI; }
+    public static MapView mapView() { return _mapView; }
+    public static Session session() { return _session; }
+    public static Charlist characterList() { return _characterList; }
+    public static IMeter[] gaugeWidgetArray() { return _gaugeWidgetArray; }
+    public static Glob glob() { return _glob; }
+    public static OCache objectCache() { return _objectCache; }
 
     // Setter
-    static void setMainFrame(haven.MainFrame mainFrame) { _mainFrame = mainFrame; }
+    static void setMainFrame(MainFrame mainFrame) { _mainFrame = mainFrame; }
     static void setMainThread(Thread mainThread) { _mainThread = mainThread; }
-    static void setJOGLPanel(haven.JOGLPanel joglPanel) { _joglPanel = joglPanel; }
-    static void setDispatcher(haven.UIPanel.Dispatcher dispatcher) { _dispatcher = dispatcher; }
-    static void setUIRunner(haven.UI.Runner uiRunner) { _uiRunner = uiRunner; }
-    static void setUI(haven.UI ui) { _ui = ui; }
-    static void setRootWidget(haven.RootWidget rootWidget) { _rootWidget = rootWidget; }
-    static void setGameUI(haven.GameUI gameUI) { _gameUI = gameUI; }
-    static void setMapView(haven.MapView mapView) {
+    static void setJOGLPanel(JOGLPanel joglPanel) { _joglPanel = joglPanel; }
+    static void setDispatcher(UIPanel.Dispatcher dispatcher) { _dispatcher = dispatcher; }
+    static void setUIRunner(UI.Runner uiRunner) { _uiRunner = uiRunner; }
+    static void setUI(UI ui) { _ui = ui; }
+    static void setRootWidget(RootWidget rootWidget) { _rootWidget = rootWidget; }
+    static void setGameUI(GameUI gameUI) { _gameUI = gameUI; }
+    static void setMapView(MapView mapView) {
         _mapView = mapView;
         Util.initMapViewCenterByMapView(_mapView);
     }
-    static void setSession(haven.Session session) { _session = session; }
-    static void setCharacterList(haven.Charlist characterList) { _characterList = characterList; }
-    static void setGlob(haven.Glob glob) { _glob = glob; }
-    static void setObjectCache(haven.OCache objectCache) { _objectCache = objectCache; }
+    static void setSession(Session session) { _session = session; }
+    static void setCharacterList(Charlist characterList) { _characterList = characterList; }
+    static void setGlob(Glob glob) { _glob = glob; }
+    static void setObjectCache(OCache objectCache) { _objectCache = objectCache; }
 
-    static void setGaugeArray(haven.IMeter gauge) {
+    static void setGaugeArray(IMeter gauge) {
         final String resourceName = gauge.resourceName();
         if (resourceName.endsWith(RN_HIT_POINT))
             _gaugeWidgetArray[GI_HIT_POINT] = gauge;
@@ -68,7 +70,7 @@ public class ObjectShadow {
     }
 
     // Package Method
-    static haven.Coord getMouseLocation() {
+    static Coord getMouseLocation() {
         return _ui.mc;
     }
 

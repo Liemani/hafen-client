@@ -7,9 +7,11 @@ import static lmi.Constant.TimeOut.*;
 
 public class WaitManager {
     // property
-    private static Object _subject = null;
-    private static String _action = null;
-    private static Action.Custom _customAction = AC_NONE;
+    private static Object _subject;
+    private static String _action;
+    private static Action.Custom _customAction;
+
+    static void init() { _clear(); }
 
     // notify
     public static void notifyAction(Object subject, String action) {
