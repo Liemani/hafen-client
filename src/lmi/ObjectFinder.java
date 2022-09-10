@@ -1,29 +1,29 @@
 package lmi;
 
-class ObjectFinder {
+public class ObjectFinder {
     // static fields
     private static Array<Object> _path = null;
 
     // Initializing the Finder
-    static void init() {
+    public static void init() {
         _path = new Array<Object>();
     }
 
-    static boolean isEmpty() {
+    public static boolean isEmpty() {
         return _path.isEmpty();
     }
 
-    static int count() {
+    public static int count() {
         return _path.count();
     }
 
     // Accessing Elements
-    static Object last() {
+    public static Object last() {
         return _path.last();
     }
 
     // Adding Elements
-    static void moveForward(Object object) {
+    public static void moveForward(Object object) {
         if (object == null)
             return;
 
@@ -31,7 +31,7 @@ class ObjectFinder {
     }
 
     // Removing Elements
-    static Object moveBackward() {
+    public static Object moveBackward() {
         if (isEmpty())
             return null;
 
@@ -42,7 +42,7 @@ class ObjectFinder {
     // if classObjectToReset is not null, remove all elements from path
     // if classObjectToReset is null, find from last()
     // TODO remove dependencey of input from Util.getObjectByInputFromField() and Util.getObjectByInputFromMethodo()
-    static Object find(Util.MemberType type, Class classObjectToReset) throws Exception {
+    public static Object find(Util.MemberType type, Class classObjectToReset) throws Exception {
         if (classObjectToReset != null)
             _path.removeAll();
 
@@ -67,7 +67,7 @@ class ObjectFinder {
     }
 
     // listLastAsWidget()
-    static void listLastAsWidget() {
+    public static void listLastAsWidget() {
         Object currentObject = last();
         if (currentObject instanceof haven.Widget)
             iterateWidget((haven.Widget)currentObject, 0);

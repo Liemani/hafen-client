@@ -2,11 +2,11 @@ package lmi;
 
 import static lmi.Constant.TimeOut.*;
 
-class AutomationThread {
+public class AutomationThread {
     private static Thread _thread;
     private static Runnable _runnable;
 
-    static void start(Runnable runnable) {
+    public static void start(Runnable runnable) {
         if (_thread != null)
             _thread.interrupt();
 
@@ -32,14 +32,14 @@ class AutomationThread {
             e.printStackTrace();
         }
         _thread = null;
-        System.out.println("[automation is terminating]");
+        Util.message("[자동화 작업이 종료됐어요]");
     };
 
     // package method
     static boolean isRunning() { return _thread != null; }
     static void interrupt() { _thread.interrupt(); }
 
-    static void printStackTrace() {
+    public static void printStackTrace() {
         if (_thread == null)
             Util.debugPrint("_thread is null");
         else

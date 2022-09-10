@@ -15,11 +15,11 @@ import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.TimeOut.*;
 
 public class Util {
-    enum MemberType {
+    public enum MemberType {
         FIELD,
         METHOD;
 
-        boolean isField() {
+        public boolean isField() {
             return this == FIELD;
         }
 
@@ -185,14 +185,10 @@ public class Util {
         }
     }
 
-    // print GameUI message
-    public static void printErrorMessage(String message) {
-        ObjectShadow.gameUI().error(message);
-    }
-
-    public static void printAlertMessage(String message) {
-        ObjectShadow.gameUI().alert(message);
-    }
+    // print message to haven.Console
+    public static void error(String message) { ObjectShadow.gameUI().error(message); }
+    public static void alert(String message) { ObjectShadow.gameUI().alert(message); }
+    public static void message(String message) { ObjectShadow.ui().cons.out.println(message); }
 
     public static void printStackTrace() {
         new Exception().printStackTrace();

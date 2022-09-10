@@ -301,6 +301,7 @@ public class Constant {
         ET_FLOWER_MENU_OPEN,
         ET_FLOWER_MENU_CHOOSE,
         ET_FLOWER_MENU_MATCH,
+        ET_COMMAND_ERROR,
         ET_COMMAND_HELP,
         ET_COMMAND_MATCH,
         ET_PROGRESS_OPEN,

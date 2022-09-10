@@ -1,11 +1,10 @@
 package lmi.automation;
 
-// import haven
+import haven.Gob;
 import haven.Coord;
 
-// import lmi pacakge
-import lmi.Array;
-import lmi.LMIException;
+import lmi.*;
+import static lmi.Constant.TimeOut.*;
 
 public class MovePathTemplate implements Runnable {
     private Array<Coord> _path;
@@ -32,11 +31,23 @@ public class MovePathTemplate implements Runnable {
     private void _main() {
         // compose your move automation code here...
         // example:
-        //  for (Coord point : _path)
-        //      Player.move(point);
+        //  for (Coord coord : _path)
+        //      Self.forceMove(coord, TO_RETRY);
     }
 
     private void _didRun(LMIException e) {
-        System.out.println("[automation is terminating]");
+        if (e == null) {
+            Util.alert("작업을 정상적으로 완료했어요");
+            return;
+        }
+
+        switch (e.type()) {
+            case ET_INTERRUPTED:
+                Util.alert("작업을 중단했어요");
+                break;
+            // compose your exception case here...
+            default:
+                throw e;
+        }
     }
 }
