@@ -368,7 +368,7 @@ class Command {
         Self.move(standardPoint.add(0, 2048));
         Self.put(standardPoint);
 
-        final int start = 1024 / 8 * 13;
+        final int start = 1024 / 8 * 15;
         int variant = start;
         while (true) {
             final Coord variantPoint = standardPoint.add(0, variant);
@@ -391,37 +391,37 @@ class Command {
         Self.put(putPoint);
     }
 
-    static Void investigateSelfBoundingBoxWidthOnce() {
-        System.out.println("click gob of standard!");
-        Gob standardGob = ClickManager.getGob();
-
-        String variantString = lmi.Scanner.nextLineWithPrompt("enter variant");
-        final int variant = Util.stoi(variantString);
-
-        _checkSelfVariantWidth(standardGob, variant);
-
-        return null;
-    }
-
-    static Void investigateSelfBoundingBoxWidth() {
-        System.out.println("click gob of standard!");
-        Gob standardGob = ClickManager.getGob();
-
-        final int start = 512;
-        int variant = start;
-        while (true) {
-            try {
-                _checkSelfVariantWidth(standardGob, variant);
-            } catch (LMIException e) {
-                break;
-            }
-            variant -= 1;
-        }
-
-        System.out.println("failed variant is " + variant);
-
-        return null;
-    }
+//      static Void investigateBodyBoundingBoxWidthOnce() {
+//          System.out.println("click gob of standard!");
+//          Gob standardGob = ClickManager.getGob();
+//  
+//          String variantString = lmi.Scanner.nextLineWithPrompt("enter variant");
+//          final int variant = Util.stoi(variantString);
+//  
+//          _checkSelfVariantWidth(standardGob, variant);
+//  
+//          return null;
+//      }
+//  
+//      static Void investigateBodyBoundingBoxWidth() {
+//          System.out.println("click gob of standard!");
+//          Gob standardGob = ClickManager.getGob();
+//  
+//          final int start = 512;
+//          int variant = start;
+//          while (true) {
+//              try {
+//                  _checkSelfVariantWidth(standardGob, variant);
+//              } catch (LMIException e) {
+//                  break;
+//              }
+//              variant -= 1;
+//          }
+//  
+//          System.out.println("failed variant is " + variant);
+//  
+//          return null;
+//      }
 
     private static void _checkSelfVariantWidth(Gob standardGob, int variant) {
         final Coord variantPoint = standardGob.location().add(variant, 0);
@@ -434,7 +434,7 @@ class Command {
                 + ", distance: " + Self.distance(standardGob));
     }
 
-    static Void test3() {
+    static Void putLogDistanceBodyWidth() {
         final Coord centerPosition = Self.location().tileCenter();
 
         System.out.println("첫 번째 로그를 선택해주세요");
