@@ -304,6 +304,8 @@ public class Constant {
         ET_COMMAND_ERROR,
         ET_COMMAND_HELP,
         ET_COMMAND_MATCH,
+        ET_COMMAND_IMPLEMENT,
+        ET_MAN_IMPLEMENT,
         ET_PROGRESS_OPEN,
         ET_LIFT,
         ET_PUT,

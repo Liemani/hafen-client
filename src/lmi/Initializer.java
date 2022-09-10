@@ -4,15 +4,15 @@ import haven.*;
 
 public class Initializer {
     public static void init() {
-        Console.setscmd("lmi", new MainCommand());
+        Console.setscmd("lmi", new Command());
         Console.setscmd("man", new Manual());
         Scanner.init(System.in);
-        Command.init();
         ObjectFinder.init();
         ObjectShadow.init();
         Debug.init();
         ClickManager.init();
         WaitManager.init();
+        AutomationManager.init();
     }
 
     // set ObjectShadow

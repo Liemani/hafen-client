@@ -12,31 +12,41 @@ import static lmi.Constant.*;
 
 public class Dev implements Runnable {
     public void run() {
+        java.lang.reflect.Method method;
+        try {
+            method = Dev.class.getMethod("man", (Class<?>[])null);
+            Util.debugPrint(method.invoke(this));
+            method = AlignLog.class.getMethod("man", (Class<?>[])null);
+            Util.debugPrint(method.invoke(this));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
     }
 
     // mathod from Command
     static Void automationConnect() {
-        AutomationThread.start(new Connect());
+        AutomationManager.start(new Connect());
         return null;
     }
 
     static Void automationPatrol000() {
-        AutomationThread.start(new Patrol000());
+        AutomationManager.start(new Patrol000());
         return null;
     }
 
     static Void automationPatrol001() {
-        AutomationThread.start(new Patrol001());
+        AutomationManager.start(new Patrol001());
         return null;
     }
 
     static Void automationPatrol002() {
-        AutomationThread.start(new Patrol002());
+        AutomationManager.start(new Patrol002());
         return null;
     }
 
     static Void automationTest() {
-        AutomationThread.start(new Test());
+        AutomationManager.start(new Test());
         return null;
     }
 
@@ -431,7 +441,7 @@ public class Dev implements Runnable {
     }
 
     static Void printAutomationStackTrace() {
-        AutomationThread.printStackTrace();
+        AutomationManager.printStackTrace();
         return null;
     }
 
@@ -439,5 +449,12 @@ public class Dev implements Runnable {
         Util.debugPrint("thread name: " + Thread.currentThread().getName());
         new Exception().printStackTrace();
         return null;
+    }
+
+    public static String man() {
+        return
+            "Dev 자동화의 man page입니다\n" +
+            "이 자동화는 개발자가 디버깅을 하는 용도로 사용합니다" +
+            "";
     }
 }

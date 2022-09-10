@@ -1,10 +1,39 @@
 package lmi;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Set;
+import java.util.TreeMap;
+
 import static lmi.Constant.TimeOut.*;
 
-public class AutomationThread {
+import lmi.automation.*;
+
+public class AutomationManager {
+    // Type Define
+    private static class ClassMap extends TreeMap<String, Class> {};
+
+    // Field
+    private static ClassMap _classMap;
+
     private static Thread _thread;
     private static Runnable _runnable;
+
+    // Getter
+    static Class getClass(String name) { return _classMap.get(name); }
+    static Set<String> getCommandStringSet() { return _classMap.keySet(); }
+
+    // Initializer
+    static void init() {
+        final Class[] _classArray = {
+            AlignLog.class,
+            Dev.class,
+        };
+
+        _classMap = new ClassMap();
+        for (Class c : _classArray)
+            _classMap.put(c.getSimpleName(), c);
+    }
 
     public static void start(Runnable runnable) {
         if (_thread != null)
@@ -44,5 +73,11 @@ public class AutomationThread {
             Util.debugPrint("_thread is null");
         else
             _thread.dumpStack();
+    }
+
+    static void printCommandStringList(java.io.PrintWriter writer) {
+        writer.println("자동화 목록:");
+        for (String commandString : AutomationManager.getCommandStringSet())
+            writer.println("\t" + commandString);
     }
 }
