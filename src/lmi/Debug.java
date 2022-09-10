@@ -22,7 +22,7 @@ public class Debug {
         _isPrint = false;
     }
 
-    static void toggleIsPrint() {
+    public static void toggleIsPrint() {
         _isPrint = !_isPrint;
         System.out.println("[isPrint: " + _isPrint + "]");
     }

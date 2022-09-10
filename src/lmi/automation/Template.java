@@ -1,9 +1,11 @@
 package lmi.automation;
 
-// import lmi pacakge
-import lmi.LMIException;
+import haven.Gob;
+import haven.Coord;
 
-public class MacroTemplate implements Runnable {
+import lmi.*;
+
+public class Template implements Runnable {
     public void run() {
         LMIException result = null;
         try {
@@ -25,6 +27,18 @@ public class MacroTemplate implements Runnable {
     }
 
     private void _didRun(LMIException e) {
-        System.out.println("[automation is terminating]");
+        if (e == null) {
+            Util.alert("작업을 정상적으로 완료했어요");
+            return;
+        }
+
+        switch (e.type()) {
+            case ET_INTERRUPTED:
+                Util.alert("작업을 중단했어요");
+                break;
+            // compose your exception case here...
+            default:
+                throw e;
+        }
     }
 }
