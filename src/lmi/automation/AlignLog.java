@@ -60,7 +60,7 @@ public class AlignLog implements Runnable {
     }
 
     private void _tooSmallAreaException() {
-        if (_output.width() < BW_LOG || _output.height() < BH_LOG)
+        if (_output.width() < BW_OLDTRUNK || _output.height() < BH_OLDTRUNK)
             throw new LMIException(ET_NO_SPACE_LEFT);
     }
 
@@ -81,10 +81,10 @@ public class AlignLog implements Runnable {
     }
 
     private void _initMatrixSize() {
-        final int rowSet = BH_LOG + BH_BODY + BH_LOG;
-        final int x = _output.width() / BW_LOG;
+        final int rowSet = BH_OLDTRUNK + BH_BODY + BH_OLDTRUNK;
+        final int x = _output.width() / BW_OLDTRUNK;
         final int y = (_output.height() / rowSet) * 2
-            + ((_output.height() % rowSet >= BH_LOG) ? 1 : 0);
+            + ((_output.height() % rowSet >= BH_OLDTRUNK) ? 1 : 0);
         _matrixSize = Coord.of(x, y);
     }
 
@@ -199,14 +199,14 @@ public class AlignLog implements Runnable {
 
     private void _calculateTargetPutCoord() {
         _targetPutCoord.init(_output.origin)
-            .assignAdd(_currentMatrix.multiply(BB_LOG))
-            .assignAdd(BB_LOG.divide(2))
+            .assignAdd(_currentMatrix.multiply(BB_OLDTRUNK))
+            .assignAdd(BB_OLDTRUNK.divide(2))
             .assignAdd(0, ((_currentMatrix.y + 1) / 2) * BH_BODY);
     }
 
     private void _calculateTargetMoveCoord() {
         _targetMoveCoord.init(_targetPutCoord);
-        _targetMoveCoord.y += ((BH_LOG + BH_BODY) / 2)
+        _targetMoveCoord.y += ((BH_OLDTRUNK + BH_BODY) / 2)
             * ((_currentMatrix.y % 2 == 0) ? 1 : -1);
     }
 
