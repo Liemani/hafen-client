@@ -76,7 +76,7 @@ public class AutomationManager {
     }
 
     static void printCommandStringList(java.io.PrintWriter writer) {
-        writer.println("자동화 목록:");
+        writer.println("자동화 프로그램 목록:");
         for (String commandString : AutomationManager.getCommandStringSet())
             writer.println("\t" + commandString);
     }

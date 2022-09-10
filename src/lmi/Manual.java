@@ -76,13 +76,17 @@ public class Manual implements haven.Console.Command {
 
         // Help
         private static void _printError(java.io.PrintWriter writer) {
-            Util.error("사용법: man <command>");
+            Util.message("  [man Manual]");
+            Util.error("사용법: man <자동화 프로그램>");
+            Util.message("설  명: 자동화 프로그램에 대한 man page를 출력합니다");
             writer.println(" ");
             AutomationManager.printCommandStringList(writer);
         }
 
         private static void _printHelp(java.io.PrintWriter writer) {
-            Util.alert("사용법: man <command>");
+            Util.message("  [man Manual]");
+            Util.alert("사용법: man <자동화 프로그램>");
+            Util.message("설  명: 자동화 프로그램에 대한 man page를 출력합니다");
             writer.println(" ");
             AutomationManager.printCommandStringList(writer);
         }
