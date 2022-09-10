@@ -110,8 +110,8 @@ public class Delegate {
     }
 
     public static boolean keyDidDown(java.awt.event.KeyEvent keyEvent) {
-        if (AutomationThread.isRunning() && AWTEventGenerator.isESC(keyEvent)) {
-            AutomationThread.interrupt();
+        if (AutomationManager.isRunning() && AWTEventGenerator.isESC(keyEvent)) {
+            AutomationManager.interrupt();
             return true;
         }
         return false;

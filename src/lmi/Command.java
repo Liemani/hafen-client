@@ -1,61 +1,85 @@
 package lmi;
 
-// import haven
-import haven.Gob;
-import haven.Coord;
-
-import java.util.Set;
-import java.util.TreeMap;
-
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
-import lmi.automation.*;
-
-// constant
+import haven.*;
 import static lmi.Constant.ExceptionType.*;
-import static lmi.Constant.MeshId.*;
-import static lmi.Constant.gfx.borka.*;
-import static lmi.Constant.BoundingBox.*;
-import static lmi.Constant.*;
 
-class Command {
-    // type define
-    private static class CommandMap extends TreeMap<String, Method> {};
-
-    // fields
-    private static CommandMap _map;
-
-    // automation command
-    static Void alignLog() {
-        AutomationThread.start(new AlignLog());
-        return null;
+public class Command implements haven.Console.Command {
+    // haven.Console.Command Requirement
+	public void run(Console cons, String[] args) throws Exception {
+        new Thread(new MainRunnable(args)).start();
     }
 
-    static Void dev() {
-        AutomationThread.start(new Dev());
-        return null;
-    }
+    private static class MainRunnable implements Runnable {
+        private String[] _args;
+        private MainRunnable(String[] args) { _args = args; }
 
-    // non-command methods
-    // all methods with default access modifier will count on as executable command
-    public static void init() {
-        _map = new CommandMap();
-        Method methodArray[] = Command.class.getDeclaredMethods();
-        for (Method method : methodArray) {
-            if (!Util.methodHasModifier(method, Modifier.PUBLIC)
-                    && !Util.methodHasModifier(method, Modifier.PRIVATE)) {
-                _map.put(method.getName(), method);
+        // Runnable Requirment
+        public void run() {
+            ObjectShadow.ui().cons.out.println("==============================");
+            String commandString = null;
+            try {
+                _checkArgument();
+
+                commandString = _args[1];
+                if (commandString.contentEquals("help"))
+                    throw new LMIException(ET_COMMAND_HELP);
+
+                _invokeCommand(commandString);
+            } catch (Exception e) {
+                if (e instanceof LMIException) {
+                    final LMIException lmiException = (LMIException)e;
+                    switch (lmiException.type()) {
+                        case ET_COMMAND_ERROR:
+                            _printError(ObjectShadow.ui().cons.out);
+                            break;
+                        case ET_COMMAND_HELP:
+                            _printHelp(ObjectShadow.ui().cons.out);
+                            break;
+                        case ET_COMMAND_MATCH:
+                            Util.error("[" + (commandString != null ? commandString : "") + "]가 뭔지 모르겠어요");
+                            break;
+                        case ET_COMMAND_IMPLEMENT:
+                            Util.error("[" + (commandString != null ? commandString : "") + "]는 실행이 불가능해요");
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    Util.debugPrint(e);
+                    e.printStackTrace();
+                }
             }
         }
-    }
 
-    public static Method getCommandByString(String commandString) {
-        return _map.get(commandString);
-    }
+        private void _checkArgument() {
+            if (_args.length != 2) throw new LMIException(ET_COMMAND_ERROR);
+        }
 
-    public static Set<String> getCommandStringSet() {
-        return _map.keySet();
+        private void _invokeCommand(String commandString) throws Exception {
+            final Class<?> c = AutomationManager.getClass(commandString);
+
+            if (c == null)
+                throw new LMIException(ET_COMMAND_MATCH);
+            if (!Runnable.class.isAssignableFrom(c))
+                throw new LMIException(ET_COMMAND_IMPLEMENT);
+
+            final Runnable runnable = (Runnable)c.newInstance();
+            AutomationManager.start(runnable);
+        }
+
+        // Help
+        private static void _printError(java.io.PrintWriter writer) {
+            Util.error("사용법: lmi <command>");
+            writer.println(" ");
+            AutomationManager.printCommandStringList(writer);
+        }
+
+        private static void _printHelp(java.io.PrintWriter writer) {
+            Util.alert("사용법: lmi <command>");
+            writer.println(" ");
+            AutomationManager.printCommandStringList(writer);
+        }
     }
 }
