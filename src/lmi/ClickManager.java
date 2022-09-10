@@ -12,21 +12,37 @@ import static lmi.Constant.Action.Custom.*;
 
 public class ClickManager {
     // field
-    private static boolean _isWaiting;
+    private static boolean _isWaitingMouseDown;
+    private static boolean _isWaitingMouseUp;
+
     private static haven.ClickData _clickData;
     private static Coord _clickPoint;
+    private static Rect _selectedArea;
 
     static void init() { _clear(); }
 
     // getter setter
-    public static boolean isWaiting() { return _isWaiting; }
+    public static boolean isWaitingMouseDown() { return _isWaitingMouseDown; }
+    public static boolean isWaitingMouseUp() { return _isWaitingMouseUp; }
+
+    public static void setIsWaitingMouseDown(boolean value) { _isWaitingMouseDown = value; }
+    public static void setIsWaitingMouseUp(boolean value) { _isWaitingMouseUp = value; }
+
     public static void setClickData(haven.ClickData clickData) { _clickData = clickData; }
     public static void setClickPoint(Coord clickPoint) { _clickPoint = clickPoint; }
-    public static void _clear() { _isWaiting = false; _clickData = null; _clickPoint = null; }
+    public static void setSelectedArea(Rect area) { _selectedArea = area; }
+
+
+    public static void _clear() {
+        _isWaitingMouseDown = false;
+        _isWaitingMouseUp = false;
+        _clickData = null;
+        _clickPoint = null;
+    }
 
     // public method
     public static Gob getGob() {
-        _isWaiting = true;
+        _isWaitingMouseDown = true;
         _waitAction(AC_DID_OBJECT_CLICK);
 
         final haven.Clickable clickable = _clickData.ci;
@@ -45,7 +61,7 @@ public class ClickManager {
     }
 
     public static Coord getCoord() {
-        _isWaiting = true;
+        _isWaitingMouseDown = true;
         _waitAction(AC_DID_CLICK);
 
         final Coord clickPoint = _clickPoint;
@@ -55,9 +71,13 @@ public class ClickManager {
     }
 
     public static Rect getArea() {
-        final Coord coord1 = ClickManager.getCoord();
-        final Coord coord2 = ClickManager.getCoord();
-        return new Rect(coord1, coord2).assignExtendToTile();
+        _isWaitingMouseUp = true;
+        ObjectShadow.mapView().newSelector();
+        _waitAction(AC_DID_AREA_SELECTED);
+        ObjectShadow.mapView().destroySelector();
+
+        _clear();
+        return _selectedArea;
     }
 
     public static Array<Gob> getGobArrayInArea() {

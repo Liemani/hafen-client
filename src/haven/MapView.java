@@ -2163,6 +2163,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		    tt = null;
 		    ol.destroy();
 		    mgrab.remove();
+            if (lmi.Delegate.areaDidSelect(sc, ec)); else
 		    wdgmsg("sel", sc, ec, modflags);
 		    sc = null;
 		}
@@ -2290,5 +2291,15 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		    clickdb = Utils.parsebool(args[1], false);
 		}
 	    });
+    }
+
+    // lmi custom
+    public void newSelector() {
+        this.selection = new Selector();
+    }
+
+    public void destroySelector() {
+        selection.destroy();
+        selection = null;
     }
 }

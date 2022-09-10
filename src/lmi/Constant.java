@@ -27,6 +27,7 @@ public class Constant {
             AC_PROGRESS_DID_DESTROYED,
             AC_DID_CLICK,
             AC_DID_OBJECT_CLICK,
+            AC_DID_AREA_SELECTED,
         }
     }
 

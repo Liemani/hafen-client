@@ -32,7 +32,7 @@ public class Initializer {
     public static void initMainThread(Thread mainThread) { ObjectShadow.setMainThread(mainThread); }
     public static void initJOGLPanel(JOGLPanel joglPanel) { ObjectShadow.setJOGLPanel(joglPanel); }
     public static void initDispatcher(UIPanel.Dispatcher dispatcher) { ObjectShadow.setDispatcher(dispatcher); }
-    public static void initUIRunner(UI.Runner uiRunner) { ObjectShadow.setUIRunner(uiRunner); }
+    public static void initRemoteUI(RemoteUI remoteUI) { ObjectShadow.setRemoteUI(remoteUI); }
     public static void initUI(UI ui) { ObjectShadow.setUI(ui); }
     public static void initRootWidget(RootWidget rootWidget) { ObjectShadow.setRootWidget(rootWidget); }
     public static void initGameUI(GameUI gameUI) { ObjectShadow.setGameUI(gameUI); }
@@ -41,6 +41,7 @@ public class Initializer {
     public static void initCharList(Charlist characterList) { ObjectShadow.setCharacterList(characterList); }
     public static void initGlob(Glob glob) { ObjectShadow.setGlob(glob); }
     public static void initObjectCache(OCache objectCache) { ObjectShadow.setObjectCache(objectCache); }
+    public static void initRWorkerThread(Thread rWorkerThread) { ObjectShadow.setRWorkerThread(rWorkerThread); }
 
     public static void initGaugeArray(IMeter gauge) { ObjectShadow.setGaugeArray(gauge); }
 }
