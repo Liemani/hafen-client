@@ -193,4 +193,23 @@ public class Util {
     public static void printAlertMessage(String message) {
         ObjectShadow.gameUI().alert(message);
     }
+
+    public static void printStackTrace() {
+        new Exception().printStackTrace();
+    }
+
+//      /// - Arguments:
+//      ///     - 1: create
+//      ///     - 0: destroy
+//      public static void addSelectMessage(int flag) {
+//          final haven.MessageBuf messageBuf = new haven.MessageBuf();
+//          final int id = ObjectShadow.ui().widgetid(ObjectShadow.mapView());
+//          final String name = "sel";
+//          messageBuf.addint32(id);
+//          messageBuf.addstring(name);
+//          messageBuf.adduint8(haven.Message.T_UINT8);
+//          messageBuf.adduint8(flag);
+//          final haven.PMessage pMessage = new haven.PMessage(haven.RMessage.RMSG_WDGMSG, messageBuf.wbuf, 0, 10);
+//          ObjectShadow.session().addUIMessage(pMessage);
+//      }
 }

@@ -11,7 +11,7 @@ public class ObjectShadow {
     private static Thread _mainThread;
     private static JOGLPanel _joglPanel;
     private static UIPanel.Dispatcher _dispatcher;
-    private static UI.Runner _uiRunner;
+    private static RemoteUI _remoteUI;
     private static UI _ui;
     private static RootWidget _rootWidget;
     private static GameUI _gameUI;
@@ -30,7 +30,7 @@ public class ObjectShadow {
     public static Thread mainThread() { return _mainThread; }
     public static JOGLPanel joglPanel() { return _joglPanel; }
     public static UIPanel.Dispatcher dispatcher() { return _dispatcher; }
-    public static UI.Runner uiRunner() { return _uiRunner; }
+    public static RemoteUI remoteUI() { return _remoteUI; }
     public static UI ui() { return _ui; }
     public static RootWidget rootWidget() { return _rootWidget; }
     public static GameUI gameUI() { return _gameUI; }
@@ -46,7 +46,7 @@ public class ObjectShadow {
     static void setMainThread(Thread mainThread) { _mainThread = mainThread; }
     static void setJOGLPanel(JOGLPanel joglPanel) { _joglPanel = joglPanel; }
     static void setDispatcher(UIPanel.Dispatcher dispatcher) { _dispatcher = dispatcher; }
-    static void setUIRunner(UI.Runner uiRunner) { _uiRunner = uiRunner; }
+    static void setRemoteUI(RemoteUI remoteUI) { _remoteUI = remoteUI; }
     static void setUI(UI ui) { _ui = ui; }
     static void setRootWidget(RootWidget rootWidget) { _rootWidget = rootWidget; }
     static void setGameUI(GameUI gameUI) { _gameUI = gameUI; }

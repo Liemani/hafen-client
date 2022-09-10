@@ -4,10 +4,10 @@ package lmi;
 import java.util.ArrayList;
 
 // import haven
-import haven.Gob;
-import haven.Coord;
+import haven.*;
 
 // constant
+import static lmi.Constant.*;
 import static lmi.Constant.Action.*;
 import static lmi.Constant.Action.Custom.*;
 import static lmi.Constant.Input.Mouse.*;
@@ -82,7 +82,7 @@ public class Delegate {
     }
 
     public static boolean didClicked(haven.Coord2d coord2d, int mouseButton, haven.ClickData clickData) {
-        if (ClickManager.isWaiting() && mouseButton == IM_LEFT) {
+        if (ClickManager.isWaitingMouseDown() && mouseButton == IM_LEFT) {
             if (clickData != null) {
                 ClickManager.setClickData(clickData);
                 WaitManager.notifyAction(AC_DID_OBJECT_CLICK);
@@ -115,5 +115,24 @@ public class Delegate {
             return true;
         }
         return false;
+    }
+
+    public static boolean areaDidSelect(Coord first, Coord second) {
+        if (ClickManager.isWaitingMouseUp()) {
+            final Rect selectedArea = new Rect(first, second);
+            selectedArea.origin.assignMultiply(TILE_IN_COORD);
+            selectedArea.size.assignAdd(1)
+                .assignMultiply(TILE_IN_COORD);
+            ClickManager.setSelectedArea(selectedArea);
+            WaitManager.notifyAction(AC_DID_AREA_SELECTED);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Did Constructed
+    public static void remoteUIDidConstructed(RemoteUI remoteUI) {
+        Initializer.initRemoteUI(remoteUI);
     }
 }
