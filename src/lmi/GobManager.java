@@ -105,10 +105,9 @@ public class GobManager {
     public static Array<Gob> gobArray() {
         Array<Gob> gobArray = new Array<Gob>();
 
-        for (Gob gob : _gobArrayList) {
-            if (gob.getClass() != Gob.class) continue;
-            else gobArray.append(gob);
-        }
+        for (Gob gob : _gobArrayList)
+            if (gob.resource() != null)
+                gobArray.append(gob);
         return gobArray;
     }
 
