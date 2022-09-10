@@ -4,7 +4,7 @@ import haven.*;
 
 import static lmi.Constant.ExceptionType.*;
 
-public class MainCommand implements haven.Console.Command {
+public class Manual implements haven.Console.Command {
     // haven.Console.Command Requirement
 	public void run(Console cons, String[] args) throws Exception {
         new Thread(new MainRunnable(args)).start();

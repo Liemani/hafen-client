@@ -1,13 +1,9 @@
 package lmi.automation;
 
-// import haven.package
 import haven.Gob;
 import haven.Coord;
 
-// import lmi
 import lmi.*;
-
-// import constant
 import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.gfx.terobjs.trees.*;
 import static lmi.Constant.BoundingBox.*;
@@ -43,10 +39,10 @@ public class AlignLog implements Runnable {
 
     // private methods
     private void _willRun() {
-        Util.printAlertMessage("정리할 통나무가 있는 곳을 선택해주세요");
+        Util.alert("정리할 통나무가 있는 곳을 선택해주세요");
         _input = ClickManager.getArea();
 
-        Util.printAlertMessage("통나무를 정리해 놓을 곳을 선택해주세요");
+        Util.alert("통나무를 정리해 놓을 곳을 선택해주세요");
         _output = ClickManager.getArea();
 
         _checkAreaException();
@@ -113,7 +109,7 @@ public class AlignLog implements Runnable {
                 _loop();
             } catch (LMIException e) {
                 if (e.type() != ET_NO_WORK_TO_DO) throw e;
-                Util.printAlertMessage("추가 통나무를 기다려요");
+                Util.alert("추가 통나무를 기다려요");
                 Util.sleep(TO_WAIT);
             }
         }
@@ -221,22 +217,26 @@ public class AlignLog implements Runnable {
 
     private void _didRun(LMIException e) {
         if (e == null) {
-            Util.printAlertMessage("모든 통나무를 다 정리했어요");
+            Util.alert("모든 통나무를 다 정리했어요");
             return;
         }
 
         switch (e.type()) {
             case ET_INTERRUPTED:
-                Util.printAlertMessage("작업이 중단됐어요");
+                Util.alert("작업을 중단했어요");
                 break;
             case ET_NO_SPACE_LEFT:
-                Util.printAlertMessage("통나무를 정리할 남은 공간이 없어요");
+                Util.alert("통나무를 둘 남은 공간이 없어요");
                 break;
             case ET_NO_WORK_TO_DO:
-                Util.printAlertMessage("모든 통나무를 다 정리했어요");
+                Util.alert("모든 통나무를 다 정리했어요");
                 break;
             default:
                 throw e;
         }
+    }
+
+    public static String man() {
+        return "1. 통나무가 있는 공간 선택\n 2. 통나무를 쌓아둘 공간 선택\n 3. 작업이 끝나면 통나무가 있는지 1 분마다 확인합니다";
     }
 }

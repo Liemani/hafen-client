@@ -5,6 +5,7 @@ import haven.*;
 public class Initializer {
     public static void init() {
         Console.setscmd("lmi", new MainCommand());
+        Console.setscmd("man", new Manual());
         Scanner.init(System.in);
         Command.init();
         ObjectFinder.init();
@@ -41,7 +42,6 @@ public class Initializer {
     public static void initCharList(Charlist characterList) { ObjectShadow.setCharacterList(characterList); }
     public static void initGlob(Glob glob) { ObjectShadow.setGlob(glob); }
     public static void initObjectCache(OCache objectCache) { ObjectShadow.setObjectCache(objectCache); }
-    public static void initRWorkerThread(Thread rWorkerThread) { ObjectShadow.setRWorkerThread(rWorkerThread); }
 
     public static void initGaugeArray(IMeter gauge) { ObjectShadow.setGaugeArray(gauge); }
 }
