@@ -41,4 +41,10 @@ public class Template implements Runnable {
                 throw e;
         }
     }
+
+    public static String man() {
+        return
+            "man page를 작성해 주세요" +
+            "";
+    }
 }
