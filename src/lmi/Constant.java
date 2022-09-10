@@ -125,6 +125,9 @@ public class Constant {
         public static final int BW_LOG = 352;
         public static final int BH_LOG = 1656;
         public static final Coord BB_LOG = Coord.of(BW_LOG, BH_LOG);
+        public static final int BW_OLDTRUNK = 352;
+        public static final int BH_OLDTRUNK = 1842;
+        public static final Coord BB_OLDTRUNK = Coord.of(BW_OLDTRUNK, BH_OLDTRUNK);
         public static final int BW_BODY = 512;
         public static final int BH_BODY = 512;
         public static final Coord BB_BODY = Coord.of(BW_BODY, BH_BODY);
