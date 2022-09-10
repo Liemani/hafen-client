@@ -4,6 +4,7 @@ import haven.Gob;
 import haven.Coord;
 
 import lmi.*;
+import lmi.automation.*;
 import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.MeshId.*;
 import static lmi.Constant.gfx.borka.*;
@@ -42,11 +43,6 @@ public class Dev implements Runnable {
 
     static Void automationPatrol002() {
         AutomationManager.start(new Patrol002());
-        return null;
-    }
-
-    static Void automationTest() {
-        AutomationManager.start(new Test());
         return null;
     }
 
