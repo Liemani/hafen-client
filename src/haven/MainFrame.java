@@ -295,9 +295,9 @@ public class MainFrame extends java.awt.Frame implements Console.Directory {
 		fun = new Bootstrap();
 	    String t = fun.title();
 	    if(t == null)
-		setTitle("Haven & Hearth");
+		setTitle("Liefeni");
 	    else
-		setTitle("Haven & Hearth \u2013 " + t);
+		setTitle("Liefeni \u2013 " + t);
 	    fun = fun.run(p.newui(fun));
 	}
     }
