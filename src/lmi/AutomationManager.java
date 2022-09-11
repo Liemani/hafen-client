@@ -29,7 +29,6 @@ public class AutomationManager {
     static void init() {
         final Class[] _classArray = {
             AlignLog.class,
-            Dev.class,
         };
 
         _automationMap = new AutomationMap();
@@ -88,7 +87,7 @@ public class AutomationManager {
     }
 
     public static class Automation implements Runnable{
-        String[] _args;
+        protected String[] _args;
         final void setArgs(String[] args) { _args = args; }
 
         // Runnable Requirement

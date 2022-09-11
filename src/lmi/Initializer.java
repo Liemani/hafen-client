@@ -6,6 +6,7 @@ public class Initializer {
     public static void init() {
         Console.setscmd("lmi", new Command());
         Console.setscmd("man", new Manual());
+        Console.setscmd("dev", new Development());
         Scanner.init(System.in);
         ObjectFinder.init();
         ObjectShadow.init();
@@ -13,6 +14,7 @@ public class Initializer {
         ClickManager.init();
         WaitManager.init();
         AutomationManager.init();
+        Development.init();
     }
 
     // set ObjectShadow
