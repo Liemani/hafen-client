@@ -295,17 +295,18 @@ public class Constant {
         ET_TIME_OUT,
         ET_NO_SPACE_LEFT,
         ET_NO_WORK_TO_DO,
+        ET_COMMAND_ERROR,
+        ET_COMMAND_HELP,
+        ET_COMMAND_INITIALIZER,
+        ET_COMMAND_IMPLEMENT,
+        ET_MAN_IMPLEMENT,
 
-        // what
+        // fail
         ET_MOVE,
         ET_FLOWER_MENU_OPEN,
         ET_FLOWER_MENU_CHOOSE,
         ET_FLOWER_MENU_MATCH,
-        ET_COMMAND_ERROR,
-        ET_COMMAND_HELP,
         ET_COMMAND_MATCH,
-        ET_COMMAND_IMPLEMENT,
-        ET_MAN_IMPLEMENT,
         ET_PROGRESS_OPEN,
         ET_LIFT,
         ET_PUT,

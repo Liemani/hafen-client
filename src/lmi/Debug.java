@@ -18,9 +18,8 @@ import lmi.Util;
 public class Debug {
     static boolean _isPrint;
 
-    static void init() {
-        _isPrint = false;
-    }
+    public static boolean isPrint() { return _isPrint; }
+    static void init() { _isPrint = false; }
 
     public static void toggleIsPrint() {
         _isPrint = !_isPrint;

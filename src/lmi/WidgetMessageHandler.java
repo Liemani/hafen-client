@@ -120,4 +120,8 @@ public class WidgetMessageHandler {
     static void sendSelectCharacterMessage(haven.Charlist widget, String name) {
         widget.sendMessage(A_SELECT_CHARACTER, name);
     }
+
+    static void sendMenuGridBarrelMessage() {
+        WidgetManager.menuGrid().sendMessage(A_ACT, "bp", "barrel", 0);
+    }
 }

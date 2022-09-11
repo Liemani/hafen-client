@@ -4,6 +4,7 @@ import haven.Gob;
 import haven.Coord;
 
 import lmi.*;
+import lmi.AutomationManager.Automation;
 import lmi.automation.*;
 import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.MeshId.*;
@@ -11,39 +12,11 @@ import static lmi.Constant.gfx.borka.*;
 import static lmi.Constant.BoundingBox.*;
 import static lmi.Constant.*;
 
-public class Dev implements Runnable {
+public class Dev extends Automation {
     public void run() {
-        java.lang.reflect.Method method;
-        try {
-            method = Dev.class.getMethod("man", (Class<?>[])null);
-            Util.debugPrint(method.invoke(this));
-            method = AlignLog.class.getMethod("man", (Class<?>[])null);
-            Util.debugPrint(method.invoke(this));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
-    }
-
-    // mathod from Command
-    static Void automationConnect() {
-        AutomationManager.start(new Connect());
-        return null;
-    }
-
-    static Void automationPatrol000() {
-        AutomationManager.start(new Patrol000());
-        return null;
-    }
-
-    static Void automationPatrol001() {
-        AutomationManager.start(new Patrol001());
-        return null;
-    }
-
-    static Void automationPatrol002() {
-        AutomationManager.start(new Patrol002());
-        return null;
+        if (!Debug.isPrint())
+            Debug.toggleIsPrint();
+        Dev.describeClickedGob();
     }
 
     // Wrapping ObjectFinder
@@ -191,6 +164,7 @@ public class Dev implements Runnable {
     }
 
     static Void describeClickedGob() {
+        Util.alert("출력할 gob을 클릭해 주세요");
         Gob gob = ClickManager.getGob();
 
         Util.debugPrint("resource name: " + gob.resourceName());

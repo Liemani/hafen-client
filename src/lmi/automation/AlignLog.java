@@ -4,12 +4,13 @@ import haven.Gob;
 import haven.Coord;
 
 import lmi.*;
+import lmi.AutomationManager.Automation;
 import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.gfx.terobjs.trees.*;
 import static lmi.Constant.BoundingBox.*;
 import static lmi.Constant.TimeOut.*;
 
-public class AlignLog implements Runnable {
+public class AlignLog extends Automation {
     private Rect _input;
     private Rect _output;
 
