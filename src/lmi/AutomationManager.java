@@ -6,48 +6,54 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import static lmi.Constant.TimeOut.*;
+import static lmi.Constant.ExceptionType.*;
 
 import lmi.automation.*;
 
 public class AutomationManager {
     // Type Define
-    private static class ClassMap extends TreeMap<String, Class> {};
+    private static class AutomationMap extends TreeMap<String, Class<Automation>> {};
 
     // Field
-    private static ClassMap _classMap;
+    private static AutomationMap _automationMap;
 
     private static Thread _thread;
     private static Runnable _runnable;
 
     // Getter
-    static Class getClass(String name) { return _classMap.get(name); }
-    static Set<String> getCommandStringSet() { return _classMap.keySet(); }
+    static Class<Automation> getClass(String name) { return _automationMap.get(name); }
+    static Set<String> getCommandStringSet() { return _automationMap.keySet(); }
 
     // Initializer
+    @SuppressWarnings("unchecked")
     static void init() {
         final Class[] _classArray = {
             AlignLog.class,
             Dev.class,
         };
 
-        _classMap = new ClassMap();
+        _automationMap = new AutomationMap();
         for (Class c : _classArray)
-            _classMap.put(c.getSimpleName(), c);
+            if (Automation.class.isAssignableFrom(c))
+                _automationMap.put(c.getSimpleName(), (Class<Automation>)c);
     }
 
-    public static void start(Runnable runnable) {
+    public static void start(Class<Automation> automationClass, String[] args) throws Exception {
         if (_thread != null)
             _thread.interrupt();
 
-        try {
-            while (_thread != null)
-                Thread.sleep(TO_GENERAL);
-        } catch (InterruptedException e) {
-            System.out.println("thread interrupted before run");
-            return;
-        }
+        while (_thread != null)
+            Thread.sleep(TO_GENERAL);
 
-        _runnable = runnable;
+        Automation automation;
+        try {
+            automation = automationClass.newInstance();
+        } catch (Exception e) {
+            if (!(e instanceof IllegalAccessException)) throw e;
+            throw new LMIException(ET_COMMAND_INITIALIZER);
+        }
+        automation.setArgs(args);
+        _runnable = automation;
         _thread = new Thread(_mainRunnable);
         _thread.start();
     }
@@ -79,5 +85,13 @@ public class AutomationManager {
         writer.println("자동화 프로그램 목록:");
         for (String commandString : AutomationManager.getCommandStringSet())
             writer.println("\t" + commandString);
+    }
+
+    public static class Automation implements Runnable{
+        String[] _args;
+        final void setArgs(String[] args) { _args = args; }
+
+        // Runnable Requirement
+        public void run() {}
     }
 }

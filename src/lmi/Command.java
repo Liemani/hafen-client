@@ -3,6 +3,8 @@ package lmi;
 import java.lang.reflect.Method;
 
 import haven.*;
+
+import lmi.AutomationManager.Automation;
 import static lmi.Constant.ExceptionType.*;
 
 public class Command implements haven.Console.Command {
@@ -40,10 +42,15 @@ public class Command implements haven.Console.Command {
                         case ET_COMMAND_MATCH:
                             Util.error("[" + (commandString != null ? commandString : "") + "]가 뭔지 모르겠어요");
                             break;
+                        case ET_COMMAND_INITIALIZER:
+                            Util.error("[" + (commandString != null ? commandString : "") + "]는 기본 생성자가 없어요");
+                            break;
                         case ET_COMMAND_IMPLEMENT:
                             Util.error("[" + (commandString != null ? commandString : "") + "]는 실행이 불가능해요");
                             break;
                         default:
+                            Util.debugPrint(e);
+                            e.printStackTrace();
                             break;
                     }
                 } else {
@@ -54,19 +61,19 @@ public class Command implements haven.Console.Command {
         }
 
         private void _checkArgument() {
-            if (_args.length != 2) throw new LMIException(ET_COMMAND_ERROR);
+            if (_args.length == 1) throw new LMIException(ET_COMMAND_ERROR);
         }
 
         private void _invokeCommand(String commandString) throws Exception {
-            final Class<?> c = AutomationManager.getClass(commandString);
+            final Class<Automation> c = AutomationManager.getClass(commandString);
 
             if (c == null)
                 throw new LMIException(ET_COMMAND_MATCH);
             if (!Runnable.class.isAssignableFrom(c))
                 throw new LMIException(ET_COMMAND_IMPLEMENT);
 
-            final Runnable runnable = (Runnable)c.newInstance();
-            AutomationManager.start(runnable);
+            final String[] args = java.util.Arrays.copyOfRange(_args, 1, _args.length);
+            AutomationManager.start(c, args);
         }
 
         // Help
