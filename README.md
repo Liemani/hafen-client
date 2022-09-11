@@ -1,6 +1,6 @@
 # liefeni
 
-## 문의 주소
+## 주소
 
 - Discord: [https://discord.gg/hTWdyPGu99](https://discord.gg/hTWdyPGu99)
 
