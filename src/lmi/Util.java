@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import haven.Gob;
@@ -192,6 +193,10 @@ public class Util {
 
     public static void printStackTrace() {
         new Exception().printStackTrace();
+    }
+
+    public static Set<String> consoleCommands() {
+        return ObjectShadow.ui().cons.findcmds().keySet();
     }
 
 //      /// - Arguments:

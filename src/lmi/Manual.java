@@ -1,12 +1,14 @@
 package lmi;
 
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
 import haven.*;
+
 import static lmi.Constant.ExceptionType.*;
 
-public class Manual implements haven.Console.Command {
-    // haven.Console.Command Requirement
+public class Manual implements Console.Command {
+    // Console.Command Requirement
 	public void run(Console cons, String[] args) throws Exception {
         new Thread(new MainRunnable(args)).start();
     }
@@ -26,7 +28,7 @@ public class Manual implements haven.Console.Command {
                 if (commandString.contentEquals("help"))
                     throw new LMIException(ET_COMMAND_HELP);
 
-                _invokeCommand(commandString);
+                _printManPage(commandString);
             } catch (Exception e) {
                 if (e instanceof LMIException) {
                     final LMIException lmiException = (LMIException)e;
@@ -57,7 +59,7 @@ public class Manual implements haven.Console.Command {
             if (_args.length != 2) throw new LMIException(ET_COMMAND_ERROR);
         }
 
-        private void _invokeCommand(String commandString) throws Exception {
+        private void _printManPage(String commandString) throws Exception {
             final Class<?> c = AutomationManager.getClass(commandString);
 
             if (c == null)
@@ -75,7 +77,7 @@ public class Manual implements haven.Console.Command {
         }
 
         // Help
-        private static void _printError(java.io.PrintWriter writer) {
+        private static void _printError(PrintWriter writer) {
             Util.message("  [man Manual]");
             Util.error("사용법: man <자동화 프로그램>");
             Util.message("설  명: 자동화 프로그램에 대한 man page를 출력합니다");
@@ -83,7 +85,7 @@ public class Manual implements haven.Console.Command {
             AutomationManager.printCommandStringList(writer);
         }
 
-        private static void _printHelp(java.io.PrintWriter writer) {
+        private static void _printHelp(PrintWriter writer) {
             Util.message("  [man Manual]");
             Util.alert("사용법: man <자동화 프로그램>");
             Util.message("설  명: 자동화 프로그램에 대한 man page를 출력합니다");

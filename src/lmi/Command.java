@@ -1,5 +1,6 @@
 package lmi;
 
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
 import haven.*;
@@ -77,7 +78,7 @@ public class Command implements haven.Console.Command {
         }
 
         // Help
-        private static void _printError(java.io.PrintWriter writer) {
+        private static void _printError(PrintWriter writer) {
             Util.message("  [man Manual]");
             Util.error("사용법: lmi <자동화 프로그램>");
             Util.message("설  명: 자동화 프로그램을 실행합니다");
@@ -85,7 +86,7 @@ public class Command implements haven.Console.Command {
             AutomationManager.printCommandStringList(writer);
         }
 
-        private static void _printHelp(java.io.PrintWriter writer) {
+        private static void _printHelp(PrintWriter writer) {
             Util.message("  [man Manual]");
             Util.alert("사용법: lmi <자동화 프로그램>");
             Util.message("설  명: 자동화 프로그램을 실행합니다");

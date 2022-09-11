@@ -1,9 +1,13 @@
-package lmi.automation;
+package lmi;
 
-import haven.Gob;
-import haven.Coord;
+import java.io.PrintWriter;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Set;
+import java.util.TreeMap;
 
-import lmi.*;
+import haven.*;
+
 import lmi.AutomationManager.Automation;
 import lmi.automation.*;
 import static lmi.Constant.ExceptionType.*;
@@ -12,11 +16,117 @@ import static lmi.Constant.gfx.borka.*;
 import static lmi.Constant.BoundingBox.*;
 import static lmi.Constant.*;
 
-public class Dev extends Automation {
-    public void run() {
-        if (!Debug.isPrint())
-            Debug.toggleIsPrint();
-        Dev.describeClickedGob();
+public class Development implements Console.Command {
+    // Type Define
+    private static class CommandMap extends TreeMap<String, Method> {};
+
+    // Field
+    private static CommandMap _commandMap;
+
+    // all methods with default access modifier will count on as executable command
+    public static void init() {
+        _commandMap = new CommandMap();
+        Method methodArray[] = Development.class.getDeclaredMethods();
+        for (Method method : methodArray) {
+            if (!Util.methodHasModifier(method, Modifier.PUBLIC)
+                    && !Util.methodHasModifier(method, Modifier.PRIVATE)) {
+                _commandMap.put(method.getName(), method);
+            }
+        }
+    }
+
+    private static Method getCommand(String commandString) {
+        return _commandMap.get(commandString);
+    }
+
+    private static Set<String> getCommandStringSet() {
+        return _commandMap.keySet();
+    }
+
+    // Run
+	public void run(Console cons, String[] args) throws Exception {
+        new Thread(new MainRunnable(args)).start();
+    }
+
+    private static class MainRunnable implements Runnable {
+        private String[] _args;
+        private MainRunnable(String[] args) { _args = args; }
+
+        // Runnable Requirment
+        public void run() {
+            ObjectShadow.ui().cons.out.println("==============================");
+            String commandString = null;
+            try {
+                _checkArgument();
+
+                commandString = _args[1];
+                if (commandString.contentEquals("help"))
+                    throw new LMIException(ET_COMMAND_HELP);
+
+                _invokeCommand(commandString);
+            } catch (Exception e) {
+                if (e instanceof LMIException) {
+                    final LMIException lmiException = (LMIException)e;
+                    switch (lmiException.type()) {
+                        case ET_COMMAND_ERROR:
+                            _printError(ObjectShadow.ui().cons.out);
+                            break;
+                        case ET_COMMAND_HELP:
+                            _printHelp(ObjectShadow.ui().cons.out);
+                            break;
+                        case ET_COMMAND_MATCH:
+                            Util.error("[" + (commandString != null ? commandString : "") + "]가 뭔지 모르겠어요");
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    Util.debugPrint(e);
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        private void _checkArgument() {
+            if (_args.length != 2) throw new LMIException(ET_COMMAND_ERROR);
+        }
+
+        private void _invokeCommand(String commandString) throws Exception {
+            final Method method = Development.getCommand(commandString);
+
+            if (method == null)
+                throw new LMIException(ET_COMMAND_MATCH);
+            else
+                method.invoke(null);
+        }
+
+        // Help
+        private static void _printError(PrintWriter writer) {
+            Util.message("  [dev Manual]");
+            Util.error("usage: dev <command>");
+            writer.println(" ");
+            Util.message("command list:");
+            _printCommandStringList(writer);
+        }
+
+        private static void _printHelp(PrintWriter writer) {
+            Util.message("  [dev Manual]");
+            Util.error("usage: dev <command>");
+            writer.println(" ");
+            Util.message("command list:");
+            _printCommandStringList(writer);
+        }
+
+        private static void _printCommandStringList(PrintWriter printWriter) {
+            for (String command : Development.getCommandStringSet())
+                Util.message("  " + command);
+        }
+    }
+
+    static void describeConsoleCommand() {
+        Util.message("console command:");
+        for (String command : Util.consoleCommands())
+            Util.message("  " + command);
     }
 
     // Wrapping ObjectFinder
