@@ -10,7 +10,7 @@ import haven.Coord;
 
 // import constant
 import static lmi.Constant.ExceptionType.*;
-import static lmi.Constant.Action.Custom.*;
+import static lmi.Constant.Signal.*;
 import static lmi.Constant.TimeOut.*;
 
 public class GobManager {
@@ -47,7 +47,7 @@ public class GobManager {
     private void _waitMoveBeginning() {
         if (_isMoving()) return;
         try {
-            WaitManager.waitTimeOut(_gob, AC_MOVE_DID_BEGIN, TO_TEMPORARY);
+            WaitManager.waitSignal(_gob, S_MOVE_DID_BEGIN, TO_TEMPORARY);
         } catch (LMIException e) {
             if (e.type() != ET_TIME_OUT) throw e;
             if (!_isMoving()) throw new LMIException(ET_MOVE);
@@ -58,7 +58,7 @@ public class GobManager {
         while (true) {
             if (!_isMoving()) return;
             try {
-                WaitManager.waitTimeOut(_gob, AC_MOVE_DID_END, TO_GENERAL);
+                WaitManager.waitSignal(_gob, S_MOVE_DID_END, TO_GENERAL);
                 break;
             } catch (LMIException e) {
                 if (e.type() != ET_TIME_OUT) throw e;
@@ -72,7 +72,7 @@ public class GobManager {
     public void waitLift(Gob gob) {
         if (_gob.isLifting(gob)) return;
         try {
-            WaitManager.waitTimeOut(_gob, AC_DID_LIFT, TO_TEMPORARY);
+            WaitManager.waitSignal(_gob, S_DID_LIFT, TO_TEMPORARY);
         } catch (LMIException e) {
             if (e.type() != ET_TIME_OUT) throw e;
             if (!_gob.isLifting(gob)) throw new LMIException(ET_LIFT);
@@ -84,7 +84,7 @@ public class GobManager {
     public void waitPut() {
         if (!_gob.isLifting()) return;
         try {
-            WaitManager.waitTimeOut(_gob, AC_DID_PUT, TO_TEMPORARY);
+            WaitManager.waitSignal(_gob, S_DID_PUT, TO_TEMPORARY);
         } catch (LMIException e) {
             if (e.type() != ET_TIME_OUT) throw e;
             if (_gob.isLifting()) throw new LMIException(ET_PUT);

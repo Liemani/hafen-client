@@ -1507,6 +1507,6 @@ public class Widget {
     // lmi custom
     public final void sendMessage(String action, Object... args) {
         this.wdgmsg(action, args);
-        lmi.WaitManager.waitAction(action);
+        lmi.WaitManager.waitMessage(action);
     }
 }

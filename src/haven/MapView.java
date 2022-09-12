@@ -1805,6 +1805,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 			    a = a2;
 			}
 			ret.place();
+            lmi.Delegate.plobDidPlaced(ret);
 			return(ret);
 		    }
 		});
@@ -2301,5 +2302,10 @@ public class MapView extends PView implements DTarget, Console.Directory {
     public void destroySelector() {
         selection.destroy();
         selection = null;
+    }
+
+    public boolean isPlobPlaced() {
+        final Loader.Future<Plob> placing_l = this.placing;
+        return placing_l != null && placing_l.done();
     }
 }

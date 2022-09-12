@@ -11,7 +11,6 @@ public class Initializer {
         ObjectFinder.init();
         ObjectShadow.init();
         Debug.init();
-        ClickManager.init();
         WaitManager.init();
         AutomationManager.init();
         Development.init();

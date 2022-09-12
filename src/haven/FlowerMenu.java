@@ -235,12 +235,10 @@ public class FlowerMenu extends Widget {
 	    new Cancel();
 	    mg.remove();
 	    kg.remove();
-        lmi.Delegate.flowerMenuDidCanceled();
 	} else if(msg == "act") {
 	    new Chosen(opts[(Integer)args[0]]);
 	    mg.remove();
 	    kg.remove();
-        lmi.Delegate.flowerMenuDidChosen();
 	}
     }
 
