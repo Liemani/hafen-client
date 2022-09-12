@@ -6,11 +6,13 @@ import haven.Coord;
 
 // import constant
 import static lmi.Constant.*;
+import static lmi.Constant.Message.*;
+import static lmi.Constant.Action.*;
+import static lmi.Constant.ActionTarget.*;
 import static lmi.Constant.Input.Mouse.*;
 import static lmi.Constant.Input.Modifier.*;
 import static lmi.Constant.InteractionType.*;
 import static lmi.Constant.MeshId.*;
-import static lmi.Constant.Action.*;
 
 public class WidgetMessageHandler {
     // public method
@@ -74,7 +76,7 @@ public class WidgetMessageHandler {
             int mouseButton,
             int modifiers) {
         widget.sendMessage(
-                A_CLICK,
+                M_CLICK,
                 clickedMapViewPoint,
                 clickedMapPoint,
                 mouseButton,
@@ -93,7 +95,7 @@ public class WidgetMessageHandler {
             int overlayId,
             int meshId) {
         widget.sendMessage(
-                A_CLICK,
+                M_CLICK,
                 clickedMapViewPoint,
                 clickedMapPoint,
                 mouseButton,
@@ -106,22 +108,22 @@ public class WidgetMessageHandler {
     }
 
     static void sendActionMessage(haven.MenuGrid widget, String action) {
-        widget.sendMessage(A_ACT, action, 0);
+        widget.sendMessage(M_ACT, action, 0);
     }
 
     static void sendChoosePetalMessage(haven.FlowerMenu widget, int index) {
-        widget.sendMessage(A_CLOSE_FLOWER_MENU, index, 0);
+        widget.sendMessage(M_CL, index, 0);
     }
 
     static void sendCloseFlowerMenuMessage(haven.FlowerMenu widget) {
-        widget.sendMessage(A_CLOSE_FLOWER_MENU, -1);
+        widget.sendMessage(M_CL, -1);
     }
 
     static void sendSelectCharacterMessage(haven.Charlist widget, String name) {
-        widget.sendMessage(A_SELECT_CHARACTER, name);
+        widget.sendMessage(M_PLAY, name);
     }
 
-    static void sendMenuGridBarrelMessage() {
-        WidgetManager.menuGrid().sendMessage(A_ACT, "bp", "barrel", 0);
+    static void sendMenuGridDryingFrameMessage() {
+        WidgetManager.menuGrid().sendMessage(M_ACT, A_BP, AT_DFRAME, 0);
     }
 }

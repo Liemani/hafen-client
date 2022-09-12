@@ -123,118 +123,110 @@ public class Development implements Console.Command {
         }
     }
 
-    static void describeConsoleCommand() {
+    static void sendMenuGridDryingFrameMessage() {
+        WidgetMessageHandler.sendMenuGridDryingFrameMessage();
+    }
+
+    static void listConsoleCommand() {
         Util.message("console command:");
         for (String command : Util.consoleCommands())
             Util.message("  " + command);
     }
 
-    // Wrapping ObjectFinder
-    static Void objectInitWithRootWidget() {
-        ObjectFinder.init();
-        ObjectFinder.moveForward(ObjectShadow.rootWidget());
-        return null;
-    }
-
-    static Void objectChange() {
-        wrapObjectFinderFind(Util.MemberType.FIELD, null, true);
-        return null;
-    }
-
-    static Void objectUndo() {
-        if (ObjectFinder.isEmpty()) {
-            System.out.println("there is no previous object");
-            return null;
-        }
-
-        ObjectFinder.moveBackward();
-        Debug.describeField(ObjectFinder.last());
-        return null;
-    }
-
-    static Void objectChangeToReturnValueOfMethod() {
-        wrapObjectFinderFind(Util.MemberType.METHOD, null, true);
-        return null;
-    }
-
-    static Void objectDescribe() {
-        Debug.describeField(ObjectFinder.last());
-        return null;
-    }
-
-    static Void objectDescribeAsIterable() {
-        Object object = ObjectFinder.last();
-        if (!(object instanceof Iterable)) {
-            System.out.println(Debug.convertToDebugDescriptionClassNameHashCode(object) + " is not instance of Iterable");
-            return null;
-        }
-
-        System.out.println("[" + Debug.convertToDebugDescriptionClassNameHashCode(object) + "]");
-        for (Object element : (Iterable)object) {
-            Debug.describeField(element);
-        }
-        return null;
-    }
-
-    // TODO modified ObjectShadow's fields access modifier to private,
-    //  and now can't use this features for objectInit()
-    private static void wrapObjectFinderFind(Util.MemberType type, Class classObjectToReset, boolean willAppend) {
-        Debug.describeClassNameHashCodeWithTag("current: ", ObjectFinder.last());
-
-        Object object = null;
-        try {
-            object = ObjectFinder.find(type, classObjectToReset);
-            Debug.describeField(object);
-            if (willAppend) {
-                if (!type.isField())
-                    ObjectFinder.init();
-                ObjectFinder.moveForward(object);
-            }
-        } catch (Exception e) { e.printStackTrace(); }
-    }
-
-    static Void objectListAsWidget() {
-        ObjectFinder.listLastAsWidget();
-        return null;
-    }
+//      // Wrapping ObjectFinder
+//      static void objectInitWithRootWidget() {
+//          ObjectFinder.init();
+//          ObjectFinder.moveForward(ObjectShadow.rootWidget());
+//      }
+//  
+//      static void objectChange() {
+//          wrapObjectFinderFind(Util.MemberType.FIELD, null, true);
+//      }
+//  
+//      static void objectUndo() {
+//          if (ObjectFinder.isEmpty()) {
+//              System.out.println("there is no previous object");
+//              return;
+//          }
+//  
+//          ObjectFinder.moveBackward();
+//          Debug.describeField(ObjectFinder.last());
+//      }
+//  
+//      static void objectChangeToReturnValueOfMethod() {
+//          wrapObjectFinderFind(Util.MemberType.METHOD, null, true);
+//      }
+//  
+//      static void objectDescribe() {
+//          Debug.describeField(ObjectFinder.last());
+//      }
+//  
+//      static void objectDescribeAsIterable() {
+//          Object object = ObjectFinder.last();
+//          if (!(object instanceof Iterable)) {
+//              System.out.println(Debug.convertToDebugDescriptionClassNameHashCode(object) + " is not instance of Iterable");
+//              return;
+//          }
+//  
+//          System.out.println("[" + Debug.convertToDebugDescriptionClassNameHashCode(object) + "]");
+//          for (Object element : (Iterable)object) {
+//              Debug.describeField(element);
+//          }
+//      }
+//  
+//      // TODO modified ObjectShadow's fields access modifier to private,
+//      //  and now can't use this features for objectInit()
+//      private static void wrapObjectFinderFind(Util.MemberType type, Class classObjectToReset, boolean willAppend) {
+//          Debug.describeClassNameHashCodeWithTag("current: ", ObjectFinder.last());
+//  
+//          Object object = null;
+//          try {
+//              object = ObjectFinder.find(type, classObjectToReset);
+//              Debug.describeField(object);
+//              if (willAppend) {
+//                  if (!type.isField())
+//                      ObjectFinder.init();
+//                  ObjectFinder.moveForward(object);
+//              }
+//          } catch (Exception e) { e.printStackTrace(); }
+//      }
+//  
+//      static void objectListAsWidget() {
+//          ObjectFinder.listLastAsWidget();
+//      }
 
     // Debug
-    static Void toggleDebugIsPrint() {
+    static void toggleDebugIsPrint() {
         Debug.toggleIsPrint();
-        return null;
     }
 
     // test command
-    static Void describeSelf() {
+    static void describeSelf() {
         System.out.println("resource name: " + Self.gob().resourceName());
         System.out.println("Self.location(): " + Self.location());
         System.out.println("Self.hardHitPoint(): " + Self.hardHitPoint());
         System.out.println("Self.softHitPoint(): " + Self.softHitPoint());
         System.out.println("Self.stamina(): " + Self.stamina());
         System.out.println("Self.energy(): " + Self.energy());
-        return null;
     }
 
-    static Void describeSelfAttribute() {
+    static void describeSelfAttribute() {
         java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> map = Self.gob().attributeMap();
         map.forEach((unused, value) -> {
                 Debug.describeField(value);
                 });
-        return null;
     }
 
     // Simple Move
-    static Void h() {
+    static void h() {
         Self.moveWest();
-        return null;
     }
 
-    static Void j() {
+    static void j() {
         Self.moveSouth();
-        return null;
     }
 
-    static Void jIterate() {
+    static void jIterate() {
         while (true) {
             final Coord destination = Self.location().add(0, 1);
             Self.move(destination);
@@ -242,50 +234,39 @@ public class Development implements Console.Command {
         }
     }
 
-    static Void k() {
+    static void k() {
         Self.moveNorth();
-        return null;
     }
 
-    static Void l() {
+    static void l() {
         Self.moveEast();
-        return null;
     }
 
-    static Void describeAllGob() {
-        int count = 1;
-        Array<Gob> gobArray = GobManager.gobArray();
-        for (Gob gob : gobArray) {
-            System.out.println("[" + count + "] { virtual: " + gob.virtual + ", class: " + gob.getClass() + ", resource name: " + gob.resourceName() + " }");
-            ++count;
-        }
-        return null;
-    }
+//      static void describeAllGob() {
+//          int count = 1;
+//          Array<Gob> gobArray = GobManager.gobArray();
+//          for (Gob gob : gobArray) {
+//              System.out.println("[" + count + "] { virtual: " + gob.virtual + ", class: " + gob.getClass() + ", resource name: " + gob.resourceName() + " }");
+//              ++count;
+//          }
+//      }
 
-    static Void moveCenter() {
+    static void moveCenter() {
         Self.moveCenter();
-        return null;
     }
 
-    static Void describeCursorGItem() {
+    static void describeCursorGItem() {
         haven.Widget gItem = WidgetManager.cursorGItem();
         Debug.describeField(gItem);
-        return null;
     }
 
-    static Void describeClickedGob() {
-        Util.alert("출력할 gob을 클릭해 주세요");
+    static void describeClickedGob() {
+        Util.alert("정보를 출력할 물체를 클릭해 주세요");
         Gob gob = ClickManager.getGob();
-
-        Util.debugPrint("resource name: " + gob.resourceName());
-        Util.debugPrint("location: " + gob.location());
-        Util.debugPrint("distance: " + Self.distance(gob));
-        Util.debugPrint("removed: " + gob.removed);
-
-        return null;
+        Util.message(gob.debugDescription());
     }
 
-//      static Void describeClosestGobOverlay() {
+//      static void describeClosestGobOverlay() {
 //          Gob closestGob = Util.closestGob();
 //          System.out.println("[closest gob] " + closestGob.resourceName());
 //          for (Gob.Overlay overlay : closestGob.ols) {
@@ -297,10 +278,9 @@ public class Development implements Console.Command {
 //                  System.out.println("[describeClosestGobOverlay() null pointer exception has occured]");
 //              }
 //          }
-//          return null;
 //      }
 
-//      static Void describeClosestGobAttribute() {
+//      static void describeClosestGobAttribute() {
 //          Gob closestGob = Util.closestGob();
 //          java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> attributeMap = closestGob.attributeMap();
 //          String resourceName = closestGob.resourceName();
@@ -319,60 +299,35 @@ public class Development implements Console.Command {
 //                  Debug.describeField(attribute);
 //              }
 //          }
-//          return null;
 //      }
 
-    static Void move() {
-        final Coord destination = Self.location().offset(TILE_IN_COORD * 3, TILE_IN_COORD * 3);
-        Self.move(destination);
-        return null;
-    }
-
-    static Void moveNorthTenTimes() {
-        Self.moveCenter();
-        for (int count = 0; count < 10; ++count)
-            Self.moveNorth();
-        return null;
-    }
-
-//      static Void describeClosestGobSdt() {
+//      static void describeClosestGobSdt() {
 //          Gob closestGob = Util.closestGob();
 //          final haven.Resource resource = closestGob.resource();
 //          if(resource == null) {
 //              System.out.println("[resource is null]");
-//              return null;
+//              return;
 //          }
 //          haven.ResDrawable resourceDrawable = (haven.ResDrawable)closestGob.attribute(haven.ResDrawable.class);
 //          byte[] buffer = haven.LMI.resourceDrawableBuffer(resourceDrawable);
 //          if (buffer == null) {
 //              System.out.println("[buffer is null]");
-//              return null;
+//              return;
 //          }
 //          System.out.print("[buffer] length: " + buffer.length);
 //          for (byte b : buffer)
 //              System.out.print(" " + b);
 //          System.out.println();
-//          return null;
 //      }
 
-    static Void describeSelfPose() {
-        Array<String> poseArray = Self.gob().poseArray();
-        if (poseArray == null)
-            Util.debugPrint("no pose");
-        for (String pose : poseArray)
-            System.out.println("[pose name] " + pose);
-        return null;
-    }
-
-//      static Void gatherClosestGob() {
+//      static void gatherClosestGob() {
 //          String action = lmi.Scanner.nextLineWithPrompt("enter action");
 //          Gob closestGob = Util.closestGob();
 //          FlowerMenuHandler.choose(closestGob, MI_DEFAULT, action);
 //          Self.moveNorth();
-//          return null;
 //      }
 
-    static Void investigateGobBoundingBoxWidth() {
+    static void investigateGobBoundingBoxWidth() {
         System.out.println("click gob of standard!");
         Gob standardGob = ClickManager.getGob();
 
@@ -398,7 +353,6 @@ public class Development implements Console.Command {
         }
 
         System.out.println("failed variant is " + variant);
-        return null;
     }
 
     private static void _carryWidth(Gob gob, Coord putPoint) {
@@ -407,7 +361,7 @@ public class Development implements Console.Command {
         Self.put(putPoint);
     }
 
-    static Void investigateGobBoundingBoxHeight() {
+    static void investigateGobBoundingBoxHeight() {
         System.out.println("click gob of standard!");
         Gob standardGob = ClickManager.getGob();
 
@@ -434,7 +388,6 @@ public class Development implements Console.Command {
 
         System.out.println("failed variant is " + variant);
 
-        return null;
     }
 
     private static void _carryHeight(Gob gob, Coord putPoint) {
@@ -442,7 +395,7 @@ public class Development implements Console.Command {
         Self.put(putPoint);
     }
 
-//      static Void investigateBodyBoundingBoxWidthOnce() {
+//      static void investigateBodyBoundingBoxWidthOnce() {
 //          System.out.println("click gob of standard!");
 //          Gob standardGob = ClickManager.getGob();
 //  
@@ -451,10 +404,9 @@ public class Development implements Console.Command {
 //  
 //          _checkSelfVariantWidth(standardGob, variant);
 //  
-//          return null;
 //      }
 //  
-//      static Void investigateBodyBoundingBoxWidth() {
+//      static void investigateBodyBoundingBoxWidth() {
 //          System.out.println("click gob of standard!");
 //          Gob standardGob = ClickManager.getGob();
 //  
@@ -471,7 +423,6 @@ public class Development implements Console.Command {
 //  
 //          System.out.println("failed variant is " + variant);
 //  
-//          return null;
 //      }
 
     private static void _checkSelfVariantWidth(Gob standardGob, int variant) {
@@ -485,7 +436,7 @@ public class Development implements Console.Command {
                 + ", distance: " + Self.distance(standardGob));
     }
 
-    static Void putLogDistanceBodyWidth() {
+    static void putLogDistanceBodyWidth() {
         final Coord centerPosition = Self.location().tileCenter();
 
         System.out.println("첫 번째 로그를 선택해주세요");
@@ -502,39 +453,22 @@ public class Development implements Console.Command {
         Self.move(centerPosition.add(BW_LOG / 2 + BW_BODY / 2, (BH_LOG + BH_BODY) / 2));
         Self.put(centerPosition.add(BW_LOG / 2 + BW_BODY / 2, 0));
 
-        return null;
     }
 
-    static Void getArea() {
+    static void getArea() {
         final Rect area = ClickManager.getArea();
         Util.debugPrint("origin: " + area.origin);
         Util.debugPrint("size: " + area.size);
-        return null;
     }
 
-    static Void describeGobInArea() {
+    static void describeGobInArea() {
         System.out.println("click tow points to get area to get gob");
         Array<Gob> gobArray = ClickManager.getGobArrayInArea();
         for (Gob gob : gobArray)
             System.out.println("resource name: " + gob.resourceName());
-        return null;
     }
 
-    static Void printAutomationStackTrace() {
+    static void printAutomationStackTrace() {
         AutomationManager.printStackTrace();
-        return null;
-    }
-
-    static Void printStackTrace() {
-        Util.debugPrint("thread name: " + Thread.currentThread().getName());
-        new Exception().printStackTrace();
-        return null;
-    }
-
-    public static String man() {
-        return
-            "Dev 자동화의 man page입니다\n" +
-            "이 자동화는 개발자가 디버깅을 하는 용도로 사용합니다" +
-            "";
     }
 }

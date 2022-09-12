@@ -328,7 +328,7 @@ public class UI {
 	
     public void wdgmsg(Widget sender, String msg, Object... args) {
     if (!msg.contentEquals("focus")) {
-        System.out.println("[UI::wdgmsg()] {\"sender\": \"" + sender.getClass().getName() + "\", \"command\": \"" + msg + "\"}");
+        System.out.println("[UI::wdgmsg()] {sender: \"" + sender.getClass().getName() + "\", message: \"" + msg + "\"}");
         for (Object object : args) { lmi.Debug.describeField(object); }
     }
 	int id = widgetid(sender);
@@ -353,7 +353,7 @@ public class UI {
 //              && !msg.contentEquals("ppower")
 //              && !msg.contentEquals("max")
             && !msg.contentEquals("tt")) {
-        lmi.Util.debugPrint("commannd: " + msg + ", widgetClass: " + wdg.getClass().getName() + ", args.length: " + args.length);
+        lmi.Util.debugPrint("reciever: \"" + wdg.getClass().getName() + "\", message: \"" + msg + "\", args.length: " + args.length);
         for (Object object : args)
             lmi.Debug.describeField(object);
     }

@@ -2,9 +2,9 @@ package lmi;
 
 import haven.Gob;
 
-import lmi.Constant.Action;
+import lmi.Constant.Message;
 import static lmi.Constant.ExceptionType.*;
-import static lmi.Constant.Action.Custom.*;
+import static lmi.Constant.Signal.*;
 import static lmi.Constant.TimeOut.*;
 
 public class FlowerMenuHandler {
@@ -50,7 +50,7 @@ public class FlowerMenuHandler {
     private static void _waitFlowerMenuOpening() {
         if (_isAdded()) return;
         try {
-            WaitManager.waitTimeOut(AC_FLOWER_MENU_DID_ADDED, TO_TEMPORARY);
+            WaitManager.waitSignal(S_FLOWER_MENU_DID_ADDED, TO_TEMPORARY);
         } catch (LMIException e) {
             if (e.type() != ET_TIME_OUT) throw e;
             if (!_isAdded()) throw new LMIException(ET_FLOWER_MENU_OPEN);

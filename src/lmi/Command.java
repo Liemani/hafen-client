@@ -79,7 +79,7 @@ public class Command implements haven.Console.Command {
 
         // Help
         private static void _printError(PrintWriter writer) {
-            Util.message("  [man Manual]");
+            Util.message("  [lmi Manual]");
             Util.error("사용법: lmi <자동화 프로그램>");
             Util.message("설  명: 자동화 프로그램을 실행합니다");
             writer.println(" ");
@@ -87,7 +87,7 @@ public class Command implements haven.Console.Command {
         }
 
         private static void _printHelp(PrintWriter writer) {
-            Util.message("  [man Manual]");
+            Util.message("  [lmi Manual]");
             Util.alert("사용법: lmi <자동화 프로그램>");
             Util.message("설  명: 자동화 프로그램을 실행합니다");
             writer.println(" ");

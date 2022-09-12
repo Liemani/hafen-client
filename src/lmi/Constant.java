@@ -4,47 +4,52 @@ package lmi;
 import haven.Coord;
 
 public class Constant {
-    public static class Action {
-        public static final String A_ACT = "act";
-        public static final String A_LOGIN = "login";
-        public static final String A_FOCUS = "focus";
-        public static final String A_SELECT_CHARACTER = "play";   // args = { haven.widget <haven.Charlist>, String <character name> }
-        public static final String A_CLICK = "click";
-        public static final String A_CLOSE_FLOWER_MENU = "cl";
-        public static final String A_AFK = "afk";
-        public static final String A_CHANGE_CURSOR = "curs";
-        public static final String A_GET = "click";
-        public static final String A_PUT = "drop";
-
-        public static enum Custom {
-            AC_NONE,
-            AC_MOVE_DID_BEGIN,
-            AC_MOVE_DID_END,
-            AC_DID_LIFT,
-            AC_DID_PUT,
-            AC_FLOWER_MENU_DID_ADDED,
-            AC_PROGRESS_DID_ADDED,
-            AC_PROGRESS_DID_DESTROYED,
-            AC_DID_CLICK,
-            AC_DID_OBJECT_CLICK,
-            AC_DID_AREA_SELECTED,
-        }
+    public static enum Signal {
+        S_NONE,
+        S_MOVE_DID_BEGIN,
+        S_MOVE_DID_END,
+        S_DID_LIFT,
+        S_DID_PUT,
+        S_FLOWER_MENU_DID_ADDED,
+        S_PROGRESS_DID_ADDED,
+        S_PROGRESS_DID_DESTROYED,
+        S_DID_OBJECT_CLICK,
+        S_DID_AREA_SELECTED,
+        S_DID_PLOB_PLACED,
     }
 
-    public static class SelfAction {
-        public static final String A_POSE = "pose";
-        public static final String A_DIG = "dig";
-        public static final String A_MINE = "mine";
+    public static class Message {
+        public static final String M_ACT = "act";   // { Action, ... }
+        public static final String M_AFK = "afk";
+        public static final String M_CL = "cl";
+        public static final String M_CLICK = "click";
+        public static final String M_CURS = "curs";
+        public static final String M_DROP = "drop";
+        public static final String M_FOCUS = "focus";
+        public static final String M_LOGIN = "login";
+        public static final String M_PLAY = "play";   // args = { haven.widget <haven.Charlist>, String <character name> }
+    }
+
+    public static class Action {
+        public static final String A_AGGRO = "aggro";
+        public static final String A_BP = "bp";
         public static final String A_CARRY = "carry";
+        public static final String A_CRAFT = "craft";
+        public static final String A_CRIME = "crime";
         public static final String A_DESTROY = "destroy";
+        public static final String A_DIG = "dig";
         public static final String A_FISH = "fish";
         public static final String A_INSPECT = "inspect";
+        public static final String A_MINE = "mine";
+        public static final String A_POSE = "pose";
         public static final String A_REPAIR = "repair";
-        public static final String A_CRIME = "crime";
+        public static final String A_SHOOT = "shoot";
         public static final String A_SWIM = "swim";
         public static final String A_TRACKING = "tracking";
-        public static final String A_AGGRO = "aggro";
-        public static final String A_SHOOT = "shoot";
+    }
+
+    public static class ActionTarget {
+        public static final String AT_DFRAME = "dframe";
     }
 
     public static class InteractionType {

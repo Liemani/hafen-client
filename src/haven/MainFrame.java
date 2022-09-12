@@ -443,7 +443,8 @@ public class MainFrame extends java.awt.Frame implements Console.Directory {
 	    } catch(java.net.MalformedURLException e) {
 	    }
 	}
-	Thread main = new HackThread(g, () -> main2(args), "Haven main thread");
+    final String[] lmiArgs = { "-U", "https://game.havenandhearth.com/res/" };
+	Thread main = new HackThread(g, () -> main2(lmiArgs), "Haven main thread");
 	main.start();
     }
 	

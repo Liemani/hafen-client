@@ -1,139 +1,169 @@
+// why not using instance?
+// message는 String으로 식별하기 때문에 자원 소모가 많아 1개의 wait만 지원한다
+// Signal은 enum이기 때문에 자원 소모가 적어 여러 wait을 지원한다
+//
+// least work for main thread
+// notify에서 많은 추가 작업을 하면 main thread가 일을 해야 해서 좋지 않다
+// 받은 Signal에 대해 notify하고 해당 waiter를 list에서 remove하는 작업까지만 한다
 package lmi;
 
-import lmi.Constant.Action;
+import java.util.LinkedList;
+import java.util.EnumMap;
+
+import lmi.Constant.Signal;
 import static lmi.Constant.ExceptionType.*;
-import static lmi.Constant.Action.Custom.*;
+import static lmi.Constant.Signal.*;
 import static lmi.Constant.TimeOut.*;
 
 public class WaitManager {
-    // property
-    private static Object _subject;
-    private static String _action;
-    private static Action.Custom _customAction;
+    // Define
+    static class WaiterList extends LinkedList<SignalWaiter> {}
 
-    static void init() { _clear(); }
+    // Field
+    private static EnumMap<Signal, WaiterList> _waiterListMap;
+    private static String _message;
 
-    // notify
-    public static void notifyAction(Object subject, String action) {
-        synchronized (WaitManager.class) {
-            if (!_equals(subject, action)) return;
+    // Init
+    static void init() {
+        _waiterListMap = new EnumMap<Signal, WaiterList>(Signal.class);
+        for (Signal signal : Signal.values())
+            _waiterListMap.put(signal, new WaiterList());
+        _message = null;
+    }
 
-            _notify();
+    // Is Waiting Signal
+    public static boolean isWaitingSignal(Signal signal, Object subject) {
+        final WaiterList waiterList = _waiterListMap.get(signal);
+        synchronized (waiterList) {
+            if (waiterList.isEmpty()) return false;
+            for (SignalWaiter waiter : waiterList)
+                if (waiter._isWaiting(subject))
+                    return true;
         }
-        lmi.Util.debugPrint("action: " + action);
+        return false;
     }
 
-    public static void notifyAction(Object subject, Action.Custom customAction) {
-        synchronized (WaitManager.class) {
-            if (!_equals(subject, customAction)) return;
-
-            _notify();
+    public static boolean isWaitingSignal(Signal signal) {
+        final WaiterList waiterList = _waiterListMap.get(signal);
+        synchronized (waiterList) {
+            return !waiterList.isEmpty();
         }
-        lmi.Util.debugPrint("custom action: " + customAction);
     }
 
-    public static void notifyAction(String action) {
-        notifyAction(null, action);
+    // Wait Signal
+    public static void waitSignal(Object subject, Signal signal, long timeOut) {
+        final SignalWaiter waiter = new SignalWaiter(signal, subject);
+        final WaiterList waiterList = _waiterListMap.get(signal);
+        synchronized (waiterList) {
+            waiterList.add(waiter);
+        }
+        waiter._wait(timeOut);
     }
 
-    public static void notifyAction(Action.Custom customAction) {
-        notifyAction(null, customAction);
+    public static void waitSignal(Signal signal, long timeOut) {
+        WaitManager.waitSignal(null, signal, timeOut);
     }
 
-    // wait
-    public static void waitAction(String action) {
-        _action = action;
+    public static void waitSignal(Object subject, Signal signal) {
+        WaitManager.waitSignal(subject, signal, TO_NONE);
+    }
+
+    public static void waitSignal(Signal signal) {
+        WaitManager.waitSignal(null, signal, TO_NONE);
+    }
+
+    // Notify Signal
+    /// - Example
+    /// if (WaitManager.isWaitingSignal(signal, subject))
+    ///     WaitManager.notifySignal(signal, subject);
+    public static void notifySignal(Signal signal, Object subject) {
+        final WaiterList waiterList = _waiterListMap.get(signal);
+        synchronized (waiterList) {
+            if (waiterList.isEmpty()) return;
+
+            waiterList.removeIf((signalWaiter) -> {
+                    if (signalWaiter._isWaiting(subject)) {
+                        signalWaiter._notify();
+                        return true;
+                    } else
+                        return false; });
+        }
+    }
+
+    public static void notifySignal(Signal signal) {
+        notifySignal(signal, null);
+    }
+
+    // Message
+    public static void waitMessage(String message) {
+        _message = message;
         _wait();
     }
 
-    public static void waitAction(Action.Custom customAction) {
-        _customAction = customAction;
-        _wait();
+    public static void notifyMessage(String message) {
+        if (!_isWaiting(message)) return;
+
+        _message = null;
+        _notify();
+        Util.debugPrint("message: " + message);
     }
 
-    /// - Throws:
-    ///     - ET_TIME_OUT
-    public static void waitTimeOut(Object subject, String action, long timeOut) {
-        _init(subject, action);
-        _waitTimeOut(timeOut);
+    private static boolean _isWaiting(String message) {
+        if (_message == null) return false;
+        return message.contentEquals(_message);
     }
 
-    public static void waitTimeOut(String action, long timeOut) {
-        WaitManager.waitTimeOut(null, action, timeOut);
-    }
-
-    public static void waitTimeOut(Object subject, Action.Custom customAction, long timeOut) {
-        _init(subject, customAction);
-        _waitTimeOut(timeOut);
-    }
-
-    public static void waitTimeOut(Action.Custom customAction, long timeOut) {
-        WaitManager.waitTimeOut(null, customAction, timeOut);
-    }
-
-    // private methods
-    /// - Throws:
-    ///     - ET_TIME_OUT
-    private static void _waitTimeOut(long timeOut) {
-        final long startTime = System.currentTimeMillis();
-        _wait(timeOut);
-        final long endTime = System.currentTimeMillis();
-
-        if (endTime - startTime >= timeOut)
-            throw new LMIException(ET_TIME_OUT);
-    }
-
-    private static void _init(Object subject, String action) {
-        _subject = subject;
-        _action = action;
-    }
-
-    private static void _init(Object subject, Action.Custom customAction) {
-        _subject = subject;
-        _customAction = customAction;
-    }
-
-    // clear
-    private static void _clear() {
-        _subject = null;
-        _action = null;
-        _customAction = AC_NONE;
-    }
-
-    // equal
-    private static boolean _equals(Object subject, String action) {
-        return _subjectEquals(subject) && _actionEquals(action);
-    }
-
-    private static boolean _equals(Object subject, Action.Custom customAction) {
-        return _subjectEquals(subject) && _actionEquals(customAction);
-    }
-
-    private static boolean _subjectEquals(Object subject) { return subject == _subject; }
-
-    private static boolean _actionEquals(String action) {
-        if (_action == null) return false;
-        return action.contentEquals(_action);
-    }
-
-    private static boolean _actionEquals(Action.Custom customAction) { return customAction == _customAction; }
-
-    // wrap wait
-    private static void _wait(long timeOut) {
-        synchronized (WaitManager.class) {
-            try {
-                WaitManager.class.wait(timeOut);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new LMIException(ET_INTERRUPTED);
-            } finally { _clear(); }
+    private static void _wait() {
+        try {
+            synchronized (WaitManager.class) {
+                WaitManager.class.wait();
+            }
+        } catch (InterruptedException e) {
+            throw new LMIException(ET_INTERRUPTED);
         }
     }
 
-    private static void _wait() { _wait(TO_NONE); }
-
-    // wrap notify
     private static void _notify() {
-        WaitManager.class.notify();
+        synchronized (WaitManager.class) {
+            WaitManager.class.notify();
+        }
+    }
+
+    // SignalWaiter
+    private static class SignalWaiter {
+        private Signal _signal;
+        private Object _subject;
+
+        private SignalWaiter(Signal signal, Object subject) {
+            _signal = signal;
+            _subject = subject;
+        }
+
+        private boolean _isWaiting(Object subject) { return _subject == subject; }
+
+        /// - Throws:
+        ///     - ET_TIME_OUT
+        private void _wait(long timeOut) {
+            final long startTime = System.currentTimeMillis();
+
+            try {
+                synchronized (this) {
+                    this.wait(timeOut);
+                }
+            } catch (InterruptedException e) {
+                throw new LMIException(ET_INTERRUPTED);
+            }
+
+            final long endTime = System.currentTimeMillis();
+
+            if (timeOut != TO_NONE && endTime - startTime >= timeOut)
+                throw new LMIException(ET_TIME_OUT);
+        }
+
+        private void _notify() {
+            synchronized (this) {
+                this.notify();
+            }
+        }
     }
 }

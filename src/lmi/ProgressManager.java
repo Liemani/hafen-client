@@ -1,8 +1,8 @@
 package lmi;
 
-import lmi.Constant.Action;
+import lmi.Constant.Message;
 import static lmi.Constant.ExceptionType.*;
-import static lmi.Constant.Action.Custom.*;
+import static lmi.Constant.Signal.*;
 import static lmi.Constant.TimeOut.*;
 
 public class ProgressManager {
@@ -36,7 +36,7 @@ public class ProgressManager {
     private static void _waitProgressAdded() {
         if (_isProgressing()) return;
         try {
-            WaitManager.waitTimeOut(AC_PROGRESS_DID_ADDED, TO_TEMPORARY);
+            WaitManager.waitSignal(S_PROGRESS_DID_ADDED, TO_TEMPORARY);
         } catch (LMIException e) {
             if (e.type() != ET_TIME_OUT) throw e;
             if (!_isProgressing()) throw new LMIException(ET_PROGRESS_OPEN);
@@ -47,7 +47,7 @@ public class ProgressManager {
         while (true) {
             if (!_isProgressing()) return;
             try {
-                WaitManager.waitTimeOut(AC_PROGRESS_DID_DESTROYED, TO_GENERAL);
+                WaitManager.waitSignal(S_PROGRESS_DID_DESTROYED, TO_GENERAL);
                 break;
             } catch (LMIException e) {
                 if (e.type() != ET_TIME_OUT) throw e;

@@ -6,12 +6,12 @@ import haven.Coord;
 
 // constant
 import lmi.Constant.*;
-import lmi.Constant.Action;
+import lmi.Constant.Message;
 
 import static lmi.Constant.ExceptionType.*;
+import static lmi.Constant.Message.*;
+import static lmi.Constant.Signal.*;
 import static lmi.Constant.Action.*;
-import static lmi.Constant.Action.Custom.*;
-import static lmi.Constant.SelfAction.*;
 import static lmi.Constant.Input.Mouse.*;
 import static lmi.Constant.Input.Modifier.*;
 import static lmi.Constant.InteractionType.*;
@@ -131,7 +131,6 @@ public class Self {
     ///     - ET_LIFT
     public static void lift(Gob gob) {
         _sendCarryMessage();
-        _waitCursorChange(RN_HAND);
         WidgetMessageHandler.actionClick(gob);
         try {
             Self.gob().waitMove();
@@ -147,18 +146,6 @@ public class Self {
             Self.gob().waitMove();
         } catch (LMIException e) { if (e.type() == ET_INTERRUPTED) throw e; }
         Self.gob().waitPut();
-    }
-
-    private static void _waitCursorChange(String cursor) {
-        while (true) {
-            if (_isCursorChanged(cursor)) return;
-            try {
-                WaitManager.waitTimeOut(A_CHANGE_CURSOR, TO_TEMPORARY);
-                break;
-            } catch (LMIException e) {
-                if (e.type() != ET_TIME_OUT) throw e;
-            }
-        }
     }
 
     private static boolean _isCursorChanged(String cursor) {

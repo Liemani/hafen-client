@@ -671,6 +671,12 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
         return basename;
     }
 
+    public boolean resourceNameEndsWith(String suffix) {
+        final String resourceName = resourceName();
+        if (resourceName == null) return false;
+        return resourceName.endsWith(suffix);
+    }
+
     // Instance Method
     public boolean isAt(Coord coord) { return this.location().equals(coord); }
     public boolean isMoving() { return this.velocity() != 0.0; }
@@ -683,9 +689,9 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
         return composite != null ? composite.poseArray() : null;
     }
 
-    public boolean hasPose(String poseName) {
+    public boolean hasPose(String poseBaseName) {
         Array<String> poseArray = this.poseArray();
-        return poseArray.containsWhere(pose -> pose.endsWith(poseName));
+        return poseArray.containsWhere(poseName -> poseName.endsWith(poseBaseName));
     }
 
     public Gob followingTarget() {
@@ -723,4 +729,22 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
     public void waitPut() { new GobManager(this).waitPut();  }
 
     public int id() { return (int)this.id; }
+
+    public String debugDescription() {
+        StringBuilder description = new StringBuilder();
+
+        description.append("resource name: " + this.resourceName() + "\n");
+        description.append("location: " + this.location() + "\n");
+        description.append("distance: " + lmi.Self.distance(this) + "\n");
+        description.append("removed: " + this.removed + "\n");
+        description.append("pose:\n");
+        Array<String> poseArray = this.poseArray();
+        if (poseArray != null) {
+            for (String poseString : poseArray)
+                description.append("  " + poseString);
+        } else
+            description.append("  no pose\n");
+
+        return description.toString();
+    }
 }
