@@ -33,9 +33,9 @@ public class Patrol002 implements Runnable {
     private void main() throws InterruptedException {
         haven.Coord firstPoint = Self.location().add(0, -TILE_IN_COORD);
         haven.Coord secondPoint = Self.location().add(TILE_IN_COORD, 0);
-        Self.move(firstPoint);
+        lmi.Api.move(firstPoint);
         Thread.sleep(2000);
-        Self.move(secondPoint);
+        lmi.Api.move(secondPoint);
         Thread.sleep(2000);
     }
 }

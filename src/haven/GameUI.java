@@ -1746,11 +1746,37 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     // lmi custom
     public void alert(String msg) {
-	msg(msg, Color.WHITE, Color.WHITE);
-	double now = Utils.rtime();
-	if(now - lasterrsfx > 0.1) {
-	    ui.sfx(errsfx);
-	    lasterrsfx = now;
-	}
+        msg(msg, Color.WHITE, Color.WHITE);
+        double now = Utils.rtime();
+        if(now - lasterrsfx > 0.1) {
+            ui.sfx(errsfx);
+            lasterrsfx = now;
+        }
+    }
+
+    public Window getWindowBy(String title) {
+        Widget child = this.child;
+        while (child != null) {
+            if (child instanceof Window) {
+                final Window window = (Window)child;
+                if (window.isTitle(title))
+                    return window;
+            }
+            child = child.next;
+        }
+        return null;
+    }
+
+    /// - Throws:
+    ///     - ET_WINDOW_OPEN
+    public void waitWindowAdded(String title) {
+        if (this.getWindowBy(title) != null) return;
+        try {
+            lmi.WaitManager.waitSignal(lmi.Constant.Signal.S_WINDOW_DID_ADDED, lmi.Constant.TimeOut.TO_TEMPORARY);
+        } catch (lmi.LMIException e) {
+            if (e.type() != lmi.Constant.ExceptionType.ET_TIME_OUT) throw e;
+            if (this.getWindowBy(title) == null)
+                throw new lmi.LMIException(lmi.Constant.ExceptionType.ET_WINDOW_OPEN);
+        }
     }
 }

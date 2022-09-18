@@ -6,6 +6,8 @@ import lmi.Constant.Message;
 import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.Signal.*;
 import static lmi.Constant.TimeOut.*;
+import static lmi.Constant.Input.Mouse.*;
+import static lmi.Constant.Input.Modifier.*;
 
 public class FlowerMenuHandler {
     // field
@@ -81,7 +83,7 @@ public class FlowerMenuHandler {
 
     // send message shadow
     private static void _sendInteractMessage(Gob gob, int meshId) {
-        WidgetMessageHandler.interact(gob, meshId);
+        WidgetMessageHandler.click(gob, IM_RIGHT, IM_NONE, meshId);
     }
 
     /// - Throws:

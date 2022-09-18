@@ -2164,7 +2164,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		    tt = null;
 		    ol.destroy();
 		    mgrab.remove();
-            if (lmi.Delegate.areaDidSelect(sc, ec)); else
+            if (lmi.Delegate.areaDidSelected(sc, ec)); else
 		    wdgmsg("sel", sc, ec, modflags);
 		    sc = null;
 		}
@@ -2307,5 +2307,10 @@ public class MapView extends PView implements DTarget, Console.Directory {
     public boolean isPlobPlaced() {
         final Loader.Future<Plob> placing_l = this.placing;
         return placing_l != null && placing_l.done();
+    }
+
+    public void waitPlobPlaced() {
+        while (isPlobPlaced())
+            lmi.Api.sleep(lmi.Constant.TimeOut.TO_TEMPORARY);
     }
 }

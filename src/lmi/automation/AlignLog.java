@@ -5,6 +5,7 @@ import haven.Coord;
 
 import lmi.*;
 import lmi.AutomationManager.Automation;
+import static lmi.Api.*;
 import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.gfx.terobjs.trees.*;
 import static lmi.Constant.BoundingBox.*;
@@ -40,11 +41,11 @@ public class AlignLog extends Automation {
 
     // private methods
     private void _willRun() {
-        Util.alert("정리할 통나무가 있는 곳을 선택해주세요");
-        _input = ClickManager.getArea();
+        alert("정리할 통나무가 있는 곳을 선택해주세요");
+        _input = getArea();
 
-        Util.alert("통나무를 정리해 놓을 곳을 선택해주세요");
-        _output = ClickManager.getArea();
+        alert("통나무를 정리해 놓을 곳을 선택해주세요");
+        _output = getArea();
 
         _checkAreaException();
         _init();
@@ -110,46 +111,43 @@ public class AlignLog extends Automation {
                 _loop();
             } catch (LMIException e) {
                 if (e.type() != ET_NO_WORK_TO_DO) throw e;
-                Util.alert("추가 통나무를 기다려요");
-                Util.sleep(TO_WAIT);
+                alert("추가 통나무를 기다려요");
+                sleep(TO_WAIT);
             }
         }
     }
 
     private void _loop() {
-        _forceMove(_origin);
-        _forceLift(_findLogToCarry());
-        _forceMove(_origin);
+        forceMove(_origin);
+        forceLift(_findLogToCarry());
+        forceMove(_origin);
         while (true) {
-            _forceMove(_moveCoord.init(_moveCoord.x, _targetMoveCoord.y));
+            forceMove(_moveCoord.init(_moveCoord.x, _targetMoveCoord.y));
             while (true) {
-                _forceMove(_moveCoord.init(_targetMoveCoord.x, _moveCoord.y));
+                forceMove(_moveCoord.init(_targetMoveCoord.x, _moveCoord.y));
                 try {
-                    Self.put(_targetPutCoord);
+                    put(_targetPutCoord);
                     _calculateNextCoord();
                     break;
                 } catch (LMIException e) {
                     if (e.type() != ET_PUT) throw e;
                     _calculateNextCoord();
                     if (_currentMatrix.y != _previousMatrix.y) {
-                        _forceMove(_moveCoord.init(_origin.x, _moveCoord.y));
+                        forceMove(_moveCoord.init(_origin.x, _moveCoord.y));
                         break;
                     }
                 }
             }
             if (!Self.gob().isLifting()) break;
         }
-        _forceMove(_moveCoord.init(_origin.x, _moveCoord.y));
-        _forceMove(_origin);
+        forceMove(_moveCoord.init(_origin.x, _moveCoord.y));
+        forceMove(_origin);
     }
-
-    private void _forceMove(Coord coord) { Self.forceMove(coord, TO_RETRY); }
-    private void _forceLift(Gob gob) { Self.forceLift(gob, TO_RETRY); }
 
     /// - Throws
     ///     - ET_NO_WORK_TO_DO
     private Gob _findLogToCarry() {
-        _logArrayToCarry = GobManager.gobArrayInArea(_input)
+        _logArrayToCarry = gobArrayIn(_input)
             .compactMap(gob -> {
                     final String resourceName = gob.resourceName();
                     if (resourceName == null) {
@@ -165,7 +163,7 @@ public class AlignLog extends Automation {
         if (_logArrayToCarry.isEmpty())
             throw new LMIException(ET_NO_WORK_TO_DO);
 
-        return GobManager.closestGob(_logArrayToCarry);
+        return closestGobIn(_logArrayToCarry);
     }
 
     /// - Throws
@@ -208,7 +206,7 @@ public class AlignLog extends Automation {
     }
 
     private boolean _coordIsPossessed(Coord coord) {
-        java.util.ArrayList<Gob> gobArray = GobManager.gobArray();
+        java.util.ArrayList<Gob> gobArray = gobArray();
         for (Gob gob : gobArray) {
             if (gob.isAt(coord))
                 return true;
@@ -218,19 +216,19 @@ public class AlignLog extends Automation {
 
     private void _didRun(LMIException e) {
         if (e == null) {
-            Util.alert("모든 통나무를 다 정리했어요");
+            alert("모든 통나무를 다 정리했어요");
             return;
         }
 
         switch (e.type()) {
             case ET_INTERRUPTED:
-                Util.alert("작업을 중단했어요");
+                alert("작업을 중단했어요");
                 break;
             case ET_NO_SPACE_LEFT:
-                Util.alert("통나무를 둘 남은 공간이 없어요");
+                alert("통나무를 둘 남은 공간이 없어요");
                 break;
             case ET_NO_WORK_TO_DO:
-                Util.alert("모든 통나무를 다 정리했어요");
+                alert("모든 통나무를 다 정리했어요");
                 break;
             default:
                 throw e;

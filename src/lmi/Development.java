@@ -10,11 +10,18 @@ import haven.*;
 
 import lmi.AutomationManager.Automation;
 import lmi.automation.*;
+import static lmi.Api.*;
 import static lmi.Constant.ExceptionType.*;
 import static lmi.Constant.MeshId.*;
 import static lmi.Constant.gfx.borka.*;
 import static lmi.Constant.BoundingBox.*;
 import static lmi.Constant.*;
+import static lmi.Constant.Plob.*;
+import static lmi.Constant.WindowTitle.*;
+import static lmi.Constant.Input.Mouse.*;
+import static lmi.Constant.Input.Modifier.*;
+import static lmi.Constant.Action.*;
+import static lmi.Constant.Message.*;
 
 public class Development implements Console.Command {
     // Type Define
@@ -75,7 +82,7 @@ public class Development implements Console.Command {
                             _printHelp(ObjectShadow.ui().cons.out);
                             break;
                         case ET_COMMAND_MATCH:
-                            Util.error("[" + (commandString != null ? commandString : "") + "]가 뭔지 모르겠어요");
+                            error("[" + (commandString != null ? commandString : "") + "]가 뭔지 모르겠어요");
                             break;
                         default:
                             break;
@@ -102,35 +109,44 @@ public class Development implements Console.Command {
 
         // Help
         private static void _printError(PrintWriter writer) {
-            Util.message("  [dev Manual]");
-            Util.error("usage: dev <command>");
+            message("  [dev Manual]");
+            error("usage: dev <command>");
             writer.println(" ");
-            Util.message("command list:");
+            message("command list:");
             _printCommandStringList(writer);
         }
 
         private static void _printHelp(PrintWriter writer) {
-            Util.message("  [dev Manual]");
-            Util.error("usage: dev <command>");
+            message("  [dev Manual]");
+            error("usage: dev <command>");
             writer.println(" ");
-            Util.message("command list:");
+            message("command list:");
             _printCommandStringList(writer);
         }
 
         private static void _printCommandStringList(PrintWriter printWriter) {
             for (String command : Development.getCommandStringSet())
-                Util.message("  " + command);
+                message("  " + command);
         }
     }
 
-    static void sendMenuGridDryingFrameMessage() {
-        WidgetMessageHandler.sendMenuGridDryingFrameMessage();
+    static void listConsoleCommand() {
+        message("console command:");
+        for (String command : Util.consoleCommands())
+            message("  " + command);
     }
 
-    static void listConsoleCommand() {
-        Util.message("console command:");
-        for (String command : Util.consoleCommands())
-            Util.message("  " + command);
+    static void printWidgetTree() {
+        final Widget rootWidget = ObjectShadow.rootWidget();
+        iterateWidget(rootWidget, 0);
+    }
+
+    private static void iterateWidget(haven.Widget widget, int indentCount) {
+        for (; widget != null; widget = widget.next) {
+            Util.insertIndent(indentCount);
+            System.out.println(widget.getClass().getName());
+            iterateWidget(widget.child, indentCount + 1);
+        }
     }
 
 //      // Wrapping ObjectFinder
@@ -196,9 +212,7 @@ public class Development implements Console.Command {
 //      }
 
     // Debug
-    static void toggleDebugIsPrint() {
-        Debug.toggleIsPrint();
-    }
+    static void toggleDebugIsPrint() { Debug.toggleIsPrint(); }
 
     // test command
     static void describeSelf() {
@@ -218,41 +232,18 @@ public class Development implements Console.Command {
     }
 
     // Simple Move
-    static void h() {
-        Self.moveWest();
-    }
-
-    static void j() {
-        Self.moveSouth();
-    }
+    static void h() { moveWest(); }
+    static void j() { moveSouth(); }
+    static void k() { moveNorth(); }
+    static void l() { moveEast(); }
+    static void moveCenter() { Api.moveCenter(); }
 
     static void jIterate() {
         while (true) {
             final Coord destination = Self.location().add(0, 1);
-            Self.move(destination);
+            move(destination);
             System.out.println("current location: " + Self.location());
         }
-    }
-
-    static void k() {
-        Self.moveNorth();
-    }
-
-    static void l() {
-        Self.moveEast();
-    }
-
-//      static void describeAllGob() {
-//          int count = 1;
-//          Array<Gob> gobArray = GobManager.gobArray();
-//          for (Gob gob : gobArray) {
-//              System.out.println("[" + count + "] { virtual: " + gob.virtual + ", class: " + gob.getClass() + ", resource name: " + gob.resourceName() + " }");
-//              ++count;
-//          }
-//      }
-
-    static void moveCenter() {
-        Self.moveCenter();
     }
 
     static void describeCursorGItem() {
@@ -261,13 +252,13 @@ public class Development implements Console.Command {
     }
 
     static void describeClickedGob() {
-        Util.alert("정보를 출력할 물체를 클릭해 주세요");
+        alert("정보를 출력할 물체를 클릭해 주세요");
         Gob gob = ClickManager.getGob();
-        Util.message(gob.debugDescription());
+        message(gob.debugDescription());
     }
 
 //      static void describeClosestGobOverlay() {
-//          Gob closestGob = Util.closestGob();
+//          Gob closestGob = closestGob();
 //          System.out.println("[closest gob] " + closestGob.resourceName());
 //          for (Gob.Overlay overlay : closestGob.ols) {
 //              try {
@@ -281,7 +272,7 @@ public class Development implements Console.Command {
 //      }
 
 //      static void describeClosestGobAttribute() {
-//          Gob closestGob = Util.closestGob();
+//          Gob closestGob = closestGob();
 //          java.util.Map<Class<? extends haven.GAttrib>, haven.GAttrib> attributeMap = closestGob.attributeMap();
 //          String resourceName = closestGob.resourceName();
 //          System.out.println("[resource name] " + resourceName);
@@ -302,7 +293,7 @@ public class Development implements Console.Command {
 //      }
 
 //      static void describeClosestGobSdt() {
-//          Gob closestGob = Util.closestGob();
+//          Gob closestGob = closestGob();
 //          final haven.Resource resource = closestGob.resource();
 //          if(resource == null) {
 //              System.out.println("[resource is null]");
@@ -322,9 +313,9 @@ public class Development implements Console.Command {
 
 //      static void gatherClosestGob() {
 //          String action = lmi.Scanner.nextLineWithPrompt("enter action");
-//          Gob closestGob = Util.closestGob();
+//          Gob closestGob = closestGob();
 //          FlowerMenuHandler.choose(closestGob, MI_DEFAULT, action);
-//          Self.moveNorth();
+//          moveNorth();
 //      }
 
     static void investigateGobBoundingBoxWidth() {
@@ -335,9 +326,9 @@ public class Development implements Console.Command {
         Gob variantGob = ClickManager.getGob();
 
         Coord standardPoint = Self.location();
-        Self.lift(standardGob);
-        Self.move(standardPoint.add(0, 2048));
-        Self.put(standardPoint);
+        lift(standardGob);
+        move(standardPoint.add(0, 2048));
+        put(standardPoint);
 
         final int start = TILE_IN_COORD / 8 * 3 + 1;
         int variant = start;
@@ -356,9 +347,9 @@ public class Development implements Console.Command {
     }
 
     private static void _carryWidth(Gob gob, Coord putPoint) {
-        Self.lift(gob);
-        Self.move(putPoint.add(0, TILE_IN_COORD * 2));
-        Self.put(putPoint);
+        lift(gob);
+        move(putPoint.add(0, TILE_IN_COORD * 2));
+        put(putPoint);
     }
 
     static void investigateGobBoundingBoxHeight() {
@@ -369,9 +360,9 @@ public class Development implements Console.Command {
         Gob variantGob = ClickManager.getGob();
 
         Coord standardPoint = Self.location().tileCenter();
-        Self.lift(standardGob);
-        Self.move(standardPoint.add(0, 2048));
-        Self.put(standardPoint);
+        lift(standardGob);
+        move(standardPoint.add(0, 2048));
+        put(standardPoint);
 
         final int start = 1024 / 8 * 15;
         int variant = start;
@@ -391,8 +382,8 @@ public class Development implements Console.Command {
     }
 
     private static void _carryHeight(Gob gob, Coord putPoint) {
-        Self.lift(gob);
-        Self.put(putPoint);
+        lift(gob);
+        put(putPoint);
     }
 
 //      static void investigateBodyBoundingBoxWidthOnce() {
@@ -429,8 +420,8 @@ public class Development implements Console.Command {
         final Coord variantPoint = standardGob.location().add(variant, 0);
         Coord firstStep = variantPoint.north();
 
-        Self.move(firstStep);
-        Self.move(variantPoint);
+        move(firstStep);
+        move(variantPoint);
 
         System.out.println("succeeded coord: " + variantPoint
                 + ", distance: " + Self.distance(standardGob));
@@ -445,30 +436,46 @@ public class Development implements Console.Command {
         System.out.println("두 번째 로그를 선택해주세요");
         Gob secondLog = ClickManager.getGob();
 
-        Self.lift(firstLog);
-        Self.move(centerPosition.add(- BW_LOG / 2 - BW_BODY / 2, (BH_LOG + BH_BODY) / 2));
-        Self.put(centerPosition.add(- BW_LOG / 2 - BW_BODY / 2, 0));
+        lift(firstLog);
+        move(centerPosition.add(- BW_LOG / 2 - BW_BODY / 2, (BH_LOG + BH_BODY) / 2));
+        put(centerPosition.add(- BW_LOG / 2 - BW_BODY / 2, 0));
 
-        Self.lift(secondLog);
-        Self.move(centerPosition.add(BW_LOG / 2 + BW_BODY / 2, (BH_LOG + BH_BODY) / 2));
-        Self.put(centerPosition.add(BW_LOG / 2 + BW_BODY / 2, 0));
+        lift(secondLog);
+        move(centerPosition.add(BW_LOG / 2 + BW_BODY / 2, (BH_LOG + BH_BODY) / 2));
+        put(centerPosition.add(BW_LOG / 2 + BW_BODY / 2, 0));
 
-    }
-
-    static void getArea() {
-        final Rect area = ClickManager.getArea();
-        Util.debugPrint("origin: " + area.origin);
-        Util.debugPrint("size: " + area.size);
     }
 
     static void describeGobInArea() {
         System.out.println("click tow points to get area to get gob");
-        Array<Gob> gobArray = ClickManager.getGobArrayInArea();
+        Array<Gob> gobArray = getGobArrayInArea();
         for (Gob gob : gobArray)
             System.out.println("resource name: " + gob.resourceName());
     }
 
     static void printAutomationStackTrace() {
         AutomationManager.printStackTrace();
+    }
+
+    static void printCursorResourceName() {
+        final String name = WidgetManager.cursor().get().name;
+        Util.debugPrint("cursor resource name: " + name);
+    }
+
+    static void prepareDryingFrame() {
+        prepareBuild(P_DFRAME, Self.location().north().north(), 0, WT_DRYING_FRAME);
+    }
+
+    static void test000() {
+        alert("범위를 선택해주세요");
+        final Rect area = getArea();
+        Array<Gob> gobArray = gobArrayIn(area);
+        Util.debugPrint("gobArray.count(): " + gobArray.count());
+    }
+
+    static void test001() {
+        alert("범위를 선택해주세요");
+        final Rect area = getArea();
+        Util.debugPrint(area);
     }
 }
