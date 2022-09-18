@@ -671,7 +671,6 @@ public class Widget {
 		cursor = null;
 	    else
 		cursor = Resource.remote().load((String)args[0], (Integer)args[1]);
-        lmi.Delegate.cursorDidChanged();
 	} else if(msg == "tip") {
 	    int a = 0;
 	    Object tt = args[a++];
@@ -1505,8 +1504,8 @@ public class Widget {
     }
 
     // lmi custom
-    public final void sendMessage(String action, Object... args) {
-        this.wdgmsg(action, args);
-        lmi.WaitManager.waitMessage(action);
+    public final void sendMessage(String message, Object... args) {
+        this.wdgmsg(message, args);
+        lmi.WaitManager.waitMessage(message);
     }
 }

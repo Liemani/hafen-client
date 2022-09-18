@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 
 import haven.*;
 
+import static lmi.Api.*;
 import static lmi.Constant.ExceptionType.*;
 
 public class Manual implements Console.Command {
@@ -40,10 +41,10 @@ public class Manual implements Console.Command {
                             _printHelp(ObjectShadow.ui().cons.out);
                             break;
                         case ET_COMMAND_MATCH:
-                            Util.error("[" + (commandString != null ? commandString : "") + "]가 뭔지 모르겠어요");
+                            error("[" + (commandString != null ? commandString : "") + "]가 뭔지 모르겠어요");
                             break;
                         case ET_COMMAND_IMPLEMENT:
-                            Util.error("[" + (commandString != null ? commandString : "") + "]는 실행이 불가능해요");
+                            error("[" + (commandString != null ? commandString : "") + "]는 실행이 불가능해요");
                             break;
                         default:
                             break;
@@ -71,24 +72,24 @@ public class Manual implements Console.Command {
             } catch (NoSuchMethodException e) {
                 throw new LMIException(ET_MAN_IMPLEMENT);
             }
-            Util.message("  [" + commandString + " Manual]");
-            Util.message((String)manMethod.invoke(null));
+            message("  [" + commandString + " Manual]");
+            message((String)manMethod.invoke(null));
 
         }
 
         // Help
         private static void _printError(PrintWriter writer) {
-            Util.message("  [man Manual]");
-            Util.error("사용법: man <자동화 프로그램>");
-            Util.message("설  명: 자동화 프로그램에 대한 man page를 출력합니다");
+            message("  [man Manual]");
+            error("사용법: man <자동화 프로그램>");
+            message("설  명: 자동화 프로그램에 대한 man page를 출력합니다");
             writer.println(" ");
             AutomationManager.printCommandStringList(writer);
         }
 
         private static void _printHelp(PrintWriter writer) {
-            Util.message("  [man Manual]");
-            Util.alert("사용법: man <자동화 프로그램>");
-            Util.message("설  명: 자동화 프로그램에 대한 man page를 출력합니다");
+            message("  [man Manual]");
+            alert("사용법: man <자동화 프로그램>");
+            message("설  명: 자동화 프로그램에 대한 man page를 출력합니다");
             writer.println(" ");
             AutomationManager.printCommandStringList(writer);
         }

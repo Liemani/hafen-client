@@ -8,67 +8,49 @@ import haven.Coord;
 import static lmi.Constant.*;
 import static lmi.Constant.Message.*;
 import static lmi.Constant.Action.*;
-import static lmi.Constant.ActionTarget.*;
+import static lmi.Constant.Plob.*;
 import static lmi.Constant.Input.Mouse.*;
 import static lmi.Constant.Input.Modifier.*;
 import static lmi.Constant.InteractionType.*;
 import static lmi.Constant.MeshId.*;
 
-public class WidgetMessageHandler {
-    // public method
-    public static void actionClick(Gob gob) {
-        Coord gobLocationInCoord = gob.location();
+class WidgetMessageHandler {
+    static void click(Coord coord, int mouseButton, int modifier) {
         WidgetMessageHandler.sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
-                gobLocationInCoord,
-                IM_LEFT,
-                IM_NONE,
-                IT_DEFAULT,
-                gob.id(),
-                gobLocationInCoord,
-                0,
-                MI_NONE);
+                coord,
+                mouseButton,
+                modifier);
     }
 
-    public static void interact(Gob gob, int meshId) {
-        Coord gobLocationInCoord = gob.location();
+    static void cancelAction() {
+        WidgetMessageHandler.click(Self.location(), IM_RIGHT, IM_NONE);
+    }
+
+    static void click(Gob gob, int mouseButton, int modifier, int meshId) {
+        final Coord gobLocation = gob.location();
         WidgetMessageHandler.sendClickMessage(
                 ObjectShadow.mapView(),
                 Util.mapViewCenter(),
-                gobLocationInCoord,
-                IM_RIGHT,
-                IM_NONE,
+                gobLocation,
+                mouseButton,
+                modifier,
                 IT_DEFAULT,
                 gob.id(),
-                gobLocationInCoord,
+                gobLocation,
                 0,
                 meshId);
     }
 
-    public static void put(Coord location) {
-        WidgetMessageHandler.sendClickMessage(
-                ObjectShadow.mapView(),
-                Util.mapViewCenter(),
-                location,
-                IM_RIGHT,
-                IM_NONE);
+    static void click(Gob gob, int mouseButton, int modifier) {
+        WidgetMessageHandler.click(gob, mouseButton, modifier, MI_NONE);
     }
 
-    public static void selectCharacter(haven.Charlist widget, String name) {
+    static void selectCharacter(haven.Charlist widget, String name) {
         WidgetMessageHandler.sendSelectCharacterMessage(widget, name);
     }
 
-    static void sendCancelActionMessage() {
-        WidgetMessageHandler.sendClickMessage(
-                ObjectShadow.mapView(),
-                Util.mapViewCenter(),
-                Self.location(),
-                IM_RIGHT,
-                IM_NONE);
-    }
-
-    // package method
     static void sendClickMessage(
             haven.MapView widget,
             Coord clickedMapViewPoint,
@@ -107,10 +89,6 @@ public class WidgetMessageHandler {
                 meshId);
     }
 
-    static void sendActionMessage(haven.MenuGrid widget, String action) {
-        widget.sendMessage(M_ACT, action, 0);
-    }
-
     static void sendChoosePetalMessage(haven.FlowerMenu widget, int index) {
         widget.sendMessage(M_CL, index, 0);
     }
@@ -123,7 +101,16 @@ public class WidgetMessageHandler {
         widget.sendMessage(M_PLAY, name);
     }
 
-    static void sendMenuGridDryingFrameMessage() {
-        WidgetManager.menuGrid().sendMessage(M_ACT, A_BP, AT_DFRAME, 0);
+    static void sendPlaceMessage(
+            haven.MapView widget,
+            Coord coord,
+            int direction,
+            int mouseButton,
+            int modifiers) {
+        widget.wdgmsg(M_PLACE, coord, direction, mouseButton, modifiers);
+    }
+
+    static void sendBuildPlacingMessage(String name) {
+        WidgetManager.menuGrid().sendMessage(M_ACT, A_BP, name, 0);
     }
 }

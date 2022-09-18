@@ -178,19 +178,6 @@ public class Util {
         _mapViewCenter = mapView.sz.div(2);
     }
 
-    public static void sleep(long microseconds) {
-        try {
-            Thread.sleep(microseconds);
-        } catch (InterruptedException e) {
-            throw new LMIException(ET_INTERRUPTED);
-        }
-    }
-
-    // print message to haven.Console
-    public static void error(String message) { ObjectShadow.gameUI().error(message); }
-    public static void alert(String message) { ObjectShadow.gameUI().alert(message); }
-    public static void message(String message) { ObjectShadow.ui().cons.out.println(message); }
-
     public static void printStackTrace() {
         new Exception().printStackTrace();
     }

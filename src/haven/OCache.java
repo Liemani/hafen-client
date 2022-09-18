@@ -117,7 +117,7 @@ public class OCache implements Iterable<Gob> {
 	    for(Gob g : this)
 		copy.add(g);
 	}
-    lmi.Delegate.gobArrayCopyed(copy);
+    _setGobArray(copy);
 	Consumer<Gob> task = g -> {
 	    synchronized(g) {
 		g.ctick(dt);
@@ -349,7 +349,7 @@ public class OCache implements Iterable<Gob> {
             if (
                     d.type != 1
                     && d.type != 3
-//                      && d.type != 4
+                    && d.type != 4
                     && d.type != 10
                     && d.type != 16
                     && d.type != 18)
@@ -454,4 +454,12 @@ public class OCache implements Iterable<Gob> {
 	    return(ng);
 	}
     }
+
+    // lmi custom
+    // Field
+    private ArrayList<Gob> _gobArray= new ArrayList<Gob>();
+
+    // Accessing Filed
+    public ArrayList<Gob> gobArray() { return _gobArray; }
+    private void _setGobArray(ArrayList<Gob> gobArray) { _gobArray= gobArray; }
 }

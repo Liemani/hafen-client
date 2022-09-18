@@ -32,7 +32,11 @@ import haven.render.*;
 
 // lmi custom import
 import lmi.Array;
-import lmi.GobManager;
+import lmi.WaitManager;
+import lmi.LMIException;
+import static lmi.Constant.Signal.*;
+import static lmi.Constant.ExceptionType.*;
+import static lmi.Constant.TimeOut.*;
 import static lmi.Constant.gfx.borka.*;
 
 public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Skeleton.HasPose {
@@ -644,6 +648,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
     public Coord location() { return Coord.of(this.rc); }
     public double direction() { return this.a; }
     public double velocity() { return this.getv(); }
+    public int id() { return (int)this.id; }
 
     public <C extends haven.GAttrib> C attribute(Class<C> attributeClass) {
         return this.getattr(attributeClass);
@@ -711,24 +716,74 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
     public boolean isLifting() { return this.hasPose(RN_BANZAI); }
     public boolean isLifting(Gob gob) { return gob.isFollowing(this); }
 
-    // wait
     /// - Throws:
     ///     - ET_MOVE
-    public void waitMove() { new GobManager(this).waitMove(); }
+    public void waitMove(Coord destination) {
+        while (!this.isAt(destination)) {
+            try {
+                _waitBeginning();
+            } catch (LMIException e) {
+                if (e.type() == ET_MOVE && this.isAt(destination)) return;
+                else throw e;
+            }
+            _waitEnding();
+        }
+    }
 
     /// - Throws:
     ///     - ET_MOVE
-    public void waitMove(Coord destination) { new GobManager(this).waitMove(destination); }
+    public void waitMove() {
+        _waitBeginning();
+        _waitEnding();
+    }
+
+    /// - Throws:
+    ///     - ET_MOVE
+    private void _waitBeginning() {
+        if (this.isMoving()) return;
+        try {
+            WaitManager.waitSignal(S_MOVE_DID_BEGIN, this, TO_TEMPORARY);
+        } catch (LMIException e) {
+            if (e.type() != ET_TIME_OUT) throw e;
+            if (!this.isMoving()) throw new LMIException(ET_MOVE);
+        }
+    }
+
+    private void _waitEnding() {
+        while (true) {
+            if (!this.isMoving()) return;
+            try {
+                WaitManager.waitSignal(S_MOVE_DID_END, this, TO_GENERAL);
+                break;
+            } catch (LMIException e) {
+                if (e.type() != ET_TIME_OUT) throw e;
+            }
+        }
+    }
 
     /// - Throws:
     ///     - ET_LIFT
-    public void waitLift(Gob gob) { new GobManager(this).waitLift(gob); }
+    public void waitLift(Gob gob) {
+        if (this.isLifting(gob)) return;
+        try {
+            WaitManager.waitSignal(S_DID_LIFT, this, TO_TEMPORARY);
+        } catch (LMIException e) {
+            if (e.type() != ET_TIME_OUT) throw e;
+            if (!this.isLifting(gob)) throw new LMIException(ET_LIFT);
+        }
+    }
 
     /// - Throws:
     ///     - ET_PUT
-    public void waitPut() { new GobManager(this).waitPut();  }
-
-    public int id() { return (int)this.id; }
+    public void waitPut() {
+        if (!this.isLifting()) return;
+        try {
+            WaitManager.waitSignal(S_DID_PUT, this, TO_TEMPORARY);
+        } catch (LMIException e) {
+            if (e.type() != ET_TIME_OUT) throw e;
+            if (this.isLifting()) throw new LMIException(ET_PUT);
+        }
+    }
 
     public String debugDescription() {
         StringBuilder description = new StringBuilder();

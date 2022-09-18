@@ -51,7 +51,7 @@ public class WaitManager {
     }
 
     // Wait Signal
-    public static void waitSignal(Object subject, Signal signal, long timeOut) {
+    public static void waitSignal(Signal signal, Object subject, long timeOut) {
         final SignalWaiter waiter = new SignalWaiter(signal, subject);
         final WaiterList waiterList = _waiterListMap.get(signal);
         synchronized (waiterList) {
@@ -61,15 +61,15 @@ public class WaitManager {
     }
 
     public static void waitSignal(Signal signal, long timeOut) {
-        WaitManager.waitSignal(null, signal, timeOut);
+        WaitManager.waitSignal(signal, null, timeOut);
     }
 
-    public static void waitSignal(Object subject, Signal signal) {
-        WaitManager.waitSignal(subject, signal, TO_NONE);
+    public static void waitSignal(Signal signal, Object subject) {
+        WaitManager.waitSignal(signal, subject, TO_NONE);
     }
 
     public static void waitSignal(Signal signal) {
-        WaitManager.waitSignal(null, signal, TO_NONE);
+        WaitManager.waitSignal(signal, null, TO_NONE);
     }
 
     // Notify Signal

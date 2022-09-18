@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import haven.*;
 
 import lmi.AutomationManager.Automation;
+import static lmi.Api.*;
 import static lmi.Constant.ExceptionType.*;
 
 public class Command implements haven.Console.Command {
@@ -41,13 +42,13 @@ public class Command implements haven.Console.Command {
                             _printHelp(ObjectShadow.ui().cons.out);
                             break;
                         case ET_COMMAND_MATCH:
-                            Util.error("[" + (commandString != null ? commandString : "") + "]가 뭔지 모르겠어요");
+                            error("[" + (commandString != null ? commandString : "") + "]가 뭔지 모르겠어요");
                             break;
                         case ET_COMMAND_INITIALIZER:
-                            Util.error("[" + (commandString != null ? commandString : "") + "]는 기본 생성자가 없어요");
+                            error("[" + (commandString != null ? commandString : "") + "]는 기본 생성자가 없어요");
                             break;
                         case ET_COMMAND_IMPLEMENT:
-                            Util.error("[" + (commandString != null ? commandString : "") + "]는 실행이 불가능해요");
+                            error("[" + (commandString != null ? commandString : "") + "]는 실행이 불가능해요");
                             break;
                         default:
                             Util.debugPrint(e);
@@ -79,17 +80,17 @@ public class Command implements haven.Console.Command {
 
         // Help
         private static void _printError(PrintWriter writer) {
-            Util.message("  [lmi Manual]");
-            Util.error("사용법: lmi <자동화 프로그램>");
-            Util.message("설  명: 자동화 프로그램을 실행합니다");
+            message("  [lmi Manual]");
+            error("사용법: lmi <자동화 프로그램>");
+            message("설  명: 자동화 프로그램을 실행합니다");
             writer.println(" ");
             AutomationManager.printCommandStringList(writer);
         }
 
         private static void _printHelp(PrintWriter writer) {
-            Util.message("  [lmi Manual]");
-            Util.alert("사용법: lmi <자동화 프로그램>");
-            Util.message("설  명: 자동화 프로그램을 실행합니다");
+            message("  [lmi Manual]");
+            alert("사용법: lmi <자동화 프로그램>");
+            message("설  명: 자동화 프로그램을 실행합니다");
             writer.println(" ");
             AutomationManager.printCommandStringList(writer);
         }

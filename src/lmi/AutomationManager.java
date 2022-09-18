@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.TreeMap;
 
+import static lmi.Api.*;
 import static lmi.Constant.TimeOut.*;
 import static lmi.Constant.ExceptionType.*;
 
@@ -66,7 +67,7 @@ public class AutomationManager {
             e.printStackTrace();
         }
         _thread = null;
-        Util.message("[자동화 작업이 종료됐어요]");
+        message("[자동화 작업이 종료됐어요]");
     };
 
     // package method

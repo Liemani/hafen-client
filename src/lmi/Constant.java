@@ -13,9 +13,10 @@ public class Constant {
         S_FLOWER_MENU_DID_ADDED,
         S_PROGRESS_DID_ADDED,
         S_PROGRESS_DID_DESTROYED,
-        S_DID_OBJECT_CLICK,
-        S_DID_AREA_SELECTED,
-        S_DID_PLOB_PLACED,
+        S_WINDOW_DID_ADDED,
+        S_OBJECT_DID_CLICKED,
+        S_AREA_DID_SELECTED,
+        S_PLOB_DID_PLACED,
     }
 
     public static class Message {
@@ -23,11 +24,11 @@ public class Constant {
         public static final String M_AFK = "afk";
         public static final String M_CL = "cl";
         public static final String M_CLICK = "click";
-        public static final String M_CURS = "curs";
         public static final String M_DROP = "drop";
         public static final String M_FOCUS = "focus";
         public static final String M_LOGIN = "login";
-        public static final String M_PLAY = "play";   // args = { haven.widget <haven.Charlist>, String <character name> }
+        public static final String M_PLACE = "place";   // { Coord location, Int direction, int button, int modifier }
+        public static final String M_PLAY = "play";   // { haven.widget <haven.Charlist>, String <character name> }
     }
 
     public static class Action {
@@ -48,8 +49,8 @@ public class Constant {
         public static final String A_TRACKING = "tracking";
     }
 
-    public static class ActionTarget {
-        public static final String AT_DFRAME = "dframe";
+    public static class Plob {
+        public static final String P_DFRAME = "dframe";
     }
 
     public static class InteractionType {
@@ -144,11 +145,6 @@ public class Constant {
                 public static final String RN_HIT_POINT = "hp";
                 public static final String RN_STAMINA = "stam";
                 public static final String RN_ENERGY = "nrj";
-            }
-
-            public static class curs {
-                public static final String RN_ARROW = "arw";
-                public static final String RN_HAND = "hand";
             }
         }
 
@@ -313,7 +309,12 @@ public class Constant {
         ET_FLOWER_MENU_MATCH,
         ET_COMMAND_MATCH,
         ET_PROGRESS_OPEN,
+        ET_WINDOW_OPEN,
         ET_LIFT,
         ET_PUT,
+    }
+
+    public static class WindowTitle {
+        public static final String WT_DRYING_FRAME = "Drying Frame";
     }
 }

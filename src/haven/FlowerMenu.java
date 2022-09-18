@@ -47,7 +47,6 @@ public class FlowerMenu extends Widget {
 	    for(int i = 0; i < args.length; i++)
 		opts[i] = (String)args[i];
         FlowerMenu flowerMenu = new FlowerMenu(opts);
-        lmi.Delegate.flowerMenuDidCreated(flowerMenu);
 	    return(flowerMenu);
 	}
     }

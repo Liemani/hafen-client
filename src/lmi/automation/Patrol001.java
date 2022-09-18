@@ -34,7 +34,7 @@ public class Patrol001 implements Runnable {
 
     public void patrolPath() throws InterruptedException {
         for (haven.Coord location : _path) {
-            Self.move(location);
+            lmi.Api.move(location);
             Thread.sleep(1000);
         }
     }
