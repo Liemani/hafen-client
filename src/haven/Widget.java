@@ -762,6 +762,7 @@ public class Widget {
 		continue;
 	    Coord cc = xlate(wdg.c, true);
 	    if(c.isect(cc, wdg.sz)) {
+            lmi.Util.debugPrint("wdg.getClass().getName(): " + wdg.getClass().getName());
 		if(wdg.mousedown(c.add(cc.inv()), button)) {
 		    return(true);
 		}
@@ -1507,5 +1508,15 @@ public class Widget {
     public final void sendMessage(String message, Object... args) {
         this.wdgmsg(message, args);
         lmi.WaitManager.waitMessage(message);
+    }
+
+    public <T extends Widget> T getChildOf(Class<T> c) {
+        Widget child = this.child;
+        while (child != null) {
+            if (child.getClass() == c)
+                return c.cast(child);
+            child = child.next;
+        }
+        return null;
     }
 }

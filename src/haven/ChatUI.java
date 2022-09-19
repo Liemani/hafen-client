@@ -1096,6 +1096,11 @@ public class ChatUI extends Widget {
 	    }
 	    return(true);
 	}
+
+    // lmi custom
+    public void selectSystem() {
+        ChatUI.this.select(this.chls.get(0).chan);
+    }
     }
     
     public void select(Channel chan, boolean focus) {
@@ -1360,5 +1365,11 @@ public class ChatUI extends Widget {
 	    }
 	}
 	return(super.globtype(key, ev));
+    }
+
+    // lmi custom
+    public void selectSystem() {
+        ChatUI.Selector selector = this.getChildOf(ChatUI.Selector.class);
+        this.select(selector.chls.get(0).chan);
     }
 }
