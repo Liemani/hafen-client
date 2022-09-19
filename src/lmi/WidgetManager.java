@@ -1,22 +1,27 @@
 package lmi;
 
-public class WidgetManager {
-    public static haven.GItem cursorGItem() {
-        haven.Widget child = ObjectShadow.gameUI().child;
+import haven.*;
+
+class WidgetManager {
+    static GItem cursorGItem() {
+        Widget child = ObjectShadow.gameUI().child;
         while (child != null) {
-            if (child instanceof haven.GItem)
-                return (haven.GItem)child;
+            if (child instanceof GItem)
+                return (GItem)child;
             child = child.next;
         }
 
         return null;
     }
 
-    public static haven.MenuGrid menuGrid() {
+    static MenuGrid menuGrid() {
         return ObjectShadow.gameUI().menu;
     }
 
-    public static haven.Indir<haven.Resource> cursor() {
+    static Indir<Resource> cursor() {
         return ObjectShadow.rootWidget().cursor;
     }
+
+    static GameUI gameUI() { return (GameUI)ObjectShadow.rootWidget().child; }
+    static ChatUI chatUI() { return WidgetManager.gameUI().getChildOf(ChatUI.class); }
 }

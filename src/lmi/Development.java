@@ -61,7 +61,7 @@ public class Development implements Console.Command {
 
         // Runnable Requirment
         public void run() {
-            ObjectShadow.ui().cons.out.println("==============================");
+            message("==============================");
             String commandString = null;
             try {
                 _checkArgument();
@@ -91,6 +91,8 @@ public class Development implements Console.Command {
                     Util.debugPrint(e);
                     e.printStackTrace();
                 }
+            } finally {
+                message("[terminating dev]");
             }
         }
 
@@ -210,9 +212,6 @@ public class Development implements Console.Command {
 //      static void objectListAsWidget() {
 //          ObjectFinder.listLastAsWidget();
 //      }
-
-    // Debug
-    static void toggleDebugIsPrint() { Debug.toggleIsPrint(); }
 
     // test command
     static void describeSelf() {
@@ -457,25 +456,20 @@ public class Development implements Console.Command {
         AutomationManager.printStackTrace();
     }
 
-    static void printCursorResourceName() {
-        final String name = WidgetManager.cursor().get().name;
-        Util.debugPrint("cursor resource name: " + name);
-    }
-
     static void prepareDryingFrame() {
         prepareBuild(P_DFRAME, Self.location().north().north(), 0, WT_DRYING_FRAME);
     }
 
-    static void test000() {
-        alert("범위를 선택해주세요");
-        final Rect area = getArea();
-        Array<Gob> gobArray = gobArrayIn(area);
-        Util.debugPrint("gobArray.count(): " + gobArray.count());
-    }
+    static void prepare() {
+        // set chat channel
+        WidgetManager.chatUI().selectSystem();
 
-    static void test001() {
-        alert("범위를 선택해주세요");
-        final Rect area = getArea();
-        Util.debugPrint(area);
+        // set debug print on
+        Debug.toggleIsPrint();
+
+        // set grid on
+        ObjectShadow.mapView().showgrid(true);
+
+        // set item quality on
     }
 }
