@@ -2,10 +2,10 @@ package lmi;
 
 import java.util.function.Predicate;
 
-import haven.Gob;
-import haven.Coord;
+import haven.*;
 
 import lmi.*;
+import static lmi.Constant.*;
 import static lmi.Constant.Input.Mouse.*;
 import static lmi.Constant.Input.Modifier.*;
 import static lmi.Constant.ExceptionType.*;
@@ -16,6 +16,10 @@ import static lmi.Constant.WindowTitle.*;
 import static lmi.Constant.Message.*;
 
 public class Api {
+    public static void interact(Gob gob) {
+        WidgetMessageHandler.click(gob, IM_RIGHT, IM_NONE);
+    }
+
     /// - Throws:
     ///     - ET_MOVE
     public static void move(Coord coord) {
@@ -23,23 +27,24 @@ public class Api {
         Self.gob().waitMove(coord);
     }
 
+    /// - Throws:
+    ///     - ET_MOVE
     public static void forceMove(Coord coord) {
-        while (true) {
+        for (int retry = 0; retry < RETRY_MAX; ++retry) {
             try {
                 Api.move(coord);
-                break;
-            } catch (LMIException e) {
-                if (e.type() != ET_MOVE) throw e;
-            }
+                return;
+            } catch (LMIException e) { if (e.type() != ET_MOVE) throw e; }
             Api.sleep(TO_RETRY);
         }
+        throw new LMIException(ET_MOVE);
     }
 
     public static void moveNorth() { Api.move(Self.location().north()); }
     public static void moveEast() { Api.move(Self.location().east()); }
     public static void moveWest() { Api.move(Self.location().west()); }
     public static void moveSouth() { Api.move(Self.location().south()); }
-    public static void moveCenter() { Api.move(Self.location().tileCenter()); }
+    public static void moveCenter() { Api.move(Self.location().center()); }
 
     /// - Throws:
     ///     - ET_LIFT
@@ -52,16 +57,30 @@ public class Api {
         Self.gob().waitLift(gob);
     }
 
+    /// - Throws:
+    ///     - ET_LIFT
     public static void forceLift(Gob gob) {
-        while (true) {
+        for (int retry = 0; retry < RETRY_MAX; ++retry) {
             try {
                 Api.lift(gob);
-                break;
-            } catch (LMIException e) {
-                if (e.type() != ET_LIFT) throw e;
-            }
+                return;
+            } catch (LMIException e) { if (e.type() != ET_LIFT) throw e; }
             Api.sleep(TO_RETRY);
         }
+        throw new LMIException(ET_LIFT);
+    }
+
+    /// - Throws:
+    ///     - ET_PUT
+    public static void forcePut(Coord coord) {
+        for (int retry = 0; retry < RETRY_MAX; ++retry) {
+            try {
+                Api.put(coord);
+                return;
+            } catch (LMIException e) { if (e.type() != ET_PUT) throw e; }
+            Api.sleep(TO_RETRY);
+        }
+        throw new LMIException(ET_PUT);
     }
 
     /// - Throws:
@@ -73,6 +92,34 @@ public class Api {
         } catch (LMIException e) { if (e.type() != ET_MOVE) throw e; }
         Self.gob().waitPut();
     }
+
+    // Get Gob
+    public static Gob closestGobIn(Array<Gob> gobArray) {
+        Gob closestGob = null;
+        double distanceToClosestGob = Double.MAX_VALUE;
+
+        for (Gob gob : gobArray) {
+            final double distance = Self.distance(gob);
+            if (distance < distanceToClosestGob) {
+                closestGob = gob;
+                distanceToClosestGob = distance;
+            }
+        }
+
+        return closestGob;
+    }
+
+    public static Gob closestGob() {
+        final Array<Gob> gobArray = Api.gobArrayWhere(gob -> gob != Self.gob());
+        return Api.closestGobIn(gobArray);
+    }
+
+    public static Gob closestGobOf(String name) {
+        final Array<Gob> gobArray = Api.gobArrayWhere(gob -> gob.resourceName().endsWith(name));
+        return Api.closestGobIn(gobArray);
+    }
+
+    public static Gob getGob() { return ClickManager.getGob(); }
 
     // Get Gob Array
     public static Array<Gob> gobArray() {
@@ -89,7 +136,7 @@ public class Api {
         Array<Gob> gobArray = new Array<Gob>();
 
         for (Gob gob : ObjectShadow.objectCache().gobArray()) {
-            if (gob.getClass() != Gob.class) continue;
+            if (gob.resource() == null) continue;
             else if (predicate.test(gob)) gobArray.append(gob);
         }
         return gobArray;
@@ -98,30 +145,15 @@ public class Api {
     public static Rect getArea() { return ClickManager.getArea(); }
 
     public static Array<Gob> gobArrayIn(Rect area) {
-        return gobArrayWhere(gob -> area.contains(gob.location()));
+        return Api.gobArrayWhere(gob -> area.contains(gob.location()));
     }
 
-    public static Gob closestGobIn(Array<Gob> gobArray) {
-        Gob closestGob = null;
-        double distanceToClosestGob = Double.MAX_VALUE;
-
-        for (Gob gob : gobArray) {
-            final double distance = Self.distance(gob);
-            if (distance < distanceToClosestGob) {
-                closestGob = gob;
-                distanceToClosestGob = distance;
-            }
-        }
-
-        return closestGob;
-    }
-
-    static Array<Gob> getGobArrayInArea() {
+    public static Array<Gob> getGobArrayInArea() {
         final Rect area = ClickManager.getArea();
-        return gobArrayIn(area);
+        return Api.gobArrayIn(area);
     }
 
-    // Print Message to haven.Console
+    // Print Message to Console
     public static void error(String message) { ObjectShadow.gameUI().error(message); }
     public static void alert(String message) { ObjectShadow.gameUI().alert(message); }
     public static void message(String message) { ObjectShadow.ui().cons.out.println(message); }
@@ -146,6 +178,31 @@ public class Api {
         ObjectShadow.gameUI().waitWindowAdded(title);
     }
 
+    // ISBox
+    public static void transferItem() { WidgetManager.isbox().wdgmsg(M_XFER); }
+    public static void pressButton() { WidgetManager.button().sendMessage(M_ACTIVATE); }
+
+    // Inventory
+    public static Inventory inventory() { return WidgetManager.inventory(); }
+
+    public static void transferItem(Array<GItem> itemArray) {
+        for (GItem item : itemArray)
+            item.wdgmsg(M_TRANSFER, Coord.zero(), IM_LEFT);
+    }
+
+//      public static Array<GItem> getItemArray(String name, int count) {
+//          // TODO fix this with considering real implementation of BuildDryingFrame
+//          Widget child = WidgetManager.inventory().child;
+//          while (count != 0 && child != null) {
+//              if (child instanceof GItem) {
+//                  child.wdgmsg("transfer", Coord.zero(), IM_LEFT);
+//                  --count;
+//              }
+//              child = child.next;
+//          }
+//          return new Array<GItem>();
+//      }
+
     // Private Method
     private static void _sendMoveMessage(Coord coord) {
         WidgetMessageHandler.click(coord, IM_LEFT, IM_NONE);
@@ -156,7 +213,7 @@ public class Api {
         WidgetMessageHandler.click(gob, IM_LEFT, IM_NONE);
     }
 
-    public static void _sendPutMessage(Coord location) {
+    private static void _sendPutMessage(Coord location) {
         WidgetMessageHandler.click(location, IM_RIGHT, IM_NONE);
     }
 }

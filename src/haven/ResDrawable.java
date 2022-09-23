@@ -92,4 +92,7 @@ public class ResDrawable extends Drawable {
 	    }
 	}
     }
+
+    // lmi custom
+    public byte[] sdt() { return this.sdt.rbuf; }
 }
