@@ -25,8 +25,10 @@ public class Rect {
     }
 
     // Constructor
+    public Rect() { origin = Coord.zero(); size = Coord.zero(); }
     public Rect(Coord coord1, Coord coord2) { this.init(coord1, coord2); }
     public Rect(Coord[] coordArray) { this.init(coordArray[0], coordArray[1]); }
+    public Rect(Rect rect) { origin = Coord.of(rect.origin); size = Coord.of(rect.size); }
 
     // Calculated Geometric Properties
     public int width() { return this.size.x; }

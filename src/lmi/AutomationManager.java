@@ -67,7 +67,7 @@ public class AutomationManager {
             e.printStackTrace();
         }
         _thread = null;
-        message("[자동화 작업이 종료됐어요]");
+        message("[자동화 프로그램이 종료됐어요]");
     };
 
     // package method

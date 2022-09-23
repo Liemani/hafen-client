@@ -169,8 +169,6 @@ public class Util {
         System.out.println("[" + Util.targetStack() + "()]");
     }
 
-    // TODO 화면 사이즈가 바뀌면 이 값도 바꿔주도록 하자
-    // 아마 frame에 sizeChanged() 같은 event가 있을 것 같다
     private static Coord _mapViewCenter;
     public static Coord mapViewCenter() { return _mapViewCenter; }
 

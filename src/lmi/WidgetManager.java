@@ -24,4 +24,8 @@ class WidgetManager {
 
     static GameUI gameUI() { return (GameUI)ObjectShadow.rootWidget().child; }
     static ChatUI chatUI() { return WidgetManager.gameUI().getChildOf(ChatUI.class); }
+    static Window window() { return WidgetManager.gameUI().getChildOf(Window.class); }
+    static Button button() { return WidgetManager.window().getChildOf(Button.class); }
+    static ISBox isbox() { return WidgetManager.window().getChildOf(ISBox.class); }
+    static Inventory inventory() { return WidgetManager.window().getChildOf(Inventory.class); }
 }

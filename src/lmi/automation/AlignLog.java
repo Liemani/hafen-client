@@ -7,23 +7,32 @@ import lmi.*;
 import lmi.AutomationManager.Automation;
 import static lmi.Api.*;
 import static lmi.Constant.ExceptionType.*;
-import static lmi.Constant.gfx.terobjs.trees.*;
 import static lmi.Constant.BoundingBox.*;
 import static lmi.Constant.TimeOut.*;
 
 public class AlignLog extends Automation {
-    private Rect _input;
-    private Rect _output;
+    final int SELF_WIDTH = BW_HORSE;
+    final int SELF_HEIGHT = BH_HORSE;
+    final Coord BB_SELF = BB_HORSE;
+    final double SELF_DIAGONAL = BB_SELF.diagonal();
 
-    private Coord _origin;
+    final int PADDING = 2;
+    final int ROUTE_WIDTH = SELF_WIDTH + PADDING;
+    final int HEIGHT_SET = BH_LOG + ROUTE_WIDTH + BH_LOG;
 
-    private Coord _matrixSize;
-    private Coord _previousMatrix;
-    private Coord _currentMatrix;
-    private Coord _targetPutCoord;
-    private Coord _targetMoveCoord;
+    private Rect _inputArea;
+    private Rect _workingArea;
+    private Rect _outputArea;
 
-    private Coord _moveCoord;
+
+    private Coord _orderCoordMax;
+    private Coord _orderCoord;
+
+    private Coord _root;
+    private Coord _trunk;
+    private Coord _branch;
+    private Coord _firstLeaf;
+    private Coord _leaf;
 
     private Array<Gob> _logArrayToCarry;
 
@@ -41,194 +50,149 @@ public class AlignLog extends Automation {
 
     // private methods
     private void _willRun() {
-        alert("정리할 통나무가 있는 곳을 선택해주세요");
-        _input = getArea();
+        alert("정리할 통나무가 있는 공간을 선택해주세요");
+        _inputArea = getArea();
 
-        alert("통나무를 정리해 놓을 곳을 선택해주세요");
-        _output = getArea();
+        alert("통나무를 정리해 놓을 공간을 선택해주세요");
+        _workingArea = getArea();
 
-        _checkAreaException();
-        _init();
+        _outputArea = _calculateOutputArea(_workingArea);
+
+        _checkTooSmallAreaException();
+
+        _root = Coord.of(_workingArea.origin)
+            .assignAdd(_workingArea.size)
+            .assignSubtract(SELF_DIAGONAL / 2);
+        _firstLeaf = Coord.of(_outputArea.origin).assignAdd(BB_LOG.divide(2));
+
+        _orderCoordMax = _calculateOrderCoordMax(_outputArea);
+        _orderCoord = Coord.zero();
+
+        _trunk = Coord.of(_root);
+        _branch = Coord.zero();
+        _leaf = Coord.zero();
+    }
+
+    private Rect _calculateOutputArea(Rect workingArea) {
+        final double outputAreaToWorkingOrigin = SELF_DIAGONAL / Math.sqrt(2.0) / 2;
+
+        final Rect outputArea = new Rect(workingArea);
+        outputArea.origin.x += (SELF_HEIGHT - BW_LOG) / 2;
+        outputArea.size
+            .assignSubtract((SELF_HEIGHT - BW_LOG) / 2, 0)
+            .assignSubtract(outputAreaToWorkingOrigin + SELF_DIAGONAL / 2);
+
+        return outputArea;
     }
 
     /// - Throws:
-    ///     - ET_NO_SPACE_LEFT
-    private void _checkAreaException() {
-        _tooSmallAreaException();
+    ///     - ET_TOO_SMALL_SPACE
+    private void _checkTooSmallAreaException() {
+        if (_outputArea.width() < BW_LOG || _outputArea.height() < BH_LOG)
+            throw new LMIException(ET_TOO_SMALL_SPACE);
     }
 
-    private void _tooSmallAreaException() {
-        if (_output.width() < BW_OLDTRUNK || _output.height() < BH_OLDTRUNK)
-            throw new LMIException(ET_NO_SPACE_LEFT);
+    private Coord _calculateOrderCoordMax(Rect outputArea) {
+        final int x = outputArea.width() / BW_LOG;
+        final int y = (outputArea.height() / HEIGHT_SET) * 2
+            + ((outputArea.height() % HEIGHT_SET >= BH_LOG) ? 1 : 0);
+        return Coord.of(x, y);
     }
-
-    // Initialize
-    private void _init() {
-        _initOrigin();
-        _initMatrixSize();
-        _initPreviousMatrix();
-        _initMatrix();
-        _initTargetPutCoord();
-        _initTargetMoveCoord();
-        _initMoveCoord();
-    }
-
-    private void _initOrigin() {
-        _origin = Coord.of(_output.maxX(), _output.maxY())
-            .assignAdd(BB_BODY.divide(2));
-    }
-
-    private void _initMatrixSize() {
-        final int rowSet = BH_OLDTRUNK + BH_BODY + BH_OLDTRUNK;
-        final int x = _output.width() / BW_OLDTRUNK;
-        final int y = (_output.height() / rowSet) * 2
-            + ((_output.height() % rowSet >= BH_OLDTRUNK) ? 1 : 0);
-        _matrixSize = Coord.of(x, y);
-    }
-
-    private void _initPreviousMatrix() { _previousMatrix = new Coord(); }
-    private void _initMatrix() { _currentMatrix = Coord.zero(); }
-
-    private void _initTargetPutCoord() {
-        _targetPutCoord = new Coord();
-        _calculateTargetPutCoord();
-    }
-
-    private void _initTargetMoveCoord() {
-        _targetMoveCoord = new Coord();
-        _calculateTargetMoveCoord();
-    }
-
-    private void _initMoveCoord() { _moveCoord = Coord.of(_origin); }
 
     // Main
     private void _main() {
-        if (_coordIsPossessed(_targetPutCoord))
-            _calculateNextCoord();
-
         while (true) {
             try {
                 _loop();
             } catch (LMIException e) {
-                if (e.type() != ET_NO_WORK_TO_DO) throw e;
-                alert("추가 통나무를 기다려요");
-                sleep(TO_WAIT);
+                if (e.type() == ET_NO_INPUT) {
+                    alert("추가 통나무를 기다려요");
+                    sleep(TO_WAIT);
+                } else if (e.type() == ET_FULL_OUTPUT) {
+                    alert("통나무를 둘 공간이 생기길 기다려요");
+                    sleep(TO_WAIT);
+                } else
+                    throw e;
             }
         }
     }
 
     private void _loop() {
-        forceMove(_origin);
-        forceLift(_findLogToCarry());
-        forceMove(_origin);
-        while (true) {
-            forceMove(_moveCoord.init(_moveCoord.x, _targetMoveCoord.y));
-            while (true) {
-                forceMove(_moveCoord.init(_targetMoveCoord.x, _moveCoord.y));
-                try {
-                    put(_targetPutCoord);
-                    _calculateNextCoord();
-                    break;
-                } catch (LMIException e) {
-                    if (e.type() != ET_PUT) throw e;
-                    _calculateNextCoord();
-                    if (_currentMatrix.y != _previousMatrix.y) {
-                        forceMove(_moveCoord.init(_origin.x, _moveCoord.y));
-                        break;
-                    }
-                }
-            }
-            if (!Self.gob().isLifting()) break;
-        }
-        forceMove(_moveCoord.init(_origin.x, _moveCoord.y));
-        forceMove(_origin);
+        _calculateNextLeaf();
+        final Gob targetLog = _logToCarry();
+        forceMove(_root);
+        forceLift(targetLog);
+        forceMove(_root);
+        forceMove(_trunk);
+        forceMove(_branch);
+        forcePut(_leaf);
+        forceMove(_trunk);
     }
 
     /// - Throws
-    ///     - ET_NO_WORK_TO_DO
-    private Gob _findLogToCarry() {
-        _logArrayToCarry = gobArrayIn(_input)
-            .compactMap(gob -> {
-                    final String resourceName = gob.resourceName();
-                    if (resourceName == null) {
-                        Util.debugPrint("gob: " + gob);
-                        Util.debugPrint("gob is virtual: " + gob.virtual);
-                        Util.debugPrint("class name of gob: " + gob.getClass().getName());
-                        for (haven.GAttrib attribute : gob.attributeMap().values())
-                            Util.debugPrint("name of attribute" + attribute.getClass().getName());
-                    }
-                    return resourceName.endsWith(RN_LOG) ? gob : null;
-                    });
+    ///     - ET_NO_INPUT
+    private Gob _logToCarry() {
+        _logArrayToCarry = gobArrayIn(_inputArea)
+            .compactMap(gob -> gob.isLog() ? gob : null);
 
         if (_logArrayToCarry.isEmpty())
-            throw new LMIException(ET_NO_WORK_TO_DO);
+            throw new LMIException(ET_NO_INPUT);
 
         return closestGobIn(_logArrayToCarry);
     }
 
     /// - Throws
-    ///     - ET_NO_SPACE_LEFT
-    private void _calculateNextCoord() {
+    ///     - ET_FULL_OUTPUT
+    private void _calculateNextLeaf() {
+        final Array<Gob> gobArray = gobArrayIn(_outputArea);
         while (true) {
-            _calculateNextMatrix();
-            _calculateTargetPutCoord();
-            _calculateTargetMoveCoord();
-            if (!_coordIsPossessed(_targetPutCoord)) break;
+            if (_orderCoord.y == _orderCoordMax.y) {
+                if (gobArray.count() == _orderCoordMax.x * _orderCoordMax.y)
+                    throw new LMIException(ET_FULL_OUTPUT);
+                else
+                    _orderCoord.init(0, 0);
+            }
+            _calculateLeaf();
+            _calculateNextOrderCoord();
+            if (!gobArray.containsWhere(gob -> gob.isAt(_leaf))) return;
         }
     }
 
-    /// - Throws
-    ///     - ET_NO_SPACE_LEFT
-    private void _calculateNextMatrix() {
-        _previousMatrix.init(_currentMatrix);
-
-        ++_currentMatrix.x;
-        if (_currentMatrix.x == _matrixSize.x) {
-            _currentMatrix.x = 0;
-            ++_currentMatrix.y;
+    private void _calculateNextOrderCoord() {
+        ++_orderCoord.x;
+        if (_orderCoord.x == _orderCoordMax.x) {
+            _orderCoord.x = 0;
+            ++_orderCoord.y;
         }
-
-        if (_currentMatrix.y == _matrixSize.y)
-            throw new LMIException(ET_NO_SPACE_LEFT);
     }
 
-    private void _calculateTargetPutCoord() {
-        _targetPutCoord.init(_output.origin)
-            .assignAdd(_currentMatrix.multiply(BB_OLDTRUNK))
-            .assignAdd(BB_OLDTRUNK.divide(2))
-            .assignAdd(0, ((_currentMatrix.y + 1) / 2) * BH_BODY);
-    }
-
-    private void _calculateTargetMoveCoord() {
-        _targetMoveCoord.init(_targetPutCoord);
-        _targetMoveCoord.y += ((BH_OLDTRUNK + BH_BODY) / 2)
-            * ((_currentMatrix.y % 2 == 0) ? 1 : -1);
-    }
-
-    private boolean _coordIsPossessed(Coord coord) {
-        java.util.ArrayList<Gob> gobArray = gobArray();
-        for (Gob gob : gobArray) {
-            if (gob.isAt(coord))
-                return true;
-        }
-        return false;
+    private void _calculateLeaf() {
+        _leaf.assign(_firstLeaf)
+            .assignAdd(_orderCoord.multiply(BB_LOG))
+            .assignAdd(0, ROUTE_WIDTH * ((_orderCoord.y + 1) / 2));
+        _branch.init(_leaf);
+        _branch.y += ((BH_LOG + ROUTE_WIDTH) / 2)
+            * ((_orderCoord.y % 2 == 0) ? 1 : -1);
+        _trunk.y = _branch.y;
     }
 
     private void _didRun(LMIException e) {
-        if (e == null) {
-            alert("모든 통나무를 다 정리했어요");
-            return;
-        }
-
         switch (e.type()) {
             case ET_INTERRUPTED:
-                alert("작업을 중단했어요");
+                alert("작업을 중단해요");
                 break;
-            case ET_NO_SPACE_LEFT:
-                alert("통나무를 둘 남은 공간이 없어요");
+            case ET_TOO_SMALL_SPACE:
+                alert("선택한 작업 공간이 너무 좁아요");
+                message("통나무를 정리할 공간을 더 넓게 선택해 주세요");
                 break;
-            case ET_NO_WORK_TO_DO:
-                alert("모든 통나무를 다 정리했어요");
+            case ET_MOVE:
+                alert("에상치 못한 장애물에 가로막혔어요");
+                break;
+            case ET_LIFT:
+                alert("통나무를 들 수 없었어요");
+                break;
+            case ET_PUT:
+                alert("통나무를 내려놓을 수 없었어요");
                 break;
             default:
                 throw e;
@@ -237,14 +201,13 @@ public class AlignLog extends Automation {
 
     public static String man() {
         return
+            "AlignLog v0.2.0\n" +
             "설  명: 널브러진 통나무들을 지정한 공간에 차곡차곡 정리합니다\n" +
             "\n" +
-            "주의 사항: 캐릭터가 이동 시 외부 요인에 의해 멈추면 하려던 작업이 제대로 수행 될 때까지 재시도 합니다\n" +
-            "\n" +
-            "1. 통나무가 있는 공간 선택\n" +
-            "2. 통나무를 쌓아 둘 공간 선택\n" +
-            "3. 통나무를 정리합니다\n" +
-            "4. 모든 통나무를 정리한 후에는 1분 간격으로 추가 통나무가 존재하는지 확인합니다\n" +
+            "처음 통나무를 정리해 놓을 공간을 선택하면, 깔끔한 상태일 것으로 가정합니다\n" +
+            "이전에 통나무를 정리해 놓을 공간으로 선택한 곳을 다시 선택하면\n" +
+            "기존에 배치한 통나무를 인식하여, 새로운 통나무는 빈 곳에 정렬합니다\n" +
+            "말을 탄 상태에서도 원활히 작동합니다\n" +
             "";
     }
 }

@@ -115,4 +115,7 @@ public class ISBox extends Widget implements DTarget {
             super.uimsg(msg, args);
         }
     }
+
+    // lmi custom
+    public String text() { return label.text; }
 }

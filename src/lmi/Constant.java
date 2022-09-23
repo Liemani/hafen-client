@@ -21,6 +21,7 @@ public class Constant {
 
     public static class Message {
         public static final String M_ACT = "act";   // { Action, ... }
+        public static final String M_ACTIVATE = "activate";
         public static final String M_AFK = "afk";
         public static final String M_CL = "cl";
         public static final String M_CLICK = "click";
@@ -29,6 +30,8 @@ public class Constant {
         public static final String M_LOGIN = "login";
         public static final String M_PLACE = "place";   // { Coord location, Int direction, int button, int modifier }
         public static final String M_PLAY = "play";   // { haven.widget <haven.Charlist>, String <character name> }
+        public static final String M_TRANSFER = "transfer";
+        public static final String M_XFER = "xfer";
     }
 
     public static class Action {
@@ -51,6 +54,10 @@ public class Constant {
 
     public static class Plob {
         public static final String P_DFRAME = "dframe";
+    }
+
+    public static class WindowTitle {
+        public static final String WT_DRYING_FRAME = "Drying Frame";
     }
 
     public static class InteractionType {
@@ -89,18 +96,18 @@ public class Constant {
     // flower menu petal name
     public static class Interaction {
         public static final String CHIP_STONE = "Chip stone";
-        public static final String PICK = "Pick";
         public static final String CHOP_INTO_BLOCKS = "Chop into blocks";
         public static final String MAKE_BOARDS = "Make boards";
+        public static final String PICK = "Pick";
         public static final String PICK_ALMOND = "Pick almond";
         public static final String PICK_BERRIES = "Pick berries";
         public static final String PICK_CATKIN = "Pick catkin";
         public static final String PICK_CHESTNUT = "Pick chestnut";
         public static final String PICK_CONE = "Pick cone";
         public static final String PICK_DRUPES = "Pick drupes";
-        public static final String PICK_LEAF = "Pick leaf";
         public static final String PICK_FRUIT = "Pick fruit";
         public static final String PICK_FRUITS = "Pick fruits";
+        public static final String PICK_LEAF = "Pick leaf";
         public static final String PICK_SAMARA = "Pick samara";
         public static final String PICK_SEEDS = "Pick seeds";
         public static final String TAKE_BARK = "Take bark";
@@ -113,13 +120,15 @@ public class Constant {
     public static final double COORD2D_PER_COORD = TILE_IN_COORD2D / TILE_IN_COORD;
     public static final double COORD_PER_COORD2D = TILE_IN_COORD / TILE_IN_COORD2D;
 
+    public static final int RETRY_MAX = 5;
+
     public static class TimeOut {
         public static final long TO_MAX = Long.MAX_VALUE;
         public static final long TO_NONE = 0;
         public static final long TO_TEMPORARY = 500;
         public static final long TO_GENERAL = 1000;
         public static final long TO_RETRY = 5000;
-        public static final long TO_WAIT = 60000;
+        public static final long TO_WAIT = 300000;
     }
 
     public static class MeshId {
@@ -137,6 +146,12 @@ public class Constant {
         public static final int BW_BODY = 512;
         public static final int BH_BODY = 512;
         public static final Coord BB_BODY = Coord.of(BW_BODY, BH_BODY);
+        public static final int BW_HORSE = 726;
+        public static final int BH_HORSE = 1470;
+        public static final Coord BB_HORSE = Coord.of(BW_HORSE, BH_HORSE);
+        public static final int BW_CRATE = 1284;
+        public static final int BH_CRATE = 726;
+        public static final Coord BB_CRATE = Coord.of(BW_CRATE, BH_CRATE);
     }
 
     public static class gfx {
@@ -263,9 +278,6 @@ public class Constant {
                 public static final String RN_SALLOW = "sallow";
                 public static final String RN_TEREBINTH = "terebinth";
                 public static final String RN_WILLOW = "willow";
-            }
-
-            public static class treesException {
                 public static final String RN_OLDSTUMP = "oldstump";
                 public static final String RN_OLDTRUNK = "oldtrunk";
             }
@@ -294,8 +306,9 @@ public class Constant {
         // why
         ET_INTERRUPTED,
         ET_TIME_OUT,
-        ET_NO_SPACE_LEFT,
-        ET_NO_WORK_TO_DO,
+        ET_TOO_SMALL_SPACE,
+        ET_NO_INPUT,
+        ET_FULL_OUTPUT,
         ET_COMMAND_ERROR,
         ET_COMMAND_HELP,
         ET_COMMAND_INITIALIZER,
@@ -312,9 +325,5 @@ public class Constant {
         ET_WINDOW_OPEN,
         ET_LIFT,
         ET_PUT,
-    }
-
-    public static class WindowTitle {
-        public static final String WT_DRYING_FRAME = "Drying Frame";
     }
 }

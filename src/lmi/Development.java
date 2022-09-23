@@ -29,6 +29,7 @@ public class Development implements Console.Command {
 
     // Field
     private static CommandMap _commandMap;
+    private static String[] _args;
 
     // all methods with default access modifier will count on as executable command
     public static void init() {
@@ -50,8 +51,11 @@ public class Development implements Console.Command {
         return _commandMap.keySet();
     }
 
+    private static void setArgument(String[] args) { _args = args; }
+
     // Run
-	public void run(Console cons, String[] args) throws Exception {
+    public void run(Console cons, String[] args) throws Exception {
+        Development.setArgument(args);
         new Thread(new MainRunnable(args)).start();
     }
 
@@ -97,7 +101,7 @@ public class Development implements Console.Command {
         }
 
         private void _checkArgument() {
-            if (_args.length != 2) throw new LMIException(ET_COMMAND_ERROR);
+            if (_args.length == 1) throw new LMIException(ET_COMMAND_ERROR);
         }
 
         private void _invokeCommand(String commandString) throws Exception {
@@ -240,7 +244,7 @@ public class Development implements Console.Command {
     static void jIterate() {
         while (true) {
             final Coord destination = Self.location().add(0, 1);
-            move(destination);
+            Api.move(destination);
             System.out.println("current location: " + Self.location());
         }
     }
@@ -291,25 +295,6 @@ public class Development implements Console.Command {
 //          }
 //      }
 
-//      static void describeClosestGobSdt() {
-//          Gob closestGob = closestGob();
-//          final haven.Resource resource = closestGob.resource();
-//          if(resource == null) {
-//              System.out.println("[resource is null]");
-//              return;
-//          }
-//          haven.ResDrawable resourceDrawable = (haven.ResDrawable)closestGob.attribute(haven.ResDrawable.class);
-//          byte[] buffer = haven.LMI.resourceDrawableBuffer(resourceDrawable);
-//          if (buffer == null) {
-//              System.out.println("[buffer is null]");
-//              return;
-//          }
-//          System.out.print("[buffer] length: " + buffer.length);
-//          for (byte b : buffer)
-//              System.out.print(" " + b);
-//          System.out.println();
-//      }
-
 //      static void gatherClosestGob() {
 //          String action = lmi.Scanner.nextLineWithPrompt("enter action");
 //          Gob closestGob = closestGob();
@@ -325,9 +310,9 @@ public class Development implements Console.Command {
         Gob variantGob = ClickManager.getGob();
 
         Coord standardPoint = Self.location();
-        lift(standardGob);
-        move(standardPoint.add(0, 2048));
-        put(standardPoint);
+        Api.lift(standardGob);
+        Api.move(standardPoint.add(0, 2048));
+        Api.put(standardPoint);
 
         final int start = TILE_IN_COORD / 8 * 3 + 1;
         int variant = start;
@@ -346,9 +331,9 @@ public class Development implements Console.Command {
     }
 
     private static void _carryWidth(Gob gob, Coord putPoint) {
-        lift(gob);
-        move(putPoint.add(0, TILE_IN_COORD * 2));
-        put(putPoint);
+        Api.lift(gob);
+        Api.move(putPoint.add(0, TILE_IN_COORD * 2));
+        Api.put(putPoint);
     }
 
     static void investigateGobBoundingBoxHeight() {
@@ -358,10 +343,10 @@ public class Development implements Console.Command {
         System.out.println("click next gob to move!");
         Gob variantGob = ClickManager.getGob();
 
-        Coord standardPoint = Self.location().tileCenter();
-        lift(standardGob);
-        move(standardPoint.add(0, 2048));
-        put(standardPoint);
+        Coord standardPoint = Self.location().center();
+        Api.lift(standardGob);
+        Api.move(standardPoint.add(0, 2048));
+        Api.put(standardPoint);
 
         final int start = 1024 / 8 * 15;
         int variant = start;
@@ -381,8 +366,8 @@ public class Development implements Console.Command {
     }
 
     private static void _carryHeight(Gob gob, Coord putPoint) {
-        lift(gob);
-        put(putPoint);
+        Api.lift(gob);
+        Api.put(putPoint);
     }
 
 //      static void investigateBodyBoundingBoxWidthOnce() {
@@ -419,34 +404,37 @@ public class Development implements Console.Command {
         final Coord variantPoint = standardGob.location().add(variant, 0);
         Coord firstStep = variantPoint.north();
 
-        move(firstStep);
-        move(variantPoint);
+        Api.move(firstStep);
+        Api.move(variantPoint);
 
         System.out.println("succeeded coord: " + variantPoint
                 + ", distance: " + Self.distance(standardGob));
     }
 
     static void putLogDistanceBodyWidth() {
-        final Coord centerPosition = Self.location().tileCenter();
+        final Coord origin = Self.location().center();
 
         System.out.println("첫 번째 로그를 선택해주세요");
-        Gob firstLog = ClickManager.getGob();
+        final Gob firstLog = Api.getGob();
 
         System.out.println("두 번째 로그를 선택해주세요");
-        Gob secondLog = ClickManager.getGob();
+        final Gob secondLog = Api.getGob();
 
-        lift(firstLog);
-        move(centerPosition.add(- BW_LOG / 2 - BW_BODY / 2, (BH_LOG + BH_BODY) / 2));
-        put(centerPosition.add(- BW_LOG / 2 - BW_BODY / 2, 0));
+        final int averageY = (BH_LOG + BH_BODY) / 2;
+        final int averageX = (BW_LOG + BW_BODY) / 2;
 
-        lift(secondLog);
-        move(centerPosition.add(BW_LOG / 2 + BW_BODY / 2, (BH_LOG + BH_BODY) / 2));
-        put(centerPosition.add(BW_LOG / 2 + BW_BODY / 2, 0));
+        Api.lift(firstLog);
+        Api.move(origin.add(-averageX - 1, averageY));
+        Api.put(origin.add(-averageX - 1, 0));
+
+        Api.lift(secondLog);
+        Api.move(origin.add(averageX + 1, averageY));
+        Api.put(origin.add(averageX + 1, 0));
 
     }
 
     static void describeGobInArea() {
-        System.out.println("click tow points to get area to get gob");
+        System.out.println("출력할 gob이 있는 영역을 선택해주세요");
         Array<Gob> gobArray = getGobArrayInArea();
         for (Gob gob : gobArray)
             System.out.println("resource name: " + gob.resourceName());
@@ -471,5 +459,42 @@ public class Development implements Console.Command {
         ObjectShadow.mapView().showgrid(true);
 
         // set item quality on
+    }
+
+    static void interact() {
+        if (_args.length >= 3)
+            Api.interact(Api.closestGobOf(_args[2]));
+        else
+            Api.interact(Api.closestGob());
+    }
+
+    static void lift() {
+        if (_args.length >= 3)
+            Api.lift(Api.closestGobOf(_args[2]));
+        else
+            Api.lift(Api.closestGob());
+    }
+
+    static void printAllISBoxText() {
+        Window window = WidgetManager.gameUI().getChildOf(Window.class);
+        if (window == null) return;
+        Widget child = window.child;
+        while (child != null) {
+            if (child instanceof ISBox) {
+                final ISBox isbox = (ISBox)child;
+                Util.debugPrint("isbox.text(): " + isbox.text());
+            }
+            child = child.next;
+        }
+    }
+
+    static void test000() {
+        Gob gob = closestGob();
+        message(gob.debugDescription());
+        WidgetMessageHandler.click(gob, IM_RIGHT, IM_SHIFT);
+        try {
+            Self.gob().waitMove();
+        } catch (LMIException e) { if (e.type() != ET_MOVE) throw e; }
+        message(gob.debugDescription());
     }
 }

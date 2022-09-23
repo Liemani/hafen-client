@@ -260,8 +260,11 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
 
     // lmi custom
     // initializer
-    public Coord init(int x, int y) { this.x = x; this.y = y; return this; }
-    public Coord init(Coord coord) { this.x = coord.x; this.y = coord.y; return this; }
+    public void init(int x, int y) { this.x = x; this.y = y; }
+    public void init(Coord coord) { this.x = coord.x; this.y = coord.y; }
+
+    public Coord assign(int x, int y) { this.x = x; this.y = y; return this; }
+    public Coord assign(Coord coord) { this.x = coord.x; this.y = coord.y; return this; }
 
     // Factory
     public static Coord of(haven.Coord2d coord2d) {
@@ -347,8 +350,15 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
     public Coord assignFloorDivide(int value) { return this.assignFloorDivide(value, value); }
     public Coord assignCeilDivide(int value) { return this.assignCeilDivide(value, value); }
 
+    public Coord assignAdd(double value) { return this.assignAdd((int)value); }
+    public Coord assignSubtract(double value) { return this.assignSubtract((int)value); }
+    public Coord assignMultiply(double value) { return this.assignMultiply((int)value); }
+    public Coord assignDivide(double value) { return this.assignDivide((int)value); }
+    public Coord assignFloorDivide(double value) { return this.assignFloorDivide((int)value); }
+    public Coord assignCeilDivide(double value) { return this.assignCeilDivide((int)value); }
+
     // Convenient
-    public Coord tileCenter() {
+    public Coord center() {
         return Coord.of(this)
             .assignFloorDivide(TILE_IN_COORD)
             .assignMultiply(TILE_IN_COORD)
@@ -385,6 +395,8 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
             .assignCeilDivide(TILE_IN_COORD)
             .assignMultiply(TILE_IN_COORD);
     }
+
+    public double diagonal() { return Math.ceil(Math.sqrt(x * x + y * y)); }
 
     // warning: ignore overflow
     public double distance(Coord coord) {

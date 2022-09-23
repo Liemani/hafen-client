@@ -785,20 +785,34 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
         }
     }
 
+    public byte[] sdt() { return this.attribute(haven.ResDrawable.class).sdt(); }
+
+    public boolean isLog() {
+        return this.resourceName().endsWith(lmi.Constant.gfx.terobjs.trees.RN_LOG);
+    }
+
+    // Deubg Description
     public String debugDescription() {
         StringBuilder description = new StringBuilder();
 
         description.append("resource name: " + this.resourceName() + "\n");
         description.append("location: " + this.location() + "\n");
+        description.append("direction: " + this.direction() + "\n");
         description.append("distance: " + lmi.Self.distance(this) + "\n");
         description.append("removed: " + this.removed + "\n");
+
         description.append("pose:\n");
         Array<String> poseArray = this.poseArray();
         if (poseArray != null) {
             for (String poseString : poseArray)
-                description.append("  " + poseString);
+                description.append("  " + poseString + "\n");
         } else
             description.append("  no pose\n");
+
+        description.append("sdt:");
+        for (byte b : this.sdt())
+            description.append(" " + b);
+        description.append("\n");
 
         return description.toString();
     }
