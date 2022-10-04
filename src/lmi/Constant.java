@@ -119,6 +119,13 @@ public class Constant {
     public static final int TILE_IN_COORD = 1024;
     public static final double COORD2D_PER_COORD = TILE_IN_COORD2D / TILE_IN_COORD;
     public static final double COORD_PER_COORD2D = TILE_IN_COORD / TILE_IN_COORD2D;
+    public static final int CHUNK_SIDE = 9;
+    public static final int VISIBLE_CHUNK_SIDE = 10;
+    public static final int PURE_CHUNK_SIDE = VISIBLE_CHUNK_SIDE - 1;
+    public static final int VISIBLE_TILE_SIDE = CHUNK_SIDE * VISIBLE_CHUNK_SIDE;
+    public static final int PURE_TILE_SIDE = CHUNK_SIDE * PURE_CHUNK_SIDE;
+    public static final int MAP_CHUNK_SIDE = 25;
+    public static final int MAP_VISIBLE_CHUNK_SIDE = 5;
 
     public static final int RETRY_MAX = 5;
 
@@ -152,6 +159,9 @@ public class Constant {
         public static final int BW_CRATE = 1284;
         public static final int BH_CRATE = 726;
         public static final Coord BB_CRATE = Coord.of(BW_CRATE, BH_CRATE);
+        public static final int BW_DRYING_FRAME = 2028;
+        public static final int BH_DRYING_FRAME = 540;
+        public static final Coord BB_DRYING_FRAME = Coord.of(BW_DRYING_FRAME, BH_DRYING_FRAME);
     }
 
     public static class gfx {
@@ -314,6 +324,7 @@ public class Constant {
         ET_COMMAND_INITIALIZER,
         ET_COMMAND_IMPLEMENT,
         ET_MAN_IMPLEMENT,
+        ET_NO_PATH,
 
         // fail
         ET_MOVE,

@@ -177,6 +177,7 @@ public class Util {
     }
 
     public static void printStackTrace() {
+        Util.debugPrint("thread name: " + Thread.currentThread().getName());
         new Exception().printStackTrace();
     }
 

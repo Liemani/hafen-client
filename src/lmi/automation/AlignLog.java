@@ -24,7 +24,6 @@ public class AlignLog extends Automation {
     private Rect _workingArea;
     private Rect _outputArea;
 
-
     private Coord _orderCoordMax;
     private Coord _orderCoord;
 
@@ -33,8 +32,6 @@ public class AlignLog extends Automation {
     private Coord _branch;
     private Coord _firstLeaf;
     private Coord _leaf;
-
-    private Array<Gob> _logArrayToCarry;
 
     // Run
     public void run() {
@@ -132,13 +129,13 @@ public class AlignLog extends Automation {
     /// - Throws
     ///     - ET_NO_INPUT
     private Gob _logToCarry() {
-        _logArrayToCarry = gobArrayIn(_inputArea)
+        final Array<Gob> logArrayToCarry = gobArrayIn(_inputArea)
             .compactMap(gob -> gob.isLog() ? gob : null);
 
-        if (_logArrayToCarry.isEmpty())
+        if (logArrayToCarry.isEmpty())
             throw new LMIException(ET_NO_INPUT);
 
-        return closestGobIn(_logArrayToCarry);
+        return closestGobIn(logArrayToCarry);
     }
 
     /// - Throws

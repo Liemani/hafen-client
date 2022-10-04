@@ -274,6 +274,7 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
     }
 
     public static Coord zero() { return Coord.of(0, 0); }
+    public static final Coord ZERO = Coord.zero();
 
     // Convert To Haven Coordinate
     public haven.Coord2d toCoord2d() {
@@ -403,5 +404,9 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
         final int dx = this.x - coord.x;
         final int dy = this.y - coord.y;
         return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    public int rectilinearDistance(Coord coord) {
+        return Math.abs(coord.x - x) + Math.abs(coord.y - y);
     }
 }

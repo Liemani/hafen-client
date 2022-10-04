@@ -650,6 +650,26 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
     public double velocity() { return this.getv(); }
     public int id() { return (int)this.id; }
 
+    public boolean isDirectingEast() {
+        final double direction = this.direction();
+        return Math.PI / 4 * 7 <= direction || direction < Math.PI / 4;
+    }
+
+    public boolean isDirectingSouth() {
+        final double direction = this.direction();
+        return Math.PI / 4 <= direction && direction < Math.PI / 4 * 3;
+    }
+
+    public boolean isDirectingWest() {
+        final double direction = this.direction();
+        return Math.PI / 4 * 3 <= direction && direction < Math.PI / 4 * 5;
+    }
+
+    public boolean isDirectingNorth() {
+        final double direction = this.direction();
+        return Math.PI / 4 * 5 <= direction && direction < Math.PI / 4 * 7;
+    }
+
     public <C extends haven.GAttrib> C attribute(Class<C> attributeClass) {
         return this.getattr(attributeClass);
     }
@@ -785,7 +805,10 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
         }
     }
 
-    public byte[] sdt() { return this.attribute(haven.ResDrawable.class).sdt(); }
+    public byte[] sdt() {
+        final ResDrawable resourceDrawable = this.attribute(ResDrawable.class);
+        return (resourceDrawable != null) ? resourceDrawable.sdt() : null;
+    }
 
     public boolean isLog() {
         return this.resourceName().endsWith(lmi.Constant.gfx.terobjs.trees.RN_LOG);
@@ -809,10 +832,15 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
         } else
             description.append("  no pose\n");
 
-        description.append("sdt:");
-        for (byte b : this.sdt())
-            description.append(" " + b);
-        description.append("\n");
+        description.append("sdt:\n");
+        final byte[] sdt = this.sdt();
+        if (sdt != null) {
+            for (byte b : sdt)
+                description.append(" " + b);
+            description.append("\n");
+        } else {
+            description.append("null\n");
+        }
 
         return description.toString();
     }

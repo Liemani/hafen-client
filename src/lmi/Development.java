@@ -65,7 +65,7 @@ public class Development implements Console.Command {
 
         // Runnable Requirment
         public void run() {
-            message("==============================");
+            Api.message("==============================");
             String commandString = null;
             try {
                 _checkArgument();
@@ -86,7 +86,7 @@ public class Development implements Console.Command {
                             _printHelp(ObjectShadow.ui().cons.out);
                             break;
                         case ET_COMMAND_MATCH:
-                            error("[" + (commandString != null ? commandString : "") + "]가 뭔지 모르겠어요");
+                            Api.error("[" + (commandString != null ? commandString : "") + "]가 뭔지 모르겠어요");
                             break;
                         default:
                             break;
@@ -96,7 +96,7 @@ public class Development implements Console.Command {
                     e.printStackTrace();
                 }
             } finally {
-                message("[terminating dev]");
+                Api.message("[terminating dev]");
             }
         }
 
@@ -115,31 +115,31 @@ public class Development implements Console.Command {
 
         // Help
         private static void _printError(PrintWriter writer) {
-            message("  [dev Manual]");
-            error("usage: dev <command>");
+            Api.message("  [dev Manual]");
+            Api.error("usage: dev <command>");
             writer.println(" ");
-            message("command list:");
+            Api.message("command list:");
             _printCommandStringList(writer);
         }
 
         private static void _printHelp(PrintWriter writer) {
-            message("  [dev Manual]");
-            error("usage: dev <command>");
+            Api.message("  [dev Manual]");
+            Api.error("usage: dev <command>");
             writer.println(" ");
-            message("command list:");
+            Api.message("command list:");
             _printCommandStringList(writer);
         }
 
         private static void _printCommandStringList(PrintWriter printWriter) {
             for (String command : Development.getCommandStringSet())
-                message("  " + command);
+                Api.message("  " + command);
         }
     }
 
     static void listConsoleCommand() {
-        message("console command:");
+        Api.message("console command:");
         for (String command : Util.consoleCommands())
-            message("  " + command);
+            Api.message("  " + command);
     }
 
     static void printWidgetTree() {
@@ -242,6 +242,17 @@ public class Development implements Console.Command {
     static void moveCenter() { Api.moveCenter(); }
 
     static void jIterate() {
+        if (_args.length != 3) {
+            Api.error("usage: dev jIterate <start distance>");
+            return;
+        }
+
+        Api.alert("바운딩 박스의 크기를 측정할 Gob을 클릭해 주세요");
+        Gob gob = Api.getGob();
+
+        int targetDistance = Integer.parseInt(_args[2]);
+        Api.move(gob.location().assignSubtract(0, targetDistance));
+
         while (true) {
             final Coord destination = Self.location().add(0, 1);
             Api.move(destination);
@@ -254,10 +265,10 @@ public class Development implements Console.Command {
         Debug.describeField(gItem);
     }
 
-    static void describeClickedGob() {
-        alert("정보를 출력할 물체를 클릭해 주세요");
+    static void describeGob() {
+        Api.alert("정보를 출력할 오브젝트를 클릭해 주세요");
         Gob gob = ClickManager.getGob();
-        message(gob.debugDescription());
+        Api.message(gob.debugDescription());
     }
 
 //      static void describeClosestGobOverlay() {
@@ -488,13 +499,56 @@ public class Development implements Console.Command {
         }
     }
 
+    static void measure() {
+        if (_args.length != 3) {
+            Api.error("usage: dev measure <start distance>");
+            return;
+        }
+
+        Api.alert("바운딩 박스의 크기를 측정할 Gob을 클릭해 주세요");
+        Gob gob = Api.getGob();
+
+        int lastFailedDistance = 0;
+        int succeededDistance = Integer.parseInt(_args[2]);
+
+        final Coord gobLocation = gob.location();
+
+        final Coord branch = Coord.of(gobLocation).assignAdd(0, TILE_IN_COORD * -2);
+        final Coord leaf = Coord.of(gobLocation);
+
+        while (true) {
+            final int currentDistance = (lastFailedDistance + succeededDistance) / 2;
+            final int targetX = gobLocation.x + currentDistance;
+            leaf.x = targetX;
+            branch.x = targetX;
+            Api.move(branch);
+            try {
+                Api.move(leaf);
+                succeededDistance = currentDistance;
+            } catch (LMIException e) {
+                if (e.type() != ET_MOVE) throw e;
+                lastFailedDistance = currentDistance;
+            }
+            Util.debugPrint(Self.location());
+            if (succeededDistance - lastFailedDistance == 1)
+                break;
+        }
+        Util.debugPrint("lastFailedDistance: " + lastFailedDistance);
+        Util.debugPrint("succeededDistance: " + succeededDistance);
+    }
+
     static void test000() {
-        Gob gob = closestGob();
-        message(gob.debugDescription());
-        WidgetMessageHandler.click(gob, IM_RIGHT, IM_SHIFT);
-        try {
-            Self.gob().waitMove();
-        } catch (LMIException e) { if (e.type() != ET_MOVE) throw e; }
-        message(gob.debugDescription());
+        Api.alert("길을 찾을 Gob을 클릭해주세요");
+        Gob gob = Api.getGob();
+        Pathfinder.run(gob.location().north());
+    }
+
+    static void test001() {
+        final int clockwiseOrder = (int)Math.floor((Self.direction() + Math.PI / 4) / (Math.PI / 2)) % 4;
+        final int clockwiseOrderFromSouth = (clockwiseOrder + 3) % 4;
+        final Coord previousCoord = Self.location()
+            .assignAdd(Coord.uecw[clockwiseOrderFromSouth]
+                    .multiply(512));
+        Api.move(previousCoord);
     }
 }

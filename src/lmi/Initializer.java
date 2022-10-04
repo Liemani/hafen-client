@@ -14,6 +14,7 @@ public class Initializer {
         WaitManager.init();
         AutomationManager.init();
         Development.init();
+        Pathfinder.init();
     }
 
     // set ObjectShadow

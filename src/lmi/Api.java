@@ -40,6 +40,8 @@ public class Api {
         throw new LMIException(ET_MOVE);
     }
 
+    /// - Throws:
+    ///     - ET_MOVE
     public static void moveNorth() { Api.move(Self.location().north()); }
     public static void moveEast() { Api.move(Self.location().east()); }
     public static void moveWest() { Api.move(Self.location().west()); }
