@@ -21,6 +21,9 @@ class Pathfinder {
 
     private static Coord _origin;
 
+    private static Coord _currentMoveMapLocation;
+    private static Coord _lastMoveLocation;
+
     // Initialize
     static void init() {
         _map = new boolean[PURE_TILE_SIDE][PURE_TILE_SIDE];
@@ -45,35 +48,56 @@ class Pathfinder {
         list.add(coord);
     }
 
-    // Run
-    static void run(Coord destination) {
+    // Move
+    /// - Throws:
+    ///     - ET_MOVE
+    static void move(Coord destination) {
         // if without moveCenter(), object could not loaded proper
         Api.moveCenter();
-        _setMap(destination);
+        _setMap();
+        _destination = _transformMapCoord(destination);
 
-        while (true) {
-            _findPath();
-            _printMap();
+        try {
+            _findAndMove();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            _clear();
+        }
+    }
+
+    static void move(Gob gob) {
+        // if without moveCenter(), object could not loaded proper
+        Api.moveCenter();
+        _setMap();
+
+        final Coord gobLocation = _transformMapCoord(gob.location());
+        for (Coord direction : Coord.uecw) {
+            _destination = gobLocation.add(direction);
 
             try {
-                _pathMove();
-                break;
+                _findAndMove();
+                _clear();
+                return;
             } catch (LMIException e) {
-                if (e.type() != ET_MOVE) {
+                if (e.type() != ET_NO_PATH) {
                     _clear();
                     throw e;
-                }
-                _correct();
+                } else continue;
             }
         }
+
         _clear();
+        throw new LMIException(ET_NO_PATH);
     }
 
     // Set Map
-    private static void _setMap(Coord destination) {
+    private static void _setMap() {
         _mapOrigin = _calculateMapOrigin();
         _scanMap(_mapOrigin);
-        _destination = _assignCalculateMapCoord(_mapOrigin, destination);
+
+        _currentMoveMapLocation = Coord.zero();
+        _lastMoveLocation = Coord.zero();
     }
 
     private static Coord _calculateMapOrigin() {
@@ -95,7 +119,7 @@ class Pathfinder {
             } catch(ArrayIndexOutOfBoundsException e) { }
         }
 
-        final Coord origin = _assignCalculateMapCoord(mapOrigin, Self.location());
+        final Coord origin = _transformMapCoord(Self.location());
         _map[origin.x][origin.y] = false;
     }
 
@@ -106,7 +130,28 @@ class Pathfinder {
     // Find Path
     /// - Throws:
     ///     - ET_NO_PATH
+    ///     - ET_MOVE
+    private static void _findAndMove() {
+        while (true) {
+            _findPath();
+
+            _printMap();
+
+            try {
+                _pathMove();
+                break;
+            } catch (LMIException e) {
+                if (e.type() != ET_MOVE) throw e;
+                _correct();
+            }
+        }
+    }
+
+    // Find Path
+    /// - Throws:
+    ///     - ET_NO_PATH
     private static void _findPath() {
+        if (_map[_destination.x][_destination.y]) throw new LMIException(ET_NO_PATH);
         _reset();
         while (true) {
             final int rectilinearDistance = _searchPriorityMap.firstKey();
@@ -124,7 +169,7 @@ class Pathfinder {
                 _directionMap[i][j] = null;
         _searchPriorityMap.clear();
 
-        _origin = _assignCalculateMapCoord(_mapOrigin, Self.location());
+        _origin = _transformMapCoord(Self.location());
         _setDirection(_destination, Coord.ZERO);
         _addDistanceMap(_destination);
     }
@@ -174,6 +219,8 @@ class Pathfinder {
     }
 
     // Path Move
+    /// - Throws:
+    ///     - ET_MOVE
     private static void _pathMove() {
         Coord direction = _getDirection(_origin);
         if (direction == null) {
@@ -181,16 +228,20 @@ class Pathfinder {
             return;
         }
 
-        Api.moveCenter();
+        _currentMoveMapLocation.assign(_origin);
+        _lastMoveLocation.assign(Self.location());
         _origin.assignSubtract(direction);
         Coord previousDirection = direction;
         direction = _getDirection(_origin);
         while (true) {
-            if (_origin.equals(_destination)) {
-                Api.move(_origin.multiply(TILE_IN_COORD).assignAdd(_mapOrigin).assignAdd(TILE_IN_COORD / 2));
-                break;
-            } else if (direction != previousDirection)
-                Api.move(_origin.multiply(TILE_IN_COORD).assignAdd(_mapOrigin).assignAdd(TILE_IN_COORD / 2));
+            if (direction != previousDirection) {
+                _currentMoveMapLocation.assign(_origin);
+                final Coord targetLocation = _origin.multiply(TILE_IN_COORD).assignAdd(_mapOrigin).assignAdd(TILE_IN_COORD / 2);
+                Api.move(targetLocation);
+                _lastMoveLocation.assign(targetLocation);
+                if (_origin.equals(_destination))
+                    break;
+            }
             _origin.assignSubtract(direction);
             previousDirection = direction;
             direction = _getDirection(_origin);
@@ -198,17 +249,23 @@ class Pathfinder {
     }
 
     // Correct Map
+    /// - Throws:
+    ///     - ET_MOVE
     private static void _correct() {
-        final int clockwiseOrder = (int)Math.floor((Self.direction() + Math.PI / 4) / (Math.PI / 2)) % 4;
-        final int clockwiseOrderFromSouth = (clockwiseOrder + 3) % 4;
-        final Coord previousCoord = Self.location()
-            .assignAdd(Coord.uecw[clockwiseOrderFromSouth]
-                    .multiply(512));
-        final Coord blockedMapCoord = _assignCalculateMapCoord(_mapOrigin, Coord.of(previousCoord))
-            .assignSubtract(Coord.uecw[clockwiseOrderFromSouth]);
-        _map[blockedMapCoord.x][blockedMapCoord.y] = true;
+        if (_transformMapCoord(Self.location()).equals(_currentMoveMapLocation)) {
+            _map[_currentMoveMapLocation.x][_currentMoveMapLocation.y] = true;
+        } else {
+            final int clockwiseOrder = (int)Math.floor((Self.direction() + Math.PI / 4) / (Math.PI / 2)) % 4;
+            final int clockwiseOrderFromSouth = (clockwiseOrder + 3) % 4;
+            final Coord previousCoord = Self.location()
+                .assignAdd(Coord.uecw[clockwiseOrderFromSouth]
+                        .multiply(512));
+            final Coord blockedMapCoord = _transformMapCoord(Coord.of(previousCoord))
+                .assignSubtract(Coord.uecw[clockwiseOrderFromSouth]);
+            _map[blockedMapCoord.x][blockedMapCoord.y] = true;
+        }
 
-        Api.move(previousCoord);
+        Api.move(_lastMoveLocation);
     }
 
     // Clear
@@ -223,10 +280,13 @@ class Pathfinder {
         _mapOrigin = null;
         _origin = null;
         _destination = null;
+
+        _currentMoveMapLocation = null;
+        _lastMoveLocation = null;
     }
 
     // Etc
-    private static Coord _assignCalculateMapCoord(Coord mapOrigin, Coord coord) {
+    private static Coord _transformMapCoord(Coord coord) {
             return coord
                 .assignSubtract(_mapOrigin)
                 .assignDivide(TILE_IN_COORD);

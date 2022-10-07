@@ -540,15 +540,11 @@ public class Development implements Console.Command {
     static void test000() {
         Api.alert("길을 찾을 Gob을 클릭해주세요");
         Gob gob = Api.getGob();
-        Pathfinder.run(gob.location().north());
+        Pathfinder.move(gob.location().north());
     }
 
     static void test001() {
-        final int clockwiseOrder = (int)Math.floor((Self.direction() + Math.PI / 4) / (Math.PI / 2)) % 4;
-        final int clockwiseOrderFromSouth = (clockwiseOrder + 3) % 4;
-        final Coord previousCoord = Self.location()
-            .assignAdd(Coord.uecw[clockwiseOrderFromSouth]
-                    .multiply(512));
-        Api.move(previousCoord);
+        Api.alert("길을 찾을 Gob을 클릭해주세요");
+        Pathfinder.move(Api.getGob());
     }
 }
