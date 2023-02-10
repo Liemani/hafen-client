@@ -2304,13 +2304,13 @@ public class MapView extends PView implements DTarget, Console.Directory {
         selection = null;
     }
 
-    public boolean isPlobPlaced() {
+    public boolean isPlanningObject() {
         final Loader.Future<Plob> placing_l = this.placing;
         return placing_l != null && placing_l.done();
     }
 
-    public void waitPlobPlaced() {
-        while (isPlobPlaced())
+    public void waitPlanObject() {
+        while (this.isPlanningObject())
             lmi.Api.sleep(lmi.Constant.TimeOut.TO_TEMPORARY);
     }
 }

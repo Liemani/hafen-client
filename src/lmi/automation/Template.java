@@ -33,7 +33,7 @@ public class Template implements Runnable {
             return;
         }
 
-        switch (e.type()) {
+        switch (e.type) {
             case ET_INTERRUPTED:
                 alert("작업을 중단했어요");
                 break;

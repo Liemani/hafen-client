@@ -35,7 +35,7 @@ public class FlowerMenuHandler {
         }
         try {
             Self.gob().waitMove();
-        } catch (LMIException e) { if (e.type() == ET_INTERRUPTED) throw e; }
+        } catch (LMIException e) { if (e.type == ET_INTERRUPTED) throw e; }
         ProgressManager.waitProgress();
     }
 
@@ -54,7 +54,7 @@ public class FlowerMenuHandler {
         try {
             WaitManager.waitSignal(S_FLOWER_MENU_DID_ADDED, TO_TEMPORARY);
         } catch (LMIException e) {
-            if (e.type() != ET_TIME_OUT) throw e;
+            if (e.type != ET_TIME_OUT) throw e;
             if (!_isAdded()) throw new LMIException(ET_FLOWER_MENU_OPEN);
         }
     }

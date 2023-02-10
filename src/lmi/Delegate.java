@@ -124,7 +124,11 @@ public class Delegate {
     public static void plobDidPlaced(MapView.Plob plob) {
 //          if (!isWaitingDidPlobPlacedSignal()) return;
 //  
-//          if (plob.resourceNameEndsWith(""/*what i want*/))
+//          if (plob.isResourceNameEndsWith(""/*what i want*/))
 //              WaitManager.notifySignal(S_PLOB_DID_PLACED);
+    }
+
+    public static void didGetErrorMessage(String errorMessage) {
+        ErrorMessageManager.setMessage(errorMessage);
     }
 }

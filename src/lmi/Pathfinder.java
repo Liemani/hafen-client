@@ -21,8 +21,8 @@ class Pathfinder {
 
     private static Coord _origin;
 
-    private static Coord _currentMoveMapLocation;
-    private static Coord _lastMoveLocation;
+    private static Coord _currentMoveCoord;
+    private static Coord _lastMoveWorldLocation;
 
     // Initialize
     static void init() {
@@ -51,6 +51,7 @@ class Pathfinder {
     // Move
     /// - Throws:
     ///     - ET_MOVE
+    ///     - ET_NO_PATH
     static void move(Coord destination) {
         // if without moveCenter(), object could not loaded proper
         Api.moveCenter();
@@ -63,9 +64,13 @@ class Pathfinder {
             throw e;
         } finally {
             _clear();
+            Api.forceMove(destination);
         }
     }
 
+    /// - Throws:
+    ///     - ET_MOVE
+    ///     - ET_NO_PATH
     static void move(Gob gob) {
         // if without moveCenter(), object could not loaded proper
         Api.moveCenter();
@@ -80,10 +85,11 @@ class Pathfinder {
                 _clear();
                 return;
             } catch (LMIException e) {
-                if (e.type() != ET_NO_PATH) {
+                if (e.type != ET_NO_PATH) {
                     _clear();
                     throw e;
-                } else continue;
+                }
+                continue;
             }
         }
 
@@ -96,8 +102,8 @@ class Pathfinder {
         _mapOrigin = _calculateMapOrigin();
         _scanMap(_mapOrigin);
 
-        _currentMoveMapLocation = Coord.zero();
-        _lastMoveLocation = Coord.zero();
+        _currentMoveCoord = Coord.zero();
+        _lastMoveWorldLocation = Coord.zero();
     }
 
     private static Coord _calculateMapOrigin() {
@@ -129,8 +135,8 @@ class Pathfinder {
 
     // Find Path
     /// - Throws:
-    ///     - ET_NO_PATH
     ///     - ET_MOVE
+    ///     - ET_NO_PATH
     private static void _findAndMove() {
         while (true) {
             _findPath();
@@ -141,7 +147,7 @@ class Pathfinder {
                 _pathMove();
                 break;
             } catch (LMIException e) {
-                if (e.type() != ET_MOVE) throw e;
+                if (e.type != ET_MOVE) throw e;
                 _correct();
             }
         }
@@ -228,17 +234,17 @@ class Pathfinder {
             return;
         }
 
-        _currentMoveMapLocation.assign(_origin);
-        _lastMoveLocation.assign(Self.location());
+        _currentMoveCoord.assign(_origin);
+        _lastMoveWorldLocation.assign(Self.location());
         _origin.assignSubtract(direction);
         Coord previousDirection = direction;
         direction = _getDirection(_origin);
         while (true) {
             if (direction != previousDirection) {
-                _currentMoveMapLocation.assign(_origin);
+                _currentMoveCoord.assign(_origin);
                 final Coord targetLocation = _origin.multiply(TILE_IN_COORD).assignAdd(_mapOrigin).assignAdd(TILE_IN_COORD / 2);
                 Api.move(targetLocation);
-                _lastMoveLocation.assign(targetLocation);
+                _lastMoveWorldLocation.assign(targetLocation);
                 if (_origin.equals(_destination))
                     break;
             }
@@ -252,8 +258,8 @@ class Pathfinder {
     /// - Throws:
     ///     - ET_MOVE
     private static void _correct() {
-        if (_transformMapCoord(Self.location()).equals(_currentMoveMapLocation)) {
-            _map[_currentMoveMapLocation.x][_currentMoveMapLocation.y] = true;
+        if (_transformMapCoord(Self.location()).equals(_currentMoveCoord)) {
+            _map[_currentMoveCoord.x][_currentMoveCoord.y] = true;
         } else {
             final int clockwiseOrder = (int)Math.floor((Self.direction() + Math.PI / 4) / (Math.PI / 2)) % 4;
             final int clockwiseOrderFromSouth = (clockwiseOrder + 3) % 4;
@@ -265,7 +271,7 @@ class Pathfinder {
             _map[blockedMapCoord.x][blockedMapCoord.y] = true;
         }
 
-        Api.move(_lastMoveLocation);
+        Api.move(_lastMoveWorldLocation);
     }
 
     // Clear
@@ -281,8 +287,8 @@ class Pathfinder {
         _origin = null;
         _destination = null;
 
-        _currentMoveMapLocation = null;
-        _lastMoveLocation = null;
+        _currentMoveCoord = null;
+        _lastMoveWorldLocation = null;
     }
 
     // Etc

@@ -2,6 +2,10 @@ package lmi;
 
 import haven.*;
 
+import static lmi.Constant.*;
+import static lmi.Constant.TimeOut.*;
+import static lmi.Constant.ExceptionType.*;
+
 class WidgetManager {
     static GItem cursorGItem() {
         Widget child = ObjectShadow.gameUI().child;
@@ -28,4 +32,6 @@ class WidgetManager {
     static Button button() { return WidgetManager.window().getChildOf(Button.class); }
     static ISBox isbox() { return WidgetManager.window().getChildOf(ISBox.class); }
     static Inventory inventory() { return WidgetManager.window().getChildOf(Inventory.class); }
+    static GItem gitem() { return WidgetManager.inventory().getChildOf(GItem.class); }
+    static WItem witem() { return WidgetManager.inventory().getChildOf(WItem.class); }
 }

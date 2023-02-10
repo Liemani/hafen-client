@@ -696,8 +696,8 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
         return basename;
     }
 
-    public boolean resourceNameEndsWith(String suffix) {
-        final String resourceName = resourceName();
+    public boolean isResourceNameEndsWith(String suffix) {
+        final String resourceName = this.resourceName();
         if (resourceName == null) return false;
         return resourceName.endsWith(suffix);
     }
@@ -709,14 +709,17 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
     public double distance(Coord coord) { return this.location().distance(coord); }
     public double distance(Gob gob) { return this.location().distance(gob.location()); }
 
-    public Array<String> poseArray() {
+    public String[] posePathArray() {
         final haven.Composite composite = this.attribute(haven.Composite.class);
-        return composite != null ? composite.poseArray() : null;
+        return composite != null ? composite.posePathArray() : null;
     }
 
-    public boolean hasPose(String poseBaseName) {
-        Array<String> poseArray = this.poseArray();
-        return poseArray.containsWhere(poseName -> poseName.endsWith(poseBaseName));
+    public boolean hasPose(String pose) {
+        String[] posePathArray = this.posePathArray();
+        for (String posePath : posePathArray)
+            if (posePath.endsWith(pose))
+                return true;
+        return false;
     }
 
     public Gob followingTarget() {
@@ -733,6 +736,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
         if (target == null) return false;
         return target == gob;
     }
+
     public boolean isLifting() { return this.hasPose(RN_BANZAI); }
     public boolean isLifting(Gob gob) { return gob.isFollowing(this); }
 
@@ -741,43 +745,54 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
     public void waitMove(Coord destination) {
         while (!this.isAt(destination)) {
             try {
-                _waitBeginning();
+                _waitMoveBeginning();
             } catch (LMIException e) {
-                if (e.type() == ET_MOVE && this.isAt(destination)) return;
+                if (e.type == ET_MOVE && this.isAt(destination)) return;
                 else throw e;
             }
-            _waitEnding();
+            _waitMoveEnding();
         }
     }
 
     /// - Throws:
     ///     - ET_MOVE
     public void waitMove() {
-        _waitBeginning();
-        _waitEnding();
+        _waitMoveBeginning();
+        _waitMoveEnding();
     }
 
     /// - Throws:
     ///     - ET_MOVE
-    private void _waitBeginning() {
+    private void _waitMoveBeginning() {
         if (this.isMoving()) return;
         try {
             WaitManager.waitSignal(S_MOVE_DID_BEGIN, this, TO_TEMPORARY);
         } catch (LMIException e) {
-            if (e.type() != ET_TIME_OUT) throw e;
+            if (e.type != ET_TIME_OUT) throw e;
             if (!this.isMoving()) throw new LMIException(ET_MOVE);
         }
     }
 
-    private void _waitEnding() {
+    private void _waitMoveEnding() {
         while (true) {
             if (!this.isMoving()) return;
             try {
                 WaitManager.waitSignal(S_MOVE_DID_END, this, TO_GENERAL);
                 break;
             } catch (LMIException e) {
-                if (e.type() != ET_TIME_OUT) throw e;
+                if (e.type != ET_TIME_OUT) throw e;
             }
+        }
+    }
+
+    public void waitBuild() {
+        while (true) {
+            if (this.hasPose(RN_BUILDAN)) break;
+            lmi.Api.sleep(TO_TEMPORARY);
+        }
+        while (true) {
+            if (this.hasPose(RN_IDLE)) break;
+            lmi.Api.sleep(TO_TEMPORARY);
         }
     }
 
@@ -788,7 +803,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
         try {
             WaitManager.waitSignal(S_DID_LIFT, this, TO_TEMPORARY);
         } catch (LMIException e) {
-            if (e.type() != ET_TIME_OUT) throw e;
+            if (e.type != ET_TIME_OUT) throw e;
             if (!this.isLifting(gob)) throw new LMIException(ET_LIFT);
         }
     }
@@ -800,7 +815,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
         try {
             WaitManager.waitSignal(S_DID_PUT, this, TO_TEMPORARY);
         } catch (LMIException e) {
-            if (e.type() != ET_TIME_OUT) throw e;
+            if (e.type != ET_TIME_OUT) throw e;
             if (this.isLifting()) throw new LMIException(ET_PUT);
         }
     }
@@ -810,8 +825,22 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Sk
         return (resourceDrawable != null) ? resourceDrawable.sdt() : null;
     }
 
+    // Check Category
+    /// - Deprecated: lmi.Util.nameSet_includesResourcePath
     public boolean isLog() {
-        return this.resourceName().endsWith(lmi.Constant.gfx.terobjs.trees.RN_LOG);
+        return this.isResourceNameEndsWith(lmi.Constant.gfx.terobjs.trees.RN_LOG);
+    }
+
+    /// - Deprecated: lmi.Util.nameSet_includesResourcePath
+    public boolean isTrunk() {
+        return this.isLog() || this.isResourceNameEndsWith(lmi.Constant.gfx.terobjs.trees.RN_OLDTRUNK);
+    }
+
+    /// - Deprecated: lmi.Util.nameSet_includesResourcePath
+    public boolean isContainer() {
+        return this.isResourceNameEndsWith(lmi.Constant.gfx.terobjs.RN_CRATE)
+            || this.isResourceNameEndsWith(lmi.Constant.gfx.terobjs.RN_CHEST)
+            || this.isResourceNameEndsWith(lmi.Constant.gfx.terobjs.RN_CUPBOARD);
     }
 
     // Deubg Description

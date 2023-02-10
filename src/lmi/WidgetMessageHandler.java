@@ -8,7 +8,6 @@ import haven.Coord;
 import static lmi.Constant.*;
 import static lmi.Constant.Message.*;
 import static lmi.Constant.Action.*;
-import static lmi.Constant.Plob.*;
 import static lmi.Constant.Input.Mouse.*;
 import static lmi.Constant.Input.Modifier.*;
 import static lmi.Constant.InteractionType.*;
@@ -102,15 +101,18 @@ class WidgetMessageHandler {
     }
 
     static void sendPlaceMessage(
-            haven.MapView widget,
             Coord coord,
             int direction,
             int mouseButton,
             int modifiers) {
-        widget.wdgmsg(M_PLACE, coord, direction, mouseButton, modifiers);
+        ObjectShadow.mapView().sendMessage(M_PLACE, coord, direction, mouseButton, modifiers);
     }
 
-    static void sendBuildPlacingMessage(String name) {
-        WidgetManager.menuGrid().sendMessage(M_ACT, A_BP, name, 0);
+    static void sendCancelPlanMessage() {
+		ObjectShadow.mapView().sendMessage(M_PLACE, Self.location(), D_EAST, IM_RIGHT, IM_NONE);
+    }
+
+    static void sendButtonBuildMessage(Button button) {
+        button.sendMessage(M_ACTIVATE);
     }
 }

@@ -16,7 +16,7 @@ import static lmi.Constant.MeshId.*;
 import static lmi.Constant.gfx.borka.*;
 import static lmi.Constant.BoundingBox.*;
 import static lmi.Constant.*;
-import static lmi.Constant.Plob.*;
+import static lmi.Constant.Plan.*;
 import static lmi.Constant.WindowTitle.*;
 import static lmi.Constant.Input.Mouse.*;
 import static lmi.Constant.Input.Modifier.*;
@@ -455,10 +455,6 @@ public class Development implements Console.Command {
         AutomationManager.printStackTrace();
     }
 
-    static void prepareDryingFrame() {
-        prepareBuild(P_DFRAME, Self.location().north().north(), 0, WT_DRYING_FRAME);
-    }
-
     static void prepare() {
         // set chat channel
         WidgetManager.chatUI().selectSystem();
@@ -526,7 +522,7 @@ public class Development implements Console.Command {
                 Api.move(leaf);
                 succeededDistance = currentDistance;
             } catch (LMIException e) {
-                if (e.type() != ET_MOVE) throw e;
+                if (e.type != ET_MOVE) throw e;
                 lastFailedDistance = currentDistance;
             }
             Util.debugPrint(Self.location());
@@ -538,13 +534,34 @@ public class Development implements Console.Command {
     }
 
     static void test000() {
-        Api.alert("길을 찾을 Gob을 클릭해주세요");
-        Gob gob = Api.getGob();
-        Pathfinder.move(gob.location().north());
+        Api.planAndCarryOutObject(P_DFRAME, Self.location().north().north(), 0);
     }
 
     static void test001() {
-        Api.alert("길을 찾을 Gob을 클릭해주세요");
-        Pathfinder.move(Api.getGob());
+        Api.message(WidgetManager.isbox().text());
+    }
+
+    static void test002() {
+        Api.message("" + WidgetManager.isbox().count());
+    }
+
+    static void test003() {
+        WidgetManager.gitem().describe();
+    }
+
+    static void test004() {
+        if (_args.length != 3) {
+            Api.error("usage: dev test004 <count to transfer>");
+            return;
+        }
+        final int count = Integer.parseInt(_args[2]);
+
+        Api.alert("string item을 가져올 container를 클릭해주세요");
+        takeItemFromContainer(Api.getGob(), lmi.Constant.nameSet_string, count);
+    }
+
+    static void test005() {
+        final boolean didPlanObject = ObjectShadow.mapView().didPlanObject();
+        Api.message("MapView에 plan이 됐는가: " + didPlanObject);
     }
 }

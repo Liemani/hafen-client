@@ -22,7 +22,7 @@ public class ProgressManager {
             try {
                 ProgressManager._waitProgressAdded();
             } catch (LMIException e) {
-                if (e.type() != ET_PROGRESS_OPEN) throw e;
+                if (e.type != ET_PROGRESS_OPEN) throw e;
                 break;
             }
         }
@@ -38,7 +38,7 @@ public class ProgressManager {
         try {
             WaitManager.waitSignal(S_PROGRESS_DID_ADDED, TO_TEMPORARY);
         } catch (LMIException e) {
-            if (e.type() != ET_TIME_OUT) throw e;
+            if (e.type != ET_TIME_OUT) throw e;
             if (!_isProgressing()) throw new LMIException(ET_PROGRESS_OPEN);
         }
     }
@@ -50,7 +50,7 @@ public class ProgressManager {
                 WaitManager.waitSignal(S_PROGRESS_DID_DESTROYED, TO_GENERAL);
                 break;
             } catch (LMIException e) {
-                if (e.type() != ET_TIME_OUT) throw e;
+                if (e.type != ET_TIME_OUT) throw e;
             }
         }
     }

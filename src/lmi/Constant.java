@@ -26,6 +26,7 @@ public class Constant {
         public static final String M_CL = "cl";
         public static final String M_CLICK = "click";
         public static final String M_DROP = "drop";
+        public static final String M_ERROR = "error";
         public static final String M_FOCUS = "focus";
         public static final String M_LOGIN = "login";
         public static final String M_PLACE = "place";   // { Coord location, Int direction, int button, int modifier }
@@ -52,7 +53,7 @@ public class Constant {
         public static final String A_TRACKING = "tracking";
     }
 
-    public static class Plob {
+    public static class Plan {
         public static final String P_DFRAME = "dframe";
     }
 
@@ -129,6 +130,11 @@ public class Constant {
 
     public static final int RETRY_MAX = 5;
 
+    public static final int D_EAST = 0;
+    public static final int D_SOUTH = 16384;
+    public static final int D_WEST = 32768;
+    public static final int D_NORTH = 49152;
+
     public static class TimeOut {
         public static final long TO_MAX = Long.MAX_VALUE;
         public static final long TO_NONE = 0;
@@ -185,6 +191,21 @@ public class Constant {
             public static final String RN_THINKAN = "thinkan";
             public static final String RN_BANZAI = "banzai";
             public static final String RN_TREEPICKAN = "treepickan";
+        }
+
+        public static class invobjs {
+            public static final String RN_BARKCORDAGE = "barkcordage";
+            public static final String RN_HEMPFIBRE = "hempfibre";
+            public static final String RN_HIDESTRAP = "hidestrap";
+            public static final String RN_REEDTWINE = "reedtwine";
+            public static final String RN_STRAWSTRING = "strawstring";
+            public static final String RN_TOUGHROOT = "toughroot";
+
+            public static class herbs {
+                public static final String RN_CATTAILFIBRE = "cattailfibre";
+                public static final String RN_SPINDLYTAPROOT = "spindlytaproot";
+                public static final String RN_STINGINGNETTLE = "stingingnettle";
+            }
         }
 
         public static class terobjs {
@@ -279,7 +300,7 @@ public class Constant {
                 public static final String RN_CHECKERTREE = "checkertree";
                 public static final String RN_CHESTNUTTREE = "chestnuttree";
                 public static final String RN_CRABAPPLETREE = "crabappletree";
-                public static final String RN_DOGWOODLOG = "dogwoodlog";
+                public static final String RN_DOGWOOD= "dogwood";
                 public static final String RN_GRAYALDER = "grayalder";
                 public static final String RN_HAZEL = "hazel";
                 public static final String RN_PLUMTREE = "plumtree";
@@ -309,8 +330,29 @@ public class Constant {
             public static final String RN_PRIMSMELTER = "primsmelter";
             public static final String RN_SURVOBJ = "survobj";
             public static final String RN_TROUGH = "trough";
+            public static final String RN_STOCKPILE_BOUGH = "stockpile-bough";
+            public static final String RN_STOCKPILE_BRANCH = "stockpile-branch";
+            public static final String RN_CUPBOARD = "cupboard";
         }
     }
+
+    public static final String[] nameSet_container = {
+        gfx.terobjs.RN_CRATE,
+        gfx.terobjs.RN_CHEST,
+        gfx.terobjs.RN_CUPBOARD,
+    };
+
+    public static final String[] nameSet_string = {
+        gfx.invobjs.RN_BARKCORDAGE,
+        gfx.invobjs.RN_HEMPFIBRE,
+        gfx.invobjs.RN_HIDESTRAP,
+        gfx.invobjs.RN_REEDTWINE,
+        gfx.invobjs.RN_STRAWSTRING,
+        gfx.invobjs.RN_TOUGHROOT,
+        gfx.invobjs.herbs.RN_CATTAILFIBRE,
+        gfx.invobjs.herbs.RN_SPINDLYTAPROOT,
+        gfx.invobjs.herbs.RN_STINGINGNETTLE,
+    };
 
     public static enum ExceptionType {
         // why
@@ -333,8 +375,8 @@ public class Constant {
         ET_FLOWER_MENU_MATCH,
         ET_COMMAND_MATCH,
         ET_PROGRESS_OPEN,
-        ET_WINDOW_OPEN,
         ET_LIFT,
         ET_PUT,
+        ET_DECIDE_PLAN,
     }
 }

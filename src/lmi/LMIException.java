@@ -8,16 +8,9 @@ import lmi.Constant.ExceptionType;
 //  IndexOutOfBoundsException
 
 public class LMIException extends RuntimeException {
-    // Field
-    private ExceptionType _type;
+    public ExceptionType type;
 
-    // Constructor
-    public LMIException(ExceptionType type) { _type = type; }
+    public LMIException(ExceptionType type) { this.type = type; }
 
-    // Getter;
-    public ExceptionType type() { return _type; }
-
-    public String toString() {
-        return "{ type: " + _type + " }";
-    }
+    public String toString() { return "{ type: " + this.type + " }"; }
 }

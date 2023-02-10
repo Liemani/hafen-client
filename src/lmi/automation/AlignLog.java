@@ -47,11 +47,11 @@ public class AlignLog extends Automation {
 
     // private methods
     private void _willRun() {
-        alert("정리할 통나무가 있는 공간을 선택해주세요");
-        _inputArea = getArea();
+        Api.alert("정리할 통나무가 있는 공간을 선택해주세요");
+        _inputArea = Api.getArea();
 
-        alert("통나무를 정리해 놓을 공간을 선택해주세요");
-        _workingArea = getArea();
+        Api.alert("통나무를 정리해 놓을 공간을 선택해주세요");
+        _workingArea = Api.getArea();
 
         _outputArea = _calculateOutputArea(_workingArea);
 
@@ -102,12 +102,12 @@ public class AlignLog extends Automation {
             try {
                 _loop();
             } catch (LMIException e) {
-                if (e.type() == ET_NO_INPUT) {
-                    alert("추가 통나무를 기다려요");
-                    sleep(TO_WAIT);
-                } else if (e.type() == ET_FULL_OUTPUT) {
-                    alert("통나무를 둘 공간이 생기길 기다려요");
-                    sleep(TO_WAIT);
+                if (e.type == ET_NO_INPUT) {
+                    Api.alert("추가 통나무를 기다려요");
+                    Api.sleep(TO_WAIT);
+                } else if (e.type == ET_FULL_OUTPUT) {
+                    Api.alert("통나무를 둘 공간이 생기길 기다려요");
+                    Api.sleep(TO_WAIT);
                 } else
                     throw e;
             }
@@ -117,20 +117,20 @@ public class AlignLog extends Automation {
     private void _loop() {
         _calculateNextLeaf();
         final Gob targetLog = _logToCarry();
-        forceMove(_root);
-        forceLift(targetLog);
-        forceMove(_root);
-        forceMove(_trunk);
-        forceMove(_branch);
-        forcePut(_leaf);
-        forceMove(_trunk);
+        Api.forceMove(_root);
+        Api.forceLift(targetLog);
+        Api.forceMove(_root);
+        Api.forceMove(_trunk);
+        Api.forceMove(_branch);
+        Api.forcePut(_leaf);
+        Api.forceMove(_trunk);
     }
 
     /// - Throws
     ///     - ET_NO_INPUT
     private Gob _logToCarry() {
-        final Array<Gob> logArrayToCarry = gobArrayIn(_inputArea)
-            .compactMap(gob -> gob.isLog() ? gob : null);
+        final Array<Gob> logArrayToCarry = Api.gobArrayWhere(
+                gob -> _inputArea.contains(gob.location()) && gob.isLog());
 
         if (logArrayToCarry.isEmpty())
             throw new LMIException(ET_NO_INPUT);
@@ -141,7 +141,7 @@ public class AlignLog extends Automation {
     /// - Throws
     ///     - ET_FULL_OUTPUT
     private void _calculateNextLeaf() {
-        final Array<Gob> gobArray = gobArrayIn(_outputArea);
+        final Array<Gob> gobArray = Api.gobArrayIn(_outputArea);
         while (true) {
             if (_orderCoord.y == _orderCoordMax.y) {
                 if (gobArray.count() == _orderCoordMax.x * _orderCoordMax.y)
@@ -174,22 +174,22 @@ public class AlignLog extends Automation {
     }
 
     private void _didRun(LMIException e) {
-        switch (e.type()) {
+        switch (e.type) {
             case ET_INTERRUPTED:
-                alert("작업을 중단해요");
+                Api.alert("작업을 중단해요");
                 break;
             case ET_TOO_SMALL_SPACE:
-                alert("선택한 작업 공간이 너무 좁아요");
-                message("통나무를 정리할 공간을 더 넓게 선택해 주세요");
+                Api.alert("선택한 작업 공간이 너무 좁아요");
+                Api.message("통나무를 정리할 공간을 더 넓게 선택해 주세요");
                 break;
             case ET_MOVE:
-                alert("에상치 못한 장애물에 가로막혔어요");
+                Api.alert("예상치 못한 장애물에 가로막혔어요");
                 break;
             case ET_LIFT:
-                alert("통나무를 들 수 없었어요");
+                Api.alert("통나무를 들 수 없었어요");
                 break;
             case ET_PUT:
-                alert("통나무를 내려놓을 수 없었어요");
+                Api.alert("통나무를 내려놓을 수 없었어요");
                 break;
             default:
                 throw e;

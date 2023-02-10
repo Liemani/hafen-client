@@ -129,7 +129,7 @@ public class Util {
             System.out.print("  ");
     }
 
-    // string functions
+    // String
     public static String convertToString(byte[] array, int offset) {
         int stringLength = Util.strlen(array, offset);
         return new String(array, offset, stringLength);
@@ -143,6 +143,13 @@ public class Util {
     }
 
     public static int stoi(String string) { return Integer.parseInt(string); }
+
+    public static boolean nameSet_includesResourcePath(String[] nameSet, String resourcePath) {
+        for (String name : nameSet)
+            if (resourcePath.endsWith(name))
+                return true;
+        return false;
+    }
 
     // etc
     public static String targetStack() {
